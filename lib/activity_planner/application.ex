@@ -22,8 +22,8 @@ defmodule ActivityPlanner.Application do
       ActivityPlannerWeb.Endpoint,
       # Start a worker by calling: ActivityPlanner.Worker.start_link(arg)
       # {ActivityPlanner.Worker, arg}
+      {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]},
       {Highlander, ActivityPlanner.Scheduler},
-      {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

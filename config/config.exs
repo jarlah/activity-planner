@@ -63,7 +63,8 @@ config :activity_planner, ActivityPlanner.Scheduler,
   jobs: [
     admin: [
       schedule: "* * * * *",
-      task: {ActivityPlanner.Accounts, :create_admin_account, []}
+      task: {ActivityPlanner.Accounts, :create_admin_account, []},
+      run_strategy: Quantum.RunStrategy.Local
     ]
   ]
 
