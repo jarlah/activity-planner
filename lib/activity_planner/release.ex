@@ -27,6 +27,8 @@ defmodule ActivityPlanner.Release do
   end
 
   def seed_admin do
+    load_app()
+
     password_length = 12
     admin_email = "admin@example.com"
     case ActivityPlanner.Accounts.get_user_by_email(admin_email) do
