@@ -358,7 +358,7 @@ defmodule ActivityPlanner.Accounts do
         random_bytes = :crypto.strong_rand_bytes(password_length)
         strong_password = Base.encode64(random_bytes) |> String.slice(0, password_length)
 
-        IO.puts("Generated admin password: #{strong_password}")
+        IO.puts("Generated admin account password: #{strong_password}")
 
         user_params = %{
           email: admin_email,
@@ -369,7 +369,7 @@ defmodule ActivityPlanner.Accounts do
         {:ok, _user} = ActivityPlanner.Accounts.register_user(user_params)
 
       _ ->
-        IO.puts("Admin user already exists, skipping.")
+        IO.puts("Default admin account already exists, skipping.")
     end
   end
 end

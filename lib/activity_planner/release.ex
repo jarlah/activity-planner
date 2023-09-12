@@ -25,26 +25,4 @@ defmodule ActivityPlanner.Release do
   defp load_app do
     Application.load(@app)
   end
-
-  def seed_admin do
-    IO.puts("Loading your_app..")
-    # Load the code for your_app, but don't start it
-    :ok = Application.load(@app)
-
-    IO.puts("Starting dependencies..")
-    # Start apps necessary for executing migrations
-    {:ok, _} = Application.ensure_all_started(:logger)
-    {:ok, _} = Application.ensure_all_started(:ecto_sql)
-
-    IO.puts("Fetching ecto repos..")
-    repos = Application.fetch_env!(@app, :ecto_repos)
-
-    # Run the seed script
-    Enum.each(repos, &create_admin_account_for/1)
-  end
-
-  defp create_admin_account_for(repo) do
-    IO.puts("Creating admin account for #{inspect(repo)}..")
-    ActivityPlanner.Accounts.create_admin_account("admin@example.com", 12)
-  end
 end
