@@ -1,0 +1,24 @@
+<.header>
+  Activity participant <%= @activity_participant.id %>
+  <:subtitle>This is a activity_participant record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/activity_participants/#{@activity_participant}/edit"}>
+      <.button>Edit activity_participant</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Activity">
+    <.link href={~p"/activities/#{@activity_participant.activity}"}>
+      <%= @activity_participant.activity.title %>
+    </.link>
+  </:item>
+  <:item title="Participant">
+    <.link href={~p"/participants/#{@activity_participant.participant}"}>
+      <%= @activity_participant.participant.name %>
+    </.link>
+  </:item>
+</.list>
+
+<.back navigate={~p"/activity_participants"}>Back to activity_participants</.back>

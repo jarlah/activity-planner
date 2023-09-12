@@ -1,0 +1,18 @@
+<.header>
+  Activity <%= @activity.id %>
+  <:subtitle>This is a activity record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/activities/#{@activity}/edit"}>
+      <.button>Edit activity</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @activity.title %></:item>
+  <:item title="Start time"><%= @activity.start_time %></:item>
+  <:item title="End time"><%= @activity.end_time %></:item>
+  <:item title="Responsible participant"><%= @activity.responsible_participant.name %></:item>
+</.list>
+
+<.back navigate={~p"/activities"}>Back to activities</.back>

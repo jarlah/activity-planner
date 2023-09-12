@@ -1,0 +1,13 @@
+<.header>
+  Edit Activity participant <%= @activity_participant.id %>
+  <:subtitle>Use this form to manage activity_participant records in your database.</:subtitle>
+</.header>
+
+<.activity_participant_form 
+  changeset={@changeset} 
+  participants={@participants}
+  activities={@activities} 
+  action={~p"/activity_participants/#{@activity_participant}"} 
+/>
+
+<.back navigate={~p"/activity_participants"}>Back to activity_participants</.back>

@@ -1,0 +1,13 @@
+<.header>
+  New Activity participant
+  <:subtitle>Use this form to manage activity_participant records in your database.</:subtitle>
+</.header>
+
+<.activity_participant_form 
+  changeset={@changeset} 
+  participants={@participants} 
+  activities={@activities} 
+  action={~p"/activity_participants"}
+/>
+
+<.back navigate={~p"/activity_participants"}>Back to activity_participants</.back>
