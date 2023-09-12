@@ -61,7 +61,10 @@ config :phoenix, :json_library, Jason
 
 config :activity_planner, ActivityPlanner.Scheduler,
   jobs: [
-    {"* * * * *",         {ActivityPlanner.Accounts, :create_admin_account, []}}
+    admin: [
+      schedule: "* * * * *",
+      task: {ActivityPlanner.Accounts, :create_admin_account, []}
+    ]
   ]
 
 # Import environment specific config. This must remain at the bottom

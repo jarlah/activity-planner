@@ -7,6 +7,8 @@ defmodule ActivityPlanner.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies) || []
+
     children = [
       # Start the Telemetry supervisor
       ActivityPlannerWeb.Telemetry,
@@ -20,17 +22,14 @@ defmodule ActivityPlanner.Application do
       ActivityPlannerWeb.Endpoint,
       # Start a worker by calling: ActivityPlanner.Worker.start_link(arg)
       # {ActivityPlanner.Worker, arg}
-      ActivityPlanner.Scheduler,
+      {Highlander, ActivityPlanner.Scheduler},
+      {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ActivityPlanner.Supervisor]
-    result = Supervisor.start_link(children, opts)
-
-    ActivityPlanner.Accounts.create_admin_account("admin@example.com", 12)
-
-    result
+    Supervisor.start_link(children, opts)
   end
 
   # Tell Phoenix to update the endpoint configuration
