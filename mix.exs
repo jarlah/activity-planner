@@ -53,7 +53,8 @@ defmodule ActivityPlanner.MixProject do
       {:pbkdf2_elixir, "~> 2.0"},
       {:quantum, "~> 3.5"},
       {:libcluster, "~> 3.3.3"},
-      {:highlander, "~> 0.2.1"}
+      {:highlander, "~> 0.2.1"},
+      {:timex, "~> 3.7"}
     ]
   end
 

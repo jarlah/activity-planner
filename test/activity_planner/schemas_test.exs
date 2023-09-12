@@ -79,7 +79,9 @@ defmodule ActivityPlanner.SchemasTest do
     end
 
     test "create_activity/1 with valid data creates a activity" do
-      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title"}
+      responsible_participant = participant_fixture()
+
+      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id}
 
       assert {:ok, %Activity{} = activity} = Schemas.create_activity(valid_attrs)
       assert activity.end_time == ~U[2023-09-10 18:09:00Z]
@@ -124,7 +126,7 @@ defmodule ActivityPlanner.SchemasTest do
 
     import ActivityPlanner.SchemasFixtures
 
-    @invalid_attrs %{}
+    @invalid_attrs %{ participant_id: nil, activity_id: nil }
 
     test "list_activity_participants/0 returns all activity_participants" do
       activity_participant = activity_participant_fixture()
@@ -137,9 +139,12 @@ defmodule ActivityPlanner.SchemasTest do
     end
 
     test "create_activity_participant/1 with valid data creates a activity_participant" do
-      valid_attrs = %{}
+      participant = participant_fixture()
+      activity = activity_fixture()
 
-      assert {:ok, %ActivityParticipant{} = activity_participant} = Schemas.create_activity_participant(valid_attrs)
+      valid_attrs = %{participant_id: participant.id, activity_id: activity.id }
+
+      assert {:ok, %ActivityParticipant{}} = Schemas.create_activity_participant(valid_attrs)
     end
 
     test "create_activity_participant/1 with invalid data returns error changeset" do
@@ -150,7 +155,7 @@ defmodule ActivityPlanner.SchemasTest do
       activity_participant = activity_participant_fixture()
       update_attrs = %{}
 
-      assert {:ok, %ActivityParticipant{} = activity_participant} = Schemas.update_activity_participant(activity_participant, update_attrs)
+      assert {:ok, %ActivityParticipant{}} = Schemas.update_activity_participant(activity_participant, update_attrs)
     end
 
     test "update_activity_participant/2 with invalid data returns error changeset" do
@@ -168,6 +173,53 @@ defmodule ActivityPlanner.SchemasTest do
     test "change_activity_participant/1 returns a activity_participant changeset" do
       activity_participant = activity_participant_fixture()
       assert %Ecto.Changeset{} = Schemas.change_activity_participant(activity_participant)
+    end
+  end
+
+  @fixed_time ~U[1970-01-01T00:00:00Z]
+
+  describe "get_activities_in_time_range/2" do
+    import ActivityPlanner.SchemasFixtures
+
+    test "retrieves activities within the specified time range" do
+      _activity0 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: -4), end_time: Timex.shift(@fixed_time, days: -3)})
+      activity1 = activity_fixture(%{}, @fixed_time)
+      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+
+      minTime = @fixed_time
+      maxTime = Timex.shift(@fixed_time, days: 2)
+
+      [activity_one] = Schemas.get_activities_in_time_range(minTime, maxTime)
+
+      assert activity_one == activity1
+    end
+  end
+
+  describe "get_activities_for_the_next_two_days/0" do
+    import ActivityPlanner.SchemasFixtures
+
+    test "retrieves activities for the next two days" do
+      # Create some fixtures with a fixed time
+      activity1 = activity_fixture(%{start_time: @fixed_time, end_time: Timex.shift(@fixed_time, days: 1)})
+      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+
+      [activity_one] = Schemas.get_activities_for_the_next_two_days(@fixed_time)
+
+      assert activity_one == activity1
+    end
+  end
+
+  describe "get_activities_for_the_last_two_days/0" do
+    import ActivityPlanner.SchemasFixtures
+
+    test "retrieves activities for the last two days" do
+      # Create some fixtures with a fixed time
+      activity1 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: -1), end_time: @fixed_time})
+      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+
+      [activity_one] = Schemas.get_activities_for_the_last_two_days(@fixed_time)
+
+      assert activity_one == activity1
     end
   end
 end

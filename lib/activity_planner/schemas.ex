@@ -293,4 +293,27 @@ defmodule ActivityPlanner.Schemas do
   def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}) do
     ActivityParticipant.changeset(activity_participant, attrs)
   end
+
+  @spec get_activities_in_time_range(%DateTime{}, %DateTime{}) :: list()
+  @doc """
+  Retrieves activities between minTime and maxTime.
+  """
+  def get_activities_in_time_range(minTime, maxTime) do
+    from(a in ActivityPlanner.Schemas.Activity,
+      where: a.start_time >= ^minTime and a.end_time <= ^maxTime
+    )
+    |> ActivityPlanner.Repo.all()
+  end
+
+  def get_activities_for_the_next_two_days(current_time \\ Timex.now()) do
+    minTime = current_time
+    maxTime = Timex.shift(minTime, days: 2)
+    get_activities_in_time_range(minTime, maxTime)
+  end
+
+  def get_activities_for_the_last_two_days(current_time \\ Timex.now()) do
+    maxTime = current_time
+    minTime = Timex.shift(maxTime, days: -2)
+    get_activities_in_time_range(minTime, maxTime)
+  end
 end

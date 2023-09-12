@@ -23,13 +23,16 @@ defmodule ActivityPlanner.SchemasFixtures do
   @doc """
   Generate a activity.
   """
-  def activity_fixture(attrs \\ %{}) do
+  def activity_fixture(attrs \\ %{}, current_time \\ Timex.now()) do
+    responsible_participant = participant_fixture()
+
     {:ok, activity} =
       attrs
       |> Enum.into(%{
-        end_time: ~U[2023-09-10 18:09:00Z],
-        start_time: ~U[2023-09-10 18:09:00Z],
-        title: "some title"
+        title: "some title",
+        start_time: current_time,
+        end_time: Timex.shift(current_time, days: 1),
+        responsible_participant_id: responsible_participant.id
       })
       |> ActivityPlanner.Schemas.create_activity()
 
@@ -40,10 +43,14 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity_participant.
   """
   def activity_participant_fixture(attrs \\ %{}) do
+    participant = participant_fixture()
+    activity = activity_fixture()
+
     {:ok, activity_participant} =
       attrs
       |> Enum.into(%{
-
+        participant_id: participant.id,
+        activity_id: activity.id
       })
       |> ActivityPlanner.Schemas.create_activity_participant()
 
