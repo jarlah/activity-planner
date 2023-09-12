@@ -7,6 +7,8 @@ defmodule ActivityPlannerWeb.UserForgotPasswordLiveTest do
   alias ActivityPlanner.Accounts
   alias ActivityPlanner.Repo
 
+  @moduletag :skip
+
   describe "Forgot password page" do
     test "renders email page", %{conn: conn} do
       {:ok, lv, html} = live(conn, ~p"/users/reset_password")

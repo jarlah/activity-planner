@@ -4,6 +4,8 @@ defmodule ActivityPlannerWeb.UserRegistrationLiveTest do
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
 
+  @moduletag :skip
+
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/register")

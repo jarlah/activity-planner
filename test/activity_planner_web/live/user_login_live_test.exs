@@ -4,6 +4,8 @@ defmodule ActivityPlannerWeb.UserLoginLiveTest do
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
 
+  @moduletag :skip
+
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")

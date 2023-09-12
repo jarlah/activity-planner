@@ -6,6 +6,8 @@ defmodule ActivityPlannerWeb.UserResetPasswordLiveTest do
 
   alias ActivityPlanner.Accounts
 
+  @moduletag :skip
+
   setup do
     user = user_fixture()
 

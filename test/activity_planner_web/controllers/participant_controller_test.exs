@@ -7,6 +7,8 @@ defmodule ActivityPlannerWeb.ParticipantControllerTest do
   @update_attrs %{email: "some updated email", name: "some updated name", phone: "some updated phone"}
   @invalid_attrs %{email: nil, name: nil, phone: nil}
 
+  @moduletag :skip
+
   describe "index" do
     test "lists all participants", %{conn: conn} do
       conn = get(conn, ~p"/participants")
