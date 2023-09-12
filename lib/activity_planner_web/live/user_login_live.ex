@@ -4,7 +4,7 @@ defmodule ActivityPlannerWeb.UserLoginLive do
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
-      <.header class="text-center">
+<%!--       <.header class="text-center">
         Sign in to account
         <:subtitle>
           Don't have an account?
@@ -13,7 +13,7 @@ defmodule ActivityPlannerWeb.UserLoginLive do
           </.link>
           for an account now.
         </:subtitle>
-      </.header>
+      </.header> --%>
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
         <.input field={@form[:email]} type="email" label="Email" required />
