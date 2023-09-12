@@ -27,29 +27,24 @@ defmodule ActivityPlanner.Release do
   end
 
   def seed_admin do
-    load_app()
-    ActivityPlanner.Repo.start_link()
+    IO.puts("Loading your_app..")
+    # Load the code for your_app, but don't start it
+    :ok = Application.load(@app)
 
-    password_length = 12
-    admin_email = "admin@example.com"
-    case ActivityPlanner.Accounts.get_user_by_email(admin_email) do
-      nil ->
-        # Generate a strong random password
-        random_bytes = :crypto.strong_rand_bytes(password_length)
-        strong_password = Base.encode64(random_bytes) |> String.slice(0, password_length)
+    IO.puts("Starting dependencies..")
+    # Start apps necessary for executing migrations
+    {:ok, _} = Application.ensure_all_started(:logger)
+    {:ok, _} = Application.ensure_all_started(:ecto_sql)
 
-        IO.puts("Generated admin password: #{strong_password}")
+    IO.puts("Fetching ecto repos..")
+    repos = Application.fetch_env!(@app, :ecto_repos)
 
-        user_params = %{
-          email: admin_email,
-          password: strong_password,
-          is_admin: true
-        }
+    # Run the seed script
+    Enum.each(repos, &create_admin_account_for/1)
+  end
 
-        {:ok, _user} = ActivityPlanner.Accounts.register_user(user_params)
-
-      _ ->
-        IO.puts("Admin user already exists, skipping.")
-    end
+  defp create_admin_account_for(repo) do
+    IO.puts("Creating admin account for #{inspect(repo)}..")
+    ActivityPlanner.Accounts.create_admin_account("admin@example.com", 12)
   end
 end
