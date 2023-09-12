@@ -65,6 +65,8 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :activity_planner, dev_routes: true
 
+config :logger, level: :debug
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

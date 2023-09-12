@@ -351,7 +351,7 @@ defmodule ActivityPlanner.Accounts do
     end
   end
 
-  def create_admin_account(admin_email, password_length \\ 12) do
+  def create_admin_account(admin_email \\ "admin@example.com", password_length \\ 12) do
     case ActivityPlanner.Accounts.get_user_by_email(admin_email) do
       nil ->
         # Generate a strong random password

@@ -17,9 +17,10 @@ defmodule ActivityPlanner.Application do
       # Start Finch
       {Finch, name: ActivityPlanner.Finch},
       # Start the Endpoint (http/https)
-      ActivityPlannerWeb.Endpoint
+      ActivityPlannerWeb.Endpoint,
       # Start a worker by calling: ActivityPlanner.Worker.start_link(arg)
       # {ActivityPlanner.Worker, arg}
+      ActivityPlanner.Scheduler,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
