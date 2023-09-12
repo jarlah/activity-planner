@@ -41,7 +41,16 @@
 <div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
   <div class="mx-auto max-w-xl lg:mx-0">
     <br />
+    <p class="text-[2rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900">
+      Activity planner
+    </p>
+    <p class="mt-4 text-base leading-7 text-zinc-600">
+      This is not the page you are looking for.
+    </p>
+    <br />
     <div :if={@current_user}>
+      <p>Maybe one of these?</p>
+      <br />
       <p>
         <.link navigate={~p"/activities"}>Activities</.link>
       </p>
@@ -52,11 +61,5 @@
         <.link navigate={~p"/activity_participants"}>Activity participants</.link>
       </p>
     </div>
-    <p class="text-[2rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900">
-      Activity planner
-    </p>
-    <p class="mt-4 text-base leading-7 text-zinc-600">
-      This is not the page you are looking for.
-    </p>
   </div>
 </div>
