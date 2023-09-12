@@ -28,6 +28,7 @@ defmodule ActivityPlanner.Release do
 
   def seed_admin do
     load_app()
+    ActivityPlanner.Repo.start_link()
 
     password_length = 12
     admin_email = "admin@example.com"
