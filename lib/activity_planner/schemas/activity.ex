@@ -6,7 +6,10 @@ defmodule ActivityPlanner.Schemas.Activity do
     field :end_time, :utc_datetime
     field :start_time, :utc_datetime
     field :title, :string
+
     belongs_to :responsible_participant, ActivityPlanner.Schemas.Participant
+
+    many_to_many :participants, ActivityPlanner.Schemas.Participant, join_through: "activity_participants"
 
     timestamps()
   end

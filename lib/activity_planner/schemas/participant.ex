@@ -7,6 +7,8 @@ defmodule ActivityPlanner.Schemas.Participant do
     field :name, :string
     field :phone, :string
 
+    many_to_many :activities, ActivityPlanner.Schemas.Activity, join_through: "activity_participants"
+
     timestamps()
   end
 
