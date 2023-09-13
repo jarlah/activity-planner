@@ -121,13 +121,14 @@ if config_env() == :prod do
     port: String.to_integer(System.fetch_env!("SMTP_PORT")),
     ssl: true,
     tls: :always,
-    auth: :always
+    auth: :always,
+    from_email: {"Activity Planner", System.fetch_env!("SMTP_USERNAME")}
 
   config :activity_planner, :clicksend,
     enabled: true,
     username: System.fetch_env!("CLICKSEND_USERNAME"),
     api_key: System.fetch_env!("CLICKSEND_API_KEY"),
-    from_name: System.fetch_env!("CLICKSEND_FROM_NAME"),
+    from_name: System.fetch_env!("CLICKSEND_FROM_NAME")
 
   app_name =
     System.get_env("FLY_APP_NAME") ||

@@ -27,7 +27,9 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :activity_planner, ActivityPlanner.Mailer, adapter: Swoosh.Adapters.Local
+config :activity_planner, ActivityPlanner.Mailer,
+  adapter: Swoosh.Adapters.Local,
+  from_email: {"Activity Planner", "admin@example.com"}
 
 config :activity_planner, :clicksend,
   enabled: false
@@ -64,9 +66,9 @@ config :phoenix, :json_library, Jason
 
 config :activity_planner, ActivityPlanner.Scheduler,
   jobs: [
-    admin: [
-      schedule: "* * * * *",
-      task: {ActivityPlanner.Accounts, :create_admin_account, []},
+    notifications: [
+      schedule: "0 6 * * *", # 06:00 in the morning
+      task: {ActivityPlanner.Notifications, :send_notifications, []},
       run_strategy: Quantum.RunStrategy.Local
     ]
   ]

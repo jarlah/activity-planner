@@ -1,0 +1,52 @@
+defmodule ActivityPlanner.Notifications do
+  import Swoosh.Email
+
+  alias ActivityPlanner.Schemas
+  alias ActivityPlanner.Mailer
+  alias ActivityPlanner.SMS
+  alias Timex.Format.DateTime.Formatter
+
+  @from_email Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
+
+  def send_notifications do
+    activities = Schemas.get_activities_for_the_next_two_days() |> ActivityPlanner.Repo.preload([:participants, :responsible_participant])
+
+    Enum.each(activities, fn activity ->
+      {:ok, formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
+      Enum.each(activity.participants ++ [activity.responsible_participant], fn participant ->
+        {:ok, _} = send_email(participant.email, "Reminder for activity",  """
+        ==============================
+
+        Hi #{participant.name},
+
+        This is a reminder for a planned activity at
+
+        #{formatted_time}
+
+        Hope we see you there :)
+
+        Best regards,
+        Activity planner
+
+        ==============================
+        """)
+        {:ok, _} = SMS.send_sms(participant.phone, """
+        Hi #{participant.name}. This is a reminder for a planned activity at #{formatted_time}. Hope we see you there :) Best regards, Activity planner
+        """)
+      end)
+    end)
+  end
+
+  defp send_email(recipient, subject, body) do
+    email =
+      new()
+      |> to(recipient)
+      |> from(@from_email)
+      |> subject(subject)
+      |> text_body(body)
+
+    with {:ok, _metadata} <- Mailer.deliver(email) do
+      {:ok, email}
+    end
+  end
+end
