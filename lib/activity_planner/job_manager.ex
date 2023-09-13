@@ -40,6 +40,8 @@ defmodule ActivityPlanner.JobManager do
   defp add_job_to_quantum(%ActivityPlanner.Jobs.Job{} = job) do
     case Crontab.CronExpression.Parser.parse(job.cron_expression) do
       {:ok, cron_expression} ->
+        IO.puts("Adding quantum job")
+
         ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
         |> Quantum.Job.set_overlap(false)
         |> Quantum.Job.set_name(String.to_atom(job.name))
@@ -48,9 +50,8 @@ defmodule ActivityPlanner.JobManager do
         |> ActivityPlanner.Scheduler.add_job()
 
         {:ok, "Job added successfully"}
-
-      {:error, _reason} ->
-        {:error, "Invalid cron expression for job " <> job.name}
+      {:error, reason} ->
+        {:error, "Invalid cron expression for job " <> job.name <> ": " <> reason}
     end
   end
 
