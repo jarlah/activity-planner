@@ -119,7 +119,7 @@ if config_env() == :prod do
     username: System.fetch_env!("SMTP_USERNAME"),
     password: System.fetch_env!("SMTP_PASSWORD"),
     port: String.to_integer(System.fetch_env!("SMTP_PORT")),
-    ssl: true,
+    ssl: false,
     tls: :always,
     auth: :always,
     from_email: {"Activity Planner", System.fetch_env!("SMTP_USERNAME")}
