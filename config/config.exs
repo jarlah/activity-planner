@@ -64,15 +64,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :activity_planner, ActivityPlanner.Scheduler,
-  jobs: [
-    notifications: [
-      schedule: "0 6 * * *", # 06:00 in the morning
-      task: {ActivityPlanner.Notifications, :send_notifications, []},
-      run_strategy: Quantum.RunStrategy.Local
-    ]
-  ]
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

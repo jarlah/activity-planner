@@ -1,0 +1,19 @@
+<.header>
+  Job <%= @job.id %>
+  <:subtitle>This is a job record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/job/#{@job}/edit"}>
+      <.button>Edit job</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @job.name %></:item>
+  <:item title="Cron expression"><%= @job.cron_expression %></:item>
+  <:item title="Task module"><%= @job.task_module %></:item>
+  <:item title="Task function"><%= @job.task_function %></:item>
+  <:item title="Task args"><%= @job.task_args %></:item>
+</.list>
+
+<.back navigate={~p"/job"}>Back to job</.back>

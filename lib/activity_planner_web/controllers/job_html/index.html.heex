@@ -1,0 +1,27 @@
+<.header>
+  Listing Job
+  <:actions>
+    <.link href={~p"/job/new"}>
+      <.button>New Job</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="job" rows={@job} row_click={&JS.navigate(~p"/job/#{&1}")}>
+  <:col :let={job} label="Name"><%= job.name %></:col>
+  <:col :let={job} label="Cron expression"><%= job.cron_expression %></:col>
+  <:col :let={job} label="Task module"><%= job.task_module %></:col>
+  <:col :let={job} label="Task function"><%= job.task_function %></:col>
+  <:col :let={job} label="Task args"><%= job.task_args %></:col>
+  <:action :let={job}>
+    <div class="sr-only">
+      <.link navigate={~p"/job/#{job}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/job/#{job}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={job}>
+    <.link href={~p"/job/#{job}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

@@ -1,0 +1,19 @@
+<.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:name]} type="text" label="Name" />
+  <.input field={f[:cron_expression]} type="text" label="Cron expression" />
+  <.input field={f[:task_module]} type="text" label="Task module" />
+  <.input field={f[:task_function]} type="text" label="Task function" />
+  <.input
+    field={f[:task_args]}
+    type="select"
+    multiple
+    label="Task args"
+    options={[]}
+  />
+  <:actions>
+    <.button>Save Job</.button>
+  </:actions>
+</.simple_form>

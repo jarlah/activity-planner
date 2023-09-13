@@ -24,6 +24,7 @@ defmodule ActivityPlanner.Application do
       # {ActivityPlanner.Worker, arg}
       {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]},
       {Highlander, ActivityPlanner.Scheduler},
+      {Highlander, {ActivityPlanner.JobManager, :ok}},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
