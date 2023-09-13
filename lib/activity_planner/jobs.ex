@@ -55,7 +55,6 @@ defmodule ActivityPlanner.Jobs do
 
     case Repo.insert(changeset) do
       {:ok, job} ->
-        # Call add_job in JobManager here
         ActivityPlanner.JobManager.add_job(job)
         {:ok, job}
       {:error, changeset} ->
@@ -100,7 +99,6 @@ defmodule ActivityPlanner.Jobs do
 
   """
   def delete_job(%Job{} = job) do
-    # Call delete_job in JobManager here
     ActivityPlanner.JobManager.delete_job(job.name)
     Repo.delete(job)
   end
