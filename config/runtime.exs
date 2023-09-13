@@ -113,6 +113,22 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
+  config :activity_planner, ActivityPlanner.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    relay: System.fetch_env!("SMTP_RELAY"),
+    username: System.fetch_env!("SMTP_USERNAME"),
+    password: System.fetch_env!("SMTP_PASSWORD"),
+    port: String.to_integer(System.fetch_env!("SMTP_PORT")),
+    ssl: true,
+    tls: :always,
+    auth: :always
+
+  config :activity_planner, :clicksend,
+    enabled: true,
+    username: System.fetch_env!("CLICKSEND_USERNAME"),
+    api_key: System.fetch_env!("CLICKSEND_API_KEY"),
+    from_name: System.fetch_env!("CLICKSEND_FROM_NAME"),
+
   app_name =
     System.get_env("FLY_APP_NAME") ||
       raise "FLY_APP_NAME not available"

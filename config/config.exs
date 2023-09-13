@@ -29,6 +29,9 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :activity_planner, ActivityPlanner.Mailer, adapter: Swoosh.Adapters.Local
 
+config :activity_planner, :clicksend,
+  enabled: false
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

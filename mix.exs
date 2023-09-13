@@ -54,7 +54,8 @@ defmodule ActivityPlanner.MixProject do
       {:quantum, "~> 3.5"},
       {:libcluster, "~> 3.3.3"},
       {:highlander, "~> 0.2.1"},
-      {:timex, "~> 3.7"}
+      {:timex, "~> 3.7"},
+      {:httpoison, "~> 1.8"},
     ]
   end
 
