@@ -6,15 +6,15 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.SMS
   alias Timex.Format.DateTime.Formatter
 
-  @from_email Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
-
   def send_notifications do
+    from_email = Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
+
     activities = Schemas.get_activities_for_the_next_two_days() |> ActivityPlanner.Repo.preload([:participants, :responsible_participant])
 
     Enum.each(activities, fn activity ->
       {:ok, formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
       Enum.each(activity.participants ++ [activity.responsible_participant], fn participant ->
-        {:ok, _} = send_email(participant.email, "Reminder for activity",  """
+        {:ok, _} = send_email(participant.email, from_email, "Reminder for activity",  """
         ==============================
 
         Hi #{participant.name},
@@ -37,11 +37,11 @@ defmodule ActivityPlanner.Notifications do
     end)
   end
 
-  defp send_email(recipient, subject, body) do
+  defp send_email(recipient, sender, subject, body) do
     email =
       new()
       |> to(recipient)
-      |> from(@from_email)
+      |> from(sender)
       |> subject(subject)
       |> text_body(body)
 
