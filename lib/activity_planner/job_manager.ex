@@ -42,9 +42,8 @@ defmodule ActivityPlanner.JobManager do
       {:ok, cron_expression} ->
         task = {Module.concat([job.task_module]), String.to_atom(job.task_function), job.task_args || []} |> IO.inspect()
 
-        ActivityPlanner.Scheduler.new_job()
+        ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
         |> Quantum.Job.set_overlap(false)
-        |> Quantum.Job.set_run_strategy(%Quantum.RunStrategy.Local{})
         |> Quantum.Job.set_name(String.to_atom(job.name))
         |> Quantum.Job.set_schedule(cron_expression)
         |> Quantum.Job.set_task(task)
