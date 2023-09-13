@@ -50,9 +50,17 @@ defmodule ActivityPlanner.Jobs do
 
   """
   def create_job(attrs \\ %{}) do
-    %Job{}
+    changeset = %Job{}
     |> Job.changeset(attrs)
-    |> Repo.insert()
+
+    case Repo.insert(changeset) do
+      {:ok, job} ->
+        # Call add_job in JobManager here
+        ActivityPlanner.JobManager.add_job(job)
+        {:ok, job}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -68,9 +76,15 @@ defmodule ActivityPlanner.Jobs do
 
   """
   def update_job(%Job{} = job, attrs) do
-    job
-    |> Job.changeset(attrs)
-    |> Repo.update()
+    changeset = Job.changeset(job, attrs)
+
+    case Repo.update(changeset) do
+      {:ok, updated_job} ->
+        ActivityPlanner.JobManager.add_job(updated_job)
+        {:ok, updated_job}
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -86,6 +100,8 @@ defmodule ActivityPlanner.Jobs do
 
   """
   def delete_job(%Job{} = job) do
+    # Call delete_job in JobManager here
+    ActivityPlanner.JobManager.delete_job(job.name)
     Repo.delete(job)
   end
 
