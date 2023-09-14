@@ -74,7 +74,7 @@ config :kaffy,
   admin_logo: "/images/logo.svg",
   admin_logo_mini: "/images/logo.svg",
   hide_dashboard: true,
-  home_page: [schema: [:accounts, :user]],
+  home_page: [schema: [:activities, :activity]],
   enable_context_dashboards: true, # since v0.10.0
   admin_footer: "Kaffy &copy; 2023" # since v0.10.0
 
