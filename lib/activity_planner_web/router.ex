@@ -75,7 +75,7 @@ defmodule ActivityPlannerWeb.Router do
   scope "/", ActivityPlannerWeb do
     pipe_through [:browser]
 
-    delete "/users/log_out", UserSessionController, :delete
+    get "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
       on_mount: [{ActivityPlannerWeb.UserAuth, :mount_current_user}] do

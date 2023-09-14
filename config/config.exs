@@ -73,10 +73,10 @@ config :kaffy,
   admin_title: "My Awesome App",
   admin_logo: "/images/logo.svg",
   admin_logo_mini: "/images/logo.svg",
-  hide_dashboard: true,
-  home_page: [schema: [:activities, :activity]],
+  hide_dashboard: false,
+  # home_page: [schema: [:activities, :activity]],
   enable_context_dashboards: true, # since v0.10.0
-  admin_footer: "Kaffy &copy; 2023" # since v0.10.0
+  admin_footer: "Kaffy @ 2023" # since v0.10.0
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -7,7 +7,7 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
     field :description, :string
 
     belongs_to :company, ActivityPlanner.Companies.Company
-
+    belongs_to :notification_setting, ActivityPlanner.Notifications.NotificationSetting
     has_many :activities, ActivityPlanner.Activities.Activity
 
     timestamps()
@@ -16,7 +16,7 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
   @doc false
   def changeset(activity_group, attrs) do
     activity_group
-    |> cast(attrs, [:name, :description, :company_id])
+    |> cast(attrs, [:name, :description, :company_id, :notification_setting_id])
     |> validate_required([:name, :company_id])
   end
 end
