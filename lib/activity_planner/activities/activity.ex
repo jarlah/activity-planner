@@ -3,10 +3,9 @@ defmodule ActivityPlanner.Activities.Activity do
   import Ecto.Changeset
 
   schema "activities" do
-    field :title, :string
-    field :end_time, :utc_datetime
-    field :start_time, :utc_datetime
     field :description, :string
+    field :start_time, :utc_datetime
+    field :end_time, :utc_datetime
 
     belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
     belongs_to :responsible_participant, ActivityPlanner.Participants.Participant
@@ -18,7 +17,7 @@ defmodule ActivityPlanner.Activities.Activity do
   @doc false
   def changeset(activity, attrs) do
     activity
-    |> cast(attrs, [:title, :start_time, :end_time, :responsible_participant_id, :activity_group_id, :description])
-    |> validate_required([:title, :start_time, :end_time, :responsible_participant_id, :activity_group_id])
+    |> cast(attrs, [:responsible_participant_id, :activity_group_id, :description, :start_time, :end_time])
+    |> validate_required([:responsible_participant_id, :activity_group_id, :start_time, :end_time])
   end
 end
