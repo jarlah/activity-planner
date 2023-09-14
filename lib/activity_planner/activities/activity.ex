@@ -10,6 +10,7 @@ defmodule ActivityPlanner.Activities.Activity do
 
     belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
     belongs_to :responsible_participant, ActivityPlanner.Participants.Participant
+    many_to_many :participants, ActivityPlanner.Participants.Participant, join_through: "activity_participants"
 
     timestamps()
   end
