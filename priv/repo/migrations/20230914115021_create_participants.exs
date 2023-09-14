@@ -6,6 +6,7 @@ defmodule ActivityPlanner.Repo.Migrations.CreateParticipants do
       add :name, :string
       add :email, :string
       add :phone, :string
+      add :description, :text
 
       timestamps()
     end

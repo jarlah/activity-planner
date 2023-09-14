@@ -6,6 +6,7 @@ defmodule ActivityPlanner.Participants.Participant do
     field :email, :string
     field :name, :string
     field :phone, :string
+    field :description, :string
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule ActivityPlanner.Participants.Participant do
   @doc false
   def changeset(participant, attrs) do
     participant
-    |> cast(attrs, [:name, :email, :phone])
+    |> cast(attrs, [:name, :email, :phone, :description])
     |> validate_required([:name, :email, :phone])
   end
 end

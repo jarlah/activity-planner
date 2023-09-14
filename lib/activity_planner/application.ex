@@ -32,8 +32,7 @@ defmodule ActivityPlanner.Application do
     opts = [strategy: :one_for_one, name: ActivityPlanner.Supervisor]
     result = Supervisor.start_link(children, opts)
 
-    # user = ActivityPlanner.Accounts.get_user_by_email("admin@example.com")
-    # ActivityPlanner.Accounts.reset_user_password(user, %{password: "passwordpassword", password_confirmation: "passwordpassword"}) |> IO.inspect()
+    ActivityPlanner.Accounts.create_admin_account("admin@example.com")
 
     result
   end
