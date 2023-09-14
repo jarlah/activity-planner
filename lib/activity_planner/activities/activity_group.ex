@@ -8,6 +8,8 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
 
     belongs_to :company, ActivityPlanner.Companies.Company
 
+    has_many :activities, ActivityPlanner.Activities.Activity
+
     timestamps()
   end
 

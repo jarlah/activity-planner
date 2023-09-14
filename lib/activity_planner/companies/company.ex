@@ -7,6 +7,8 @@ defmodule ActivityPlanner.Companies.Company do
     field :description, :string
     field :name, :string
 
+    has_many :activity_groups, ActivityPlanner.Activities.ActivityGroup
+
     timestamps()
   end
 
