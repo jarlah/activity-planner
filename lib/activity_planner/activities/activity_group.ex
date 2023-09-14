@@ -3,9 +3,10 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
   import Ecto.Changeset
 
   schema "activity_groups" do
-    field :description, :string
     field :name, :string
-    field :company_id, :id
+    field :description, :string
+
+    belongs_to :company, ActivityPlanner.Companies.Company
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
   @doc false
   def changeset(activity_group, attrs) do
     activity_group
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :description, :company_id])
+    |> validate_required([:name, :company_id])
   end
 end

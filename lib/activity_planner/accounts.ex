@@ -351,6 +351,18 @@ defmodule ActivityPlanner.Accounts do
     end
   end
 
+  @doc """
+  Creates admin account if it doesn't exist
+
+  ## Examples
+
+      iex> create_admin_account()
+      {:ok, %User{}}
+
+      iex> create_admin_account("notemail")
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_admin_account(admin_email \\ "admin@example.com", password_length \\ 12) do
     case ActivityPlanner.Accounts.get_user_by_email(admin_email) do
       nil ->

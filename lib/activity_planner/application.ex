@@ -32,6 +32,7 @@ defmodule ActivityPlanner.Application do
     opts = [strategy: :one_for_one, name: ActivityPlanner.Supervisor]
     result = Supervisor.start_link(children, opts)
 
+    # no-op if admin account already exists
     ActivityPlanner.Accounts.create_admin_account("admin@example.com")
 
     result
