@@ -1,8 +1,0 @@
-<.header>
-  Edit Participant <%= @participant.id %>
-  <:subtitle>Use this form to manage participant records in your database.</:subtitle>
-</.header>
-
-<.participant_form changeset={@changeset} action={~p"/participants/#{@participant}"} />
-
-<.back navigate={~p"/participants"}>Back to participants</.back>

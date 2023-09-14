@@ -7,9 +7,9 @@ defmodule ActivityPlanner.Activities.Activity do
     field :start_time, :utc_datetime
     field :title, :string
 
-    belongs_to :responsible_participant, ActivityPlanner.Participant.Participant
+    belongs_to :responsible_participant, ActivityPlanner.Participants.Participant
 
-    many_to_many :participants, ActivityPlanner.Participant.Participant, join_through: "activity_participants"
+    many_to_many :participants, ActivityPlanner.Participants.Participant, join_through: "activity_participants"
 
     timestamps()
   end

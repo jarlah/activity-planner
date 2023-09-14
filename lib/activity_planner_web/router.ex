@@ -1,5 +1,6 @@
 defmodule ActivityPlannerWeb.Router do
   use ActivityPlannerWeb, :router
+  use Kaffy.Routes, scope: "/admin", pipe_through: [:browser, :require_authenticated_user]
 
   import ActivityPlannerWeb.UserAuth
 
@@ -63,12 +64,6 @@ defmodule ActivityPlannerWeb.Router do
 
   scope "/", ActivityPlannerWeb do
     pipe_through [:browser, :require_authenticated_user]
-
-    resources "/activities", ActivityController
-    resources "/participants", ParticipantController
-    resources "/activity_participants", ActivityParticipantController
-    resources "/templates", TemplateController
-    resources "/job", JobController
 
     live_session :require_authenticated_user,
       on_mount: [{ActivityPlannerWeb.UserAuth, :ensure_authenticated}] do

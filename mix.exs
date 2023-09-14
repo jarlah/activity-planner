@@ -57,6 +57,8 @@ defmodule ActivityPlanner.MixProject do
       {:highlander, "~> 0.2.1"},
       {:timex, "~> 3.7"},
       {:httpoison, "~> 1.8"},
+      {:phoenix_view, "~> 2.0.2"},
+      {:kaffy, "~> 0.9.4"}
     ]
   end
 

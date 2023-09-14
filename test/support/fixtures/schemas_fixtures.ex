@@ -15,7 +15,7 @@ defmodule ActivityPlanner.SchemasFixtures do
         name: "some name",
         phone: "some phone"
       })
-      |> ActivityPlanner.Schemas.create_participant()
+      |> ActivityPlanner.Participants.create_participant()
 
     participant
   end
@@ -34,7 +34,7 @@ defmodule ActivityPlanner.SchemasFixtures do
         end_time: Timex.shift(current_time, days: 1),
         responsible_participant_id: responsible_participant.id
       })
-      |> ActivityPlanner.Schemas.create_activity()
+      |> ActivityPlanner.Activities.create_activity()
 
     activity
   end
@@ -52,7 +52,7 @@ defmodule ActivityPlanner.SchemasFixtures do
         participant_id: participant.id,
         activity_id: activity.id
       })
-      |> ActivityPlanner.Schemas.create_activity_participant()
+      |> ActivityPlanner.Activities.create_activity_participant()
 
     activity_participant
   end
