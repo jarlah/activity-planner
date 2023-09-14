@@ -76,7 +76,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def register_user(attrs) do
     %User{}
-    |> User.registration_changeset(attrs)
+    |> User.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -90,7 +90,7 @@ defmodule ActivityPlanner.Accounts do
 
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+    User.changeset(user, attrs, hash_password: false, validate_email: false)
   end
 
   ## Settings
