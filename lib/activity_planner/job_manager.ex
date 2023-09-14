@@ -8,11 +8,13 @@ defmodule ActivityPlanner.JobManager do
   end
 
   def add_job(job) do
-    GenServer.call(__MODULE__, {:add, job})
+    :ok = GenServer.call(__MODULE__, {:add, job})
+    {:ok, job}
   end
 
   def delete_job(job_name) do
-    GenServer.call(__MODULE__, {:delete, job_name})
+    :ok = GenServer.call(__MODULE__, {:delete, job_name})
+    {:ok, job_name}
   end
 
   # Server Callbacks
