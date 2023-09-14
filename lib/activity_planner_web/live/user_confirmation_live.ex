@@ -15,10 +15,10 @@ defmodule ActivityPlannerWeb.UserConfirmationLive do
         </:actions>
       </.simple_form>
 
-      <p class="text-center mt-4">
+      <%!-- <p class="text-center mt-4">
         <.link href={~p"/users/register"}>Register</.link>
         | <.link href={~p"/users/log_in"}>Log in</.link>
-      </p>
+      </p> --%>
     </div>
     """
   end
