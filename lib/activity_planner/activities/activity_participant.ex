@@ -1,11 +1,11 @@
-defmodule ActivityPlanner.Schemas.ActivityParticipant do
+defmodule ActivityPlanner.Activities.ActivityParticipant do
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "activity_participants" do
 
-    belongs_to :activity, ActivityPlanner.Schemas.Activity
-    belongs_to :participant, ActivityPlanner.Schemas.Participant
+    belongs_to :activity, ActivityPlanner.Activities.Activity
+    belongs_to :participant, ActivityPlanner.Participants.Participant
 
     timestamps()
   end

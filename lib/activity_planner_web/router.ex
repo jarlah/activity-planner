@@ -67,6 +67,7 @@ defmodule ActivityPlannerWeb.Router do
     resources "/activities", ActivityController
     resources "/participants", ParticipantController
     resources "/activity_participants", ActivityParticipantController
+    resources "/templates", TemplateController
     resources "/job", JobController
 
     live_session :require_authenticated_user,

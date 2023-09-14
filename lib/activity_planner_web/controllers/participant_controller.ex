@@ -1,21 +1,21 @@
 defmodule ActivityPlannerWeb.ParticipantController do
   use ActivityPlannerWeb, :controller
 
-  alias ActivityPlanner.Schemas
-  alias ActivityPlanner.Schemas.Participant
+  alias ActivityPlanner.Participants
+  alias ActivityPlanner.Participants.Participant
 
   def index(conn, _params) do
-    participants = Schemas.list_participants()
+    participants = Participants.list_participants()
     render(conn, :index, participants: participants)
   end
 
   def new(conn, _params) do
-    changeset = Schemas.change_participant(%Participant{})
+    changeset = Participants.change_participant(%Participant{})
     render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"participant" => participant_params}) do
-    case Schemas.create_participant(participant_params) do
+    case Participants.create_participant(participant_params) do
       {:ok, participant} ->
         conn
         |> put_flash(:info, "Participant created successfully.")
@@ -27,20 +27,20 @@ defmodule ActivityPlannerWeb.ParticipantController do
   end
 
   def show(conn, %{"id" => id}) do
-    participant = Schemas.get_participant!(id)
+    participant = Participants.get_participant!(id)
     render(conn, :show, participant: participant)
   end
 
   def edit(conn, %{"id" => id}) do
-    participant = Schemas.get_participant!(id)
-    changeset = Schemas.change_participant(participant)
+    participant = Participants.get_participant!(id)
+    changeset = Participants.change_participant(participant)
     render(conn, :edit, participant: participant, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "participant" => participant_params}) do
-    participant = Schemas.get_participant!(id)
+    participant = Participants.get_participant!(id)
 
-    case Schemas.update_participant(participant, participant_params) do
+    case Participants.update_participant(participant, participant_params) do
       {:ok, participant} ->
         conn
         |> put_flash(:info, "Participant updated successfully.")
@@ -52,8 +52,8 @@ defmodule ActivityPlannerWeb.ParticipantController do
   end
 
   def delete(conn, %{"id" => id}) do
-    participant = Schemas.get_participant!(id)
-    {:ok, _participant} = Schemas.delete_participant(participant)
+    participant = Participants.get_participant!(id)
+    {:ok, _participant} = Participants.delete_participant(participant)
 
     conn
     |> put_flash(:info, "Participant deleted successfully.")

@@ -30,7 +30,12 @@ defmodule ActivityPlanner.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ActivityPlanner.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+
+    # user = ActivityPlanner.Accounts.get_user_by_email("admin@example.com")
+    # ActivityPlanner.Accounts.reset_user_password(user, %{password: "passwordpassword", password_confirmation: "passwordpassword"}) |> IO.inspect()
+
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

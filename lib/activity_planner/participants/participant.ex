@@ -1,4 +1,4 @@
-defmodule ActivityPlanner.Schemas.Participant do
+defmodule ActivityPlanner.Participants.Participant do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -7,7 +7,7 @@ defmodule ActivityPlanner.Schemas.Participant do
     field :name, :string
     field :phone, :string
 
-    many_to_many :activities, ActivityPlanner.Schemas.Activity, join_through: "activity_participants"
+    many_to_many :activities, ActivityPlanner.Activities.Activity, join_through: "activity_participants"
 
     timestamps()
   end

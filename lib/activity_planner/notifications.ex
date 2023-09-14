@@ -1,7 +1,7 @@
 defmodule ActivityPlanner.Notifications do
   import Swoosh.Email
 
-  alias ActivityPlanner.Schemas
+  alias ActivityPlanner.Activities
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS
   alias Timex.Format.DateTime.Formatter
@@ -9,7 +9,7 @@ defmodule ActivityPlanner.Notifications do
   def send_notifications do
     from_email = Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
 
-    activities = Schemas.get_activities_for_the_next_two_days() |> ActivityPlanner.Repo.preload([:participants, :responsible_participant])
+    activities = Activities.get_activities_for_the_next_two_days() |> ActivityPlanner.Repo.preload([:participants, :responsible_participant])
 
     Enum.each(activities, fn activity ->
       {:ok, formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)

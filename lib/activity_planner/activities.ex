@@ -1,108 +1,13 @@
-defmodule ActivityPlanner.Schemas do
+defmodule ActivityPlanner.Activities do
   @moduledoc """
-  The Schemas context.
+  The Activities context.
   """
 
   import Ecto.Query, warn: false
   alias ActivityPlanner.Repo
 
-  alias ActivityPlanner.Schemas.Participant
-
-  @doc """
-  Returns the list of participants.
-
-  ## Examples
-
-      iex> list_participants()
-      [%Participant{}, ...]
-
-  """
-  def list_participants do
-    Repo.all(Participant)
-  end
-
-  @doc """
-  Gets a single participant.
-
-  Raises `Ecto.NoResultsError` if the Participant does not exist.
-
-  ## Examples
-
-      iex> get_participant!(123)
-      %Participant{}
-
-      iex> get_participant!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_participant!(id), do: Repo.get!(Participant, id)
-
-  @doc """
-  Creates a participant.
-
-  ## Examples
-
-      iex> create_participant(%{field: value})
-      {:ok, %Participant{}}
-
-      iex> create_participant(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_participant(attrs \\ %{}) do
-    %Participant{}
-    |> Participant.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a participant.
-
-  ## Examples
-
-      iex> update_participant(participant, %{field: new_value})
-      {:ok, %Participant{}}
-
-      iex> update_participant(participant, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_participant(%Participant{} = participant, attrs) do
-    participant
-    |> Participant.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a participant.
-
-  ## Examples
-
-      iex> delete_participant(participant)
-      {:ok, %Participant{}}
-
-      iex> delete_participant(participant)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_participant(%Participant{} = participant) do
-    Repo.delete(participant)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking participant changes.
-
-  ## Examples
-
-      iex> change_participant(participant)
-      %Ecto.Changeset{data: %Participant{}}
-
-  """
-  def change_participant(%Participant{} = participant, attrs \\ %{}) do
-    Participant.changeset(participant, attrs)
-  end
-
-  alias ActivityPlanner.Schemas.Activity
+  alias ActivityPlanner.Activities.Activity
+  alias ActivityPlanner.Activities.ActivityParticipant
 
   @doc """
   Returns the list of activities.
@@ -197,8 +102,6 @@ defmodule ActivityPlanner.Schemas do
   def change_activity(%Activity{} = activity, attrs \\ %{}) do
     Activity.changeset(activity, attrs)
   end
-
-  alias ActivityPlanner.Schemas.ActivityParticipant
 
   @doc """
   Returns the list of activity_participants.
@@ -299,7 +202,7 @@ defmodule ActivityPlanner.Schemas do
   Retrieves activities between minTime and maxTime.
   """
   def get_activities_in_time_range(minTime, maxTime) do
-    from(a in ActivityPlanner.Schemas.Activity,
+    from(a in ActivityPlanner.Activities.Activity,
       where: a.start_time >= ^minTime and a.end_time <= ^maxTime
     )
     |> ActivityPlanner.Repo.all()
