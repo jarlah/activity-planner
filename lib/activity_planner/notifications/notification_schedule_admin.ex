@@ -3,10 +3,23 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
     [
       name: nil,
       medium: %{choices: [{"E-mail", "email"}, {"SMS", "sms"}]},
-      cron_expression: %{choices: [{"Every minute", "* * * * *"}, {"Every hour", "0 * * * *"}, {"Every day", "0 0 * * *"}]},
+      cron_expression: nil,
       activity_group_id: nil,
       template_id: nil,
-      days_offset: nil,
+      days_window_offset: nil,
+      days_window_length: nil,
+      enabled: nil
+    ]
+  end
+
+  def index(_) do
+    [
+      name: nil,
+      medium: nil,
+      activity_group_id: nil,
+      template_id: nil,
+      days_window_offset: nil,
+      days_window_length: nil,
       enabled: nil
     ]
   end
@@ -21,5 +34,12 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
 
   def after_delete(_conn, schedule) do
     ActivityPlanner.JobManager.delete_job(schedule)
+  end
+
+  defimpl Phoenix.HTML.Safe, for: Crontab.CronExpression do
+    @spec to_iodata(Crontab.CronExpression.t()) :: String.t()
+    def to_iodata(cron) do
+      Phoenix.HTML.Safe.to_iodata(Crontab.CronExpression.Composer.compose(cron))
+    end
   end
 end
