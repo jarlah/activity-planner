@@ -9,11 +9,11 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Repo
 
   def list_notification_schedules do
-    ActivityPlanner.Repo.all(NotificationSchedule) |> ActivityPlanner.Repo.preload([:template, activity_group: [:activities]])
+    ActivityPlanner.Repo.all(NotificationSchedule) |> preload_notiification_schedule()
   end
 
   def send_notifications_for_schedule(schedule_id) do
-    schedule = ActivityPlanner.Repo.get!(NotificationSchedule, schedule_id) |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
+    schedule = ActivityPlanner.Repo.get!(NotificationSchedule, schedule_id) |> preload_notiification_schedule()
     schedule.activity_group.activities |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
   end
 
@@ -64,15 +64,16 @@ defmodule ActivityPlanner.Notifications do
   end
 
   defp render_template_for_activity(template, participant, activity) do
-    {:ok, formatted_date} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
-    {:ok, formatted_time} = Formatter.format(activity.start_time, "%H:%m", :strftime)
-    context = %{
-      startDate: formatted_date,
-      startTime: formatted_time,
+    Mustache.render(template, %{
+      startDate: Formatter.format!(activity.start_time, "%d-%m-%Y", :strftime),
+      startTime: Formatter.format!(activity.start_time, "%H:%m", :strftime),
       participant: participant |> Map.from_struct(),
       participants: activity.participants |> Enum.each(&Map.from_struct/1),
       responsibleParticipant: activity.responsible_participant |> Map.from_struct()
-    }
-    Mustache.render(template, context)
+    })
+  end
+
+  defp preload_notiification_schedule(schedule) do
+    schedule |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
   end
 end
