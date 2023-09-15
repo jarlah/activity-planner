@@ -3,8 +3,10 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
   import Ecto.Changeset
 
   schema "notification_templates" do
-    field :template_content, :string
     field :title, :string
+    field :template_content, :string
+
+    belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
 
     timestamps()
   end
@@ -12,7 +14,7 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
   @doc false
   def changeset(notification_template, attrs) do
     notification_template
-    |> cast(attrs, [:template_content, :title])
-    |> validate_required([:template_content, :title])
+    |> cast(attrs, [:template_content, :title, :activity_group_id])
+    |> validate_required([:template_content, :title, :activity_group_id])
   end
 end

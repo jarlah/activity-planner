@@ -1,39 +1,34 @@
 defmodule ActivityPlanner.Notifications do
   import Swoosh.Email
 
-  alias ActivityPlanner.Activities
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS
   alias Timex.Format.DateTime.Formatter
+  alias ActivityPlanner.Notifications.NotificationSchedule
 
-  def send_notifications do
+  def list_notification_schedules do
+    ActivityPlanner.Repo.all(NotificationSchedule) |> ActivityPlanner.Repo.preload([:template, activity_group: [:activities]])
+  end
+
+  def send_notifications_for_schedule(schedule_id) do
+    schedule = ActivityPlanner.Repo.get!(NotificationSchedule, schedule_id) |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
+    schedule.activity_group.activities |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
+  end
+
+  defp send_notifications(template, :email, activity) do
     from_email = Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
+    {:ok, _formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
+    (activity.participants ++ [activity.responsible_participant])
+    |> Enum.each(fn participant ->
+      {:ok, _} = send_email(participant.email, from_email, "Reminder for activity", template.template_content)
+    end)
+  end
 
-    activities = Activities.get_activities_for_the_next_two_days() |> ActivityPlanner.Repo.preload([:participants, :responsible_participant])
-
-    Enum.each(activities, fn activity ->
-      {:ok, formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
-      Enum.each(activity.participants ++ [activity.responsible_participant], fn participant ->
-        {:ok, _} = send_email(participant.email, from_email, "Reminder for activity",  """
-        ==============================
-
-        Hi #{participant.name},
-
-        This is a reminder for a planned activity at
-
-        #{formatted_time}
-
-        Hope we see you there :)
-
-        Best regards,
-        Activity planner
-
-        ==============================
-        """)
-        {:ok, _} = SMS.send_sms(participant.phone, """
-        Hi #{participant.name}. This is a reminder for a planned activity at #{formatted_time}. Hope we see you there :) Best regards, Activity planner
-        """)
-      end)
+  defp send_notifications(template, :sms, activity) do
+    {:ok, _formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
+    (activity.participants ++ [activity.responsible_participant])
+    |> Enum.each(fn participant ->
+      {:ok, _} = SMS.send_sms(participant.phone, template.template_content)
     end)
   end
 

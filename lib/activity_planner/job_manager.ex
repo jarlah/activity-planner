@@ -12,17 +12,17 @@ defmodule ActivityPlanner.JobManager do
     {:ok, job}
   end
 
-  def delete_job(job_name) do
-    :ok = GenServer.call(__MODULE__, {:delete, job_name})
-    {:ok, job_name}
+  def delete_job(job) do
+    :ok = GenServer.call(__MODULE__, {:delete, job})
+    {:ok, job}
   end
 
   # Server Callbacks
 
   def init(:ok) do
-    IO.puts("Loading jobs from database")
-    jobs = ActivityPlanner.Jobs.list_job()
-    IO.puts("Found " <> (length(jobs) |> Integer.to_string()) <> " jobs")
+    IO.puts("Loading notification schedules from database")
+    jobs = ActivityPlanner.Notifications.list_notification_schedules()
+    IO.puts("Found " <> (length(jobs) |> Integer.to_string()) <> " notification schedules")
     Enum.each(jobs, &add_job_to_quantum/1)
     {:ok, %{}}
   end
@@ -37,27 +37,22 @@ defmodule ActivityPlanner.JobManager do
     {:reply, :ok, state}
   end
 
-  # Helper Functions
-
-  defp add_job_to_quantum(%ActivityPlanner.Jobs.Job{} = job) do
-    case Crontab.CronExpression.Parser.parse(job.cron_expression) do
-      {:ok, cron_expression} ->
-        IO.puts("Adding quantum job")
-
-        ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
-        |> Quantum.Job.set_overlap(false)
-        |> Quantum.Job.set_name(String.to_atom(job.name))
-        |> Quantum.Job.set_schedule(cron_expression)
-        |> Quantum.Job.set_task({Module.concat([job.task_module]), String.to_atom(job.task_function), job.task_args || []})
-        |> ActivityPlanner.Scheduler.add_job()
-
-        {:ok, "Job added successfully"}
-      {:error, reason} ->
-        {:error, "Invalid cron expression for job " <> job.name <> ": " <> reason}
-    end
+  defp add_job_to_quantum(%ActivityPlanner.Notifications.NotificationSchedule{} = schedule) do
+    IO.puts("Processing notification schedule #{schedule.id}")
+    ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
+    |> Quantum.Job.set_overlap(false)
+    |> Quantum.Job.set_name(job_name(schedule))
+    |> Quantum.Job.set_schedule(schedule.cron_expression)
+    |> Quantum.Job.set_task({ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]})
+    |> ActivityPlanner.Scheduler.add_job()
+    {:ok, "Quantum job added successfully"}
   end
 
-  defp delete_job_from_quantum(job_name) do
-    ActivityPlanner.Scheduler.delete_job(String.to_atom(job_name))
+  defp delete_job_from_quantum(schedule) do
+    ActivityPlanner.Scheduler.delete_job(job_name(schedule))
+  end
+
+  defp job_name(schedule) do
+    String.to_atom(schedule.name <> "_" <> Integer.to_string(schedule.activity_group_id))
   end
 end
