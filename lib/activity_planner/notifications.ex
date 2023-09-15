@@ -19,40 +19,20 @@ defmodule ActivityPlanner.Notifications do
 
   defp send_notifications(template, :email, activity) do
     from_email = Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
-    {:ok, _formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
     (activity.participants ++ [activity.responsible_participant])
     |> Enum.each(fn participant ->
-      {:ok, _} = send_email(participant.email, from_email, "Reminder for activity", template.template_content)
-      {:ok, _ } = %SentNotification{
-        sent_at: DateTime.truncate(DateTime.utc_now(), :second),
-        medium: "email",
-        receiver: participant.email,
-        status: "sent",
-        actual_content: template.template_content,
-        actual_title: "Reminder for activity",
-        activity_id: activity.id
-      }
-      |> SentNotification.changeset(%{})
-      |> Repo.insert()
+      content = render_template_for_activity(template.template_content, participant, activity)
+      {:ok, _} = send_email(participant.email, from_email, "Reminder for activity", content)
+      {:ok, _} = sent_notification("email", participant.email, content, activity.id)
     end)
   end
 
   defp send_notifications(template, :sms, activity) do
-    {:ok, _formatted_time} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
     (activity.participants ++ [activity.responsible_participant])
     |> Enum.each(fn participant ->
-      {:ok, _} = SMS.send_sms(participant.phone, template.template_content)
-      {:ok, _ } = %SentNotification{
-        sent_at: DateTime.truncate(DateTime.utc_now(), :second),
-        medium: "sms",
-        receiver: participant.phone,
-        status: "sent",
-        actual_content: template.template_content,
-        actual_title: "no title",
-        activity_id: activity.id
-      }
-      |> SentNotification.changeset(%{})
-      |> Repo.insert()
+      content = render_template_for_activity(template.template_content, participant, activity)
+      {:ok, _} = SMS.send_sms(participant.phone, content)
+      {:ok, _} = sent_notification("sms", participant.phone, content, activity.id)
     end)
   end
 
@@ -67,5 +47,32 @@ defmodule ActivityPlanner.Notifications do
     with {:ok, _metadata} <- Mailer.deliver(email) do
       {:ok, email}
     end
+  end
+
+  defp sent_notification(medium, receiver, content, activity_id) do
+    %SentNotification{
+      sent_at: DateTime.truncate(DateTime.utc_now(), :second),
+      medium: medium,
+      receiver: receiver,
+      status: "sent",
+      actual_content: content,
+      actual_title: "Reminder for activity",
+      activity_id: activity_id
+    }
+    |> SentNotification.changeset(%{})
+    |> Repo.insert()
+  end
+
+  defp render_template_for_activity(template, participant, activity) do
+    {:ok, formatted_date} = Formatter.format(activity.start_time, "%d-%m-%Y", :strftime)
+    {:ok, formatted_time} = Formatter.format(activity.start_time, "%H:%m", :strftime)
+    context = %{
+      startDate: formatted_date,
+      startTime: formatted_time,
+      participant: participant |> Map.from_struct(),
+      participants: activity.participants |> Enum.each(&Map.from_struct/1),
+      responsibleParticipant: activity.responsible_participant |> Map.from_struct()
+    }
+    Mustache.render(template, context)
   end
 end
