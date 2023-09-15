@@ -6,7 +6,8 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
       cron_expression: %{choices: [{"Every minute", "* * * * *"}, {"Every hour", "0 * * * *"}, {"Every day", "0 0 * * *"}]},
       activity_group_id: nil,
       template_id: nil,
-      days_offset: nil
+      days_offset: nil,
+      enabled: nil
     ]
   end
 
