@@ -9,11 +9,7 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Repo
 
   def list_notification_schedules do
-    ActivityPlanner.Repo.all(NotificationSchedule) |> preload_notiification_schedule()
-  end
-
-  def preload_notiification_schedule(schedule) do
-    schedule |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
+    ActivityPlanner.Repo.all(NotificationSchedule)
   end
 
   def send_notifications_for_schedule(schedule_id) do

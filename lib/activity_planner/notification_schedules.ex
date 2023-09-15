@@ -7,14 +7,14 @@ defmodule ActivityPlanner.NotificationSchedules do
     maxTime = Timex.shift(current_time, days: days_offset)
     query = from schedule in ActivityPlanner.Notifications.NotificationSchedule,
       join: activity_groups in assoc(schedule, :activity_group),
-      left_join: activities in assoc(activity_groups, :activities),
+      join: activities in assoc(activity_groups, :activities),
       left_join: participants in assoc(activities, :participants),
-      left_join: responsible_participant in assoc(activities, :responsible_participant),
+      join: responsible_participant in assoc(activities, :responsible_participant),
       join: template in assoc(schedule, :template),
       where: schedule.id == ^schedule_id,
       where: activities.start_time >= ^minTime and activities.end_time <= ^maxTime,
       preload: [
-        :template,
+        template: template,
         activity_group: {
           activity_groups,
           activities: {
