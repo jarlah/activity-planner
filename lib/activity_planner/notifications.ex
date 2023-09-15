@@ -42,7 +42,7 @@ defmodule ActivityPlanner.Notifications do
       |> to(recipient)
       |> from(sender)
       |> subject(subject)
-      |> text_body(body)
+      |> html_body(body)
 
     with {:ok, _metadata} <- Mailer.deliver(email) do
       {:ok, email}
