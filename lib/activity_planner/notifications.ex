@@ -5,6 +5,8 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.SMS
   alias Timex.Format.DateTime.Formatter
   alias ActivityPlanner.Notifications.NotificationSchedule
+  alias ActivityPlanner.Notifications.SentNotification
+  alias ActivityPlanner.Repo
 
   def list_notification_schedules do
     ActivityPlanner.Repo.all(NotificationSchedule) |> ActivityPlanner.Repo.preload([:template, activity_group: [:activities]])
@@ -21,6 +23,17 @@ defmodule ActivityPlanner.Notifications do
     (activity.participants ++ [activity.responsible_participant])
     |> Enum.each(fn participant ->
       {:ok, _} = send_email(participant.email, from_email, "Reminder for activity", template.template_content)
+      {:ok, _ } = %SentNotification{
+        sent_at: DateTime.truncate(DateTime.utc_now(), :second),
+        medium: "email",
+        receiver: participant.email,
+        status: "sent",
+        actual_content: template.template_content,
+        actual_title: "Reminder for activity",
+        activity_id: activity.id
+      }
+      |> SentNotification.changeset(%{})
+      |> Repo.insert()
     end)
   end
 
@@ -29,6 +42,17 @@ defmodule ActivityPlanner.Notifications do
     (activity.participants ++ [activity.responsible_participant])
     |> Enum.each(fn participant ->
       {:ok, _} = SMS.send_sms(participant.phone, template.template_content)
+      {:ok, _ } = %SentNotification{
+        sent_at: DateTime.truncate(DateTime.utc_now(), :second),
+        medium: "sms",
+        receiver: participant.phone,
+        status: "sent",
+        actual_content: template.template_content,
+        actual_title: "no title",
+        activity_id: activity.id
+      }
+      |> SentNotification.changeset(%{})
+      |> Repo.insert()
     end)
   end
 
