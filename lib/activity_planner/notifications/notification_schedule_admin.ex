@@ -10,7 +10,7 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
   end
 
   def after_insert(_conn, schedule) do
-    ActivityPlanner.JobManager.add_job(schedule)
+    ActivityPlanner.JobManager.add_job(schedule |> ActivityPlanner.Notifications.preload_notiification_schedule())
   end
 
   def after_delete(_conn, schedule) do

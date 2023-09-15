@@ -12,6 +12,10 @@ defmodule ActivityPlanner.Notifications do
     ActivityPlanner.Repo.all(NotificationSchedule) |> preload_notiification_schedule()
   end
 
+  def preload_notiification_schedule(schedule) do
+    schedule |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
+  end
+
   def send_notifications_for_schedule(schedule_id) do
     schedule = ActivityPlanner.Repo.get!(NotificationSchedule, schedule_id) |> preload_notiification_schedule()
     schedule.activity_group.activities |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
@@ -68,12 +72,8 @@ defmodule ActivityPlanner.Notifications do
       startDate: Formatter.format!(activity.start_time, "%d-%m-%Y", :strftime),
       startTime: Formatter.format!(activity.start_time, "%H:%m", :strftime),
       participant: participant |> Map.from_struct(),
-      participants: activity.participants |> Enum.each(&Map.from_struct/1),
+      participants: activity.participants |> Enum.map(&Map.from_struct/1),
       responsibleParticipant: activity.responsible_participant |> Map.from_struct()
     })
-  end
-
-  defp preload_notiification_schedule(schedule) do
-    schedule |> ActivityPlanner.Repo.preload([:template, activity_group: [activities: [:participants, :responsible_participant]]])
   end
 end
