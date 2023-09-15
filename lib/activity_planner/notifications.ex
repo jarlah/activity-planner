@@ -17,8 +17,13 @@ defmodule ActivityPlanner.Notifications do
   end
 
   def send_notifications_for_schedule(schedule_id) do
-    schedule = ActivityPlanner.Repo.get!(NotificationSchedule, schedule_id) |> preload_notiification_schedule()
-    schedule.activity_group.activities |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
+    case ActivityPlanner.NotificationSchedules.get_notification_schedules(schedule_id, Timex.now()) do
+      nil ->
+        IO.puts("No matching schedule with activities found")
+      schedule ->
+        schedule.activity_group.activities
+        |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
+    end
   end
 
   defp send_notifications(template, :email, activity) do
