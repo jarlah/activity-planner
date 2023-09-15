@@ -4,16 +4,16 @@ defmodule ActivityPlanner.JobManager do
   # Client API
 
   def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+    GenServer.start_link(__MODULE__, :ok, name: {:global, :job_manager})
   end
 
   def add_job(job) do
-    :ok = GenServer.call(__MODULE__, {:add, job})
+    :ok = GenServer.call({:global, :job_manager}, {:add, job})
     {:ok, job}
   end
 
   def delete_job(job) do
-    :ok = GenServer.call(__MODULE__, {:delete, job})
+    :ok = GenServer.call({:global, :job_manager}, {:delete, job})
     {:ok, job}
   end
 
