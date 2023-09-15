@@ -74,6 +74,7 @@ defmodule ActivityPlanner.Notifications do
 
   defp render_template_for_activity(template, participant, activity) do
     Mustache.render(template, %{
+      activityGroup: activity.activity_group |> Map.from_struct(),
       startDate: Formatter.format!(activity.start_time, "%d-%m-%Y", :strftime),
       startTime: Formatter.format!(activity.start_time, "%H:%m", :strftime),
       participant: participant |> Map.from_struct(),

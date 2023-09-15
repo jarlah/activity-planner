@@ -8,7 +8,6 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
 
     belongs_to :company, ActivityPlanner.Companies.Company
     has_many :activities, ActivityPlanner.Activities.Activity
-    has_one :notification_setting, ActivityPlanner.Notifications.NotificationSetting
 
     timestamps()
   end

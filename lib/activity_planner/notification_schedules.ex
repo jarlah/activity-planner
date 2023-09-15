@@ -13,7 +13,18 @@ defmodule ActivityPlanner.NotificationSchedules do
       join: template in assoc(schedule, :template),
       where: schedule.id == ^schedule_id,
       where: activities.start_time >= ^minTime and activities.end_time <= ^maxTime,
-      preload: [:template, activity_group: {activity_groups, activities: {activities, participants: participants, responsible_participant: responsible_participant}}]
+      preload: [
+        :template,
+        activity_group: {
+          activity_groups,
+          activities: {
+            activities,
+            activity_group: activity_groups,
+            participants: participants,
+            responsible_participant: responsible_participant
+          }
+        }
+      ]
     ActivityPlanner.Repo.one(query)
   end
 
