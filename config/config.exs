@@ -73,8 +73,8 @@ config :kaffy,
   admin_title: "My Awesome App",
   admin_logo: "/images/logo.svg",
   admin_logo_mini: "/images/logo.svg",
-  hide_dashboard: false,
-  # home_page: [schema: [:activities, :activity]],
+  hide_dashboard: true,
+  home_page: [page: :calendar],
   enable_context_dashboards: true, # since v0.10.0
   admin_footer: "Kaffy @ 2023" # since v0.10.0
 
