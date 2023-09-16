@@ -1,4 +1,7 @@
 defmodule ActivityPlanner.SchemasFixtures do
+  import ActivityPlanner.CompanyFixtures
+  import ActivityPlanner.ActivityGroupFixtures
+
   @moduledoc """
   This module defines test helpers for creating
   entities via the `ActivityPlanner.Schemas` context.
@@ -25,14 +28,16 @@ defmodule ActivityPlanner.SchemasFixtures do
   """
   def activity_fixture(attrs \\ %{}, current_time \\ Timex.now()) do
     responsible_participant = participant_fixture()
-
+    company = company_fixture()
+    activity_group = activity_group_fixture(%{}, company.id)
     {:ok, activity} =
       attrs
       |> Enum.into(%{
         title: "some title",
         start_time: current_time,
         end_time: Timex.shift(current_time, days: 1),
-        responsible_participant_id: responsible_participant.id
+        responsible_participant_id: responsible_participant.id,
+        activity_group_id: activity_group.id
       })
       |> ActivityPlanner.Activities.create_activity()
 

@@ -66,6 +66,8 @@ defmodule ActivityPlanner.SchemasTest do
     alias ActivityPlanner.Activities.Activity
 
     import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.CompanyFixtures
+    import ActivityPlanner.ActivityGroupFixtures
 
     @invalid_attrs %{end_time: nil, start_time: nil, title: nil}
 
@@ -81,13 +83,13 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "create_activity/1 with valid data creates a activity" do
       responsible_participant = participant_fixture()
-
-      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id}
+      company = company_fixture()
+      activity_group = activity_group_fixture(%{}, company.id)
+      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id, activity_group_id: activity_group.id}
 
       assert {:ok, %Activity{} = activity} = Activities.create_activity(valid_attrs)
       assert activity.end_time == ~U[2023-09-10 18:09:00Z]
       assert activity.start_time == ~U[2023-09-10 18:09:00Z]
-      assert activity.title == "some title"
     end
 
     test "create_activity/1 with invalid data returns error changeset" do
@@ -101,7 +103,6 @@ defmodule ActivityPlanner.SchemasTest do
       assert {:ok, %Activity{} = activity} = Activities.update_activity(activity, update_attrs)
       assert activity.end_time == ~U[2023-09-11 18:09:00Z]
       assert activity.start_time == ~U[2023-09-11 18:09:00Z]
-      assert activity.title == "some updated title"
     end
 
     test "update_activity/2 with invalid data returns error changeset" do

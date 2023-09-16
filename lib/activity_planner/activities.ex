@@ -7,6 +7,7 @@ defmodule ActivityPlanner.Activities do
   alias ActivityPlanner.Repo
 
   alias ActivityPlanner.Activities.Activity
+  alias ActivityPlanner.Activities.ActivityGroup
   alias ActivityPlanner.Activities.ActivityParticipant
 
   @doc """
@@ -53,6 +54,12 @@ defmodule ActivityPlanner.Activities do
   def create_activity(attrs \\ %{}) do
     %Activity{}
     |> Activity.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_activity_group(attrs \\ %{}) do
+    %ActivityGroup{}
+    |> ActivityGroup.changeset(attrs)
     |> Repo.insert()
   end
 
