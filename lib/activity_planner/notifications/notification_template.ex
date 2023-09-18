@@ -6,7 +6,7 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
     field :title, :string
     field :template_content, :string
 
-    belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
+    belongs_to :company, ActivityPlanner.Companies.Company
 
     timestamps()
   end
@@ -14,7 +14,7 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
   @doc false
   def changeset(notification_template, attrs) do
     notification_template
-    |> cast(attrs, [:template_content, :title, :activity_group_id])
-    |> validate_required([:template_content, :title, :activity_group_id])
+    |> cast(attrs, [:template_content, :title, :company_id])
+    |> validate_required([:template_content, :title, :company_id])
   end
 end
