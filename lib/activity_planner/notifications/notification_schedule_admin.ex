@@ -6,8 +6,8 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
       cron_expression: nil,
       activity_group_id: nil,
       template_id: nil,
-      days_window_offset: nil,
-      days_window_length: nil,
+      hours_window_offset: nil,
+      hours_window_length: nil,
       enabled: nil
     ]
   end
@@ -18,8 +18,8 @@ defmodule ActivityPlanner.Notifications.NotificationScheduleAdmin do
       medium: nil,
       activity_group_id: nil,
       template_id: nil,
-      days_window_offset: nil,
-      days_window_length: nil,
+      hours_window_offset: nil,
+      hours_window_length: nil,
       enabled: nil
     ]
   end
