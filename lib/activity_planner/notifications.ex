@@ -73,7 +73,7 @@ defmodule ActivityPlanner.Notifications do
       company: activity.activity_group.company |> Map.from_struct(),
       activityGroup: activity.activity_group |> Map.from_struct(),
       startDate: Formatter.format!(activity.start_time, "%d-%m-%Y", :strftime),
-      startTime: Formatter.format!(activity.start_time, "%H:%m", :strftime),
+      startTime: Formatter.format!(activity.start_time, "%H:%M %Z", :strftime),
       participant: participant |> Map.from_struct(),
       participants: activity.participants |> Enum.map(&Map.from_struct/1),
       responsibleParticipant: activity.responsible_participant |> Map.from_struct()
