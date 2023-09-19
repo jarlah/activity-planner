@@ -19,7 +19,7 @@ config :activity_planner, ActivityPlanner.Repo,
 config :activity_planner, ActivityPlannerWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
@@ -59,6 +59,25 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/activity_planner_web/(controllers|live|components)/.*(ex|heex)$"
+    ]
+  ]
+
+  config :libcluster,
+  topologies: [
+    example: [
+      # The selected clustering strategy. Required.
+      strategy: Cluster.Strategy.Epmd,
+      # Configuration for the provided strategy. Optional.
+      config: [hosts: [:"a@127.0.0.1", :"b@127.0.0.1"]],
+      # The function to use for connecting nodes. The node
+      # name will be appended to the argument list. Optional
+      connect: {:net_kernel, :connect_node, []},
+      # The function to use for disconnecting nodes. The node
+      # name will be appended to the argument list. Optional
+      disconnect: {:erlang, :disconnect_node, []},
+      # The function to use for listing nodes.
+      # This function must return a list of node names. Optional
+      list_nodes: {:erlang, :nodes, [:connected]},
     ]
   ]
 

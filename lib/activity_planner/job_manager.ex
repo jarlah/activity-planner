@@ -21,7 +21,7 @@ defmodule ActivityPlanner.JobManager do
 
   def init(:ok) do
     send(self(), :load_schedules)
-    {:ok, %{}}
+    {:ok, nil}
   end
 
   def handle_info(:load_schedules, state) do
