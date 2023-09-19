@@ -34,7 +34,7 @@ defmodule ActivityPlanner.Accounts.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def changeset(user, attrs, opts \\ [ hash_password: true, validate_email: true ]) do
+  def changeset(user, attrs, opts \\ [ hash_password: true, validate_email: true, skip_company_id: true ]) do
     user
     |> cast(attrs, [:email, :password])
     |> validate_email(opts)
@@ -78,7 +78,7 @@ defmodule ActivityPlanner.Accounts.User do
   defp maybe_validate_unique_email(changeset, opts) do
     if Keyword.get(opts, :validate_email, true) do
       changeset
-      |> unsafe_validate_unique(:email, ActivityPlanner.Repo)
+      |> unsafe_validate_unique(:email, ActivityPlanner.Repo, repo_opts: [skip_company_id: true])
       |> unique_constraint(:email)
     else
       changeset

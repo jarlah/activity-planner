@@ -4,6 +4,7 @@ defmodule ActivityPlanner.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias ActivityPlanner.Accounts.UserRole
   alias ActivityPlanner.Repo
 
   alias ActivityPlanner.Accounts.{User, UserToken, UserNotifier}
@@ -23,7 +24,7 @@ defmodule ActivityPlanner.Accounts do
 
   """
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, [email: email], skip_company_id: true)
   end
 
   @doc """
@@ -40,7 +41,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
+    user = Repo.get_by(User, [email: email], skip_company_id: true)
     if User.valid_password?(user, password), do: user
   end
 
@@ -77,7 +78,13 @@ defmodule ActivityPlanner.Accounts do
   def register_user(attrs) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(skip_company_id: true)
+  end
+
+  def create_user_role(attrs \\ %{}) do
+    %UserRole{}
+    |> UserRole.changeset(attrs)
+    |> Repo.insert(skip_company_id: true)
   end
 
   @doc """
@@ -378,8 +385,9 @@ defmodule ActivityPlanner.Accounts do
           is_admin: true
         }
 
-        {:ok, _user} = ActivityPlanner.Accounts.register_user(user_params)
-
+        {:ok, user} = ActivityPlanner.Accounts.register_user(user_params)
+        {:ok, company} = ActivityPlanner.Companies.create_company(%{ name: "Example company", address: "Example address"})
+        {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"})
       _ ->
         IO.puts("Default admin account already exists, skipping.")
     end

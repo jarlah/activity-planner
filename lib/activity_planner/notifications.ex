@@ -9,7 +9,7 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Repo
 
   def list_notification_schedules do
-    ActivityPlanner.Repo.all(NotificationSchedule)
+    ActivityPlanner.Repo.all(NotificationSchedule, skip_company_id: true)
   end
 
   def send_notifications_for_schedule(schedule_id) do
