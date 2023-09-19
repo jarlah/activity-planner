@@ -20,11 +20,16 @@ defmodule ActivityPlanner.JobManager do
   # Server Callbacks
 
   def init(:ok) do
+    send(self(), :load_schedules)
+    {:ok, %{}}
+  end
+
+  def handle_info(:load_schedules, state) do
     IO.puts("Loading notification schedules from database")
     jobs = ActivityPlanner.Notifications.list_notification_schedules()
     IO.puts("Found " <> (length(jobs) |> Integer.to_string()) <> " notification schedules")
     Enum.each(jobs, &add_job_to_quantum/1)
-    {:ok, %{}}
+    {:noreply, state}
   end
 
   def handle_call({:add, job}, _from, state) do

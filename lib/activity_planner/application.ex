@@ -23,6 +23,7 @@ defmodule ActivityPlanner.Application do
       # Start a worker by calling: ActivityPlanner.Worker.start_link(arg)
       # {ActivityPlanner.Worker, arg}
       {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]},
+      # TODO what happens if the node dies, will the jobs continue ob the next
       {Highlander, ActivityPlanner.Scheduler},
       {Highlander, {ActivityPlanner.JobManager, :ok}},
     ]
