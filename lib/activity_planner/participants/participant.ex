@@ -7,6 +7,7 @@ defmodule ActivityPlanner.Participants.Participant do
     field :name, :string
     field :phone, :string
     field :description, :string
+    field :company_id, :integer
 
     belongs_to :user, ActivityPlanner.Accounts.User
 

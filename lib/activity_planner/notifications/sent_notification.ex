@@ -9,6 +9,7 @@ defmodule ActivityPlanner.Notifications.SentNotification do
     field :receiver, :string
     field :actual_content, :string
     field :actual_title, :string
+    field :company_id, :integer
     belongs_to :activity, ActivityPlanner.Activities.Activity
 
     timestamps()

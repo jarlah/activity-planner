@@ -7,6 +7,7 @@ defmodule ActivityPlanner.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :company_id, :integer
 
     many_to_many :companies, ActivityPlanner.Companies.Company, join_through: "user_roles", join_keys: [user_id: :id, company_id: :company_id]
 
@@ -38,7 +39,7 @@ defmodule ActivityPlanner.Accounts.User do
   """
   def changeset(user, attrs, opts \\ [ hash_password: true, validate_email: true, skip_company_id: true ]) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :company_id])
     |> validate_email(opts)
     |> validate_password(opts)
   end

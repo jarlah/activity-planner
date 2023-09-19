@@ -379,14 +379,16 @@ defmodule ActivityPlanner.Accounts do
 
         IO.puts("Generated admin account password: #{strong_password}")
 
+        {:ok, company} = ActivityPlanner.Companies.create_company(%{ name: "Example company", address: "Example address"})
+
         user_params = %{
           email: admin_email,
           password: strong_password,
-          is_admin: true
+          is_admin: true,
+          company_id: company.company_id
         }
 
         {:ok, user} = ActivityPlanner.Accounts.register_user(user_params)
-        {:ok, company} = ActivityPlanner.Companies.create_company(%{ name: "Example company", address: "Example address"})
         {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"})
       _ ->
         IO.puts("Default admin account already exists, skipping.")

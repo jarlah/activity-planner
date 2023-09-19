@@ -6,6 +6,7 @@ defmodule ActivityPlanner.Activities.Activity do
     field :description, :string
     field :start_time, :utc_datetime
     field :end_time, :utc_datetime
+    field :company_id, :integer
 
     belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
     belongs_to :responsible_participant, ActivityPlanner.Participants.Participant

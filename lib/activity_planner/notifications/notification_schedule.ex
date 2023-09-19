@@ -9,6 +9,7 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
     field :hours_window_offset, :integer, default: 0
     field :hours_window_length, :integer
     field :enabled, :boolean
+    field :company_id, :integer
 
     belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
     belongs_to :template, ActivityPlanner.Notifications.NotificationTemplate
