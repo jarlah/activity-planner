@@ -8,6 +8,8 @@ defmodule ActivityPlanner.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
+    many_to_many :companies, ActivityPlanner.Companies.Company, join_through: "user_roles", join_keys: [user_id: :id, company_id: :company_id]
+
     timestamps()
   end
 

@@ -41,7 +41,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, [email: email], skip_company_id: true)
+    user = Repo.get_by(User, [email: email], skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
     if User.valid_password?(user, password), do: user
   end
 
@@ -238,7 +238,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query, skip_company_id: true)
+    Repo.one(query, skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
   end
 
   @doc """
