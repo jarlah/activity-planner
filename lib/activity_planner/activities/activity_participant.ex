@@ -6,6 +6,7 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
 
     belongs_to :activity, ActivityPlanner.Activities.Activity
     belongs_to :participant, ActivityPlanner.Participants.Participant
+    field :company_id, :integer
 
     timestamps()
   end

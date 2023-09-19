@@ -2,12 +2,13 @@ defmodule ActivityPlanner.Companies.Company do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:company_id, :id, autogenerate: true}
   schema "companies" do
     field :address, :string
     field :description, :string
     field :name, :string
 
-    has_many :activity_groups, ActivityPlanner.Activities.ActivityGroup
+    has_many :activity_groups, ActivityPlanner.Activities.ActivityGroup, foreign_key: :company_id
 
     timestamps()
   end

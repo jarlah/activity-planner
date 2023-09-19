@@ -201,6 +201,7 @@ defmodule ActivityPlannerWeb.UserAuth do
   """
   def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
+      ActivityPlanner.Repo.put_company_id(conn.assigns[:current_user].companies |> List.first() |> Map.get(:company_id))
       conn
     else
       conn

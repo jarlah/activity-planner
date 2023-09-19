@@ -4,6 +4,7 @@ defmodule ActivityPlanner.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias ActivityPlanner.Accounts.UserRole
   alias ActivityPlanner.Repo
 
   alias ActivityPlanner.Accounts.{User, UserToken, UserNotifier}
@@ -23,7 +24,7 @@ defmodule ActivityPlanner.Accounts do
 
   """
   def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
+    Repo.get_by(User, [email: email], skip_company_id: true)
   end
 
   @doc """
@@ -40,7 +41,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
+    user = Repo.get_by(User, [email: email], skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
     if User.valid_password?(user, password), do: user
   end
 
@@ -77,7 +78,13 @@ defmodule ActivityPlanner.Accounts do
   def register_user(attrs) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(skip_company_id: true)
+  end
+
+  def create_user_role(attrs \\ %{}) do
+    %UserRole{}
+    |> UserRole.changeset(attrs)
+    |> Repo.insert(skip_company_id: true)
   end
 
   @doc """
@@ -231,14 +238,14 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+    Repo.one(query, skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
   end
 
   @doc """
   Deletes the signed token with the given context.
   """
   def delete_user_session_token(token) do
-    Repo.delete_all(UserToken.token_and_context_query(token, "session"))
+    Repo.delete_all(UserToken.token_and_context_query(token, "session"), skip_company_id: true)
     :ok
   end
 
@@ -372,14 +379,17 @@ defmodule ActivityPlanner.Accounts do
 
         IO.puts("Generated admin account password: #{strong_password}")
 
+        {:ok, company} = ActivityPlanner.Companies.create_company(%{ name: "Example company", address: "Example address"})
+
         user_params = %{
           email: admin_email,
           password: strong_password,
-          is_admin: true
+          is_admin: true,
+          company_id: company.company_id
         }
 
-        {:ok, _user} = ActivityPlanner.Accounts.register_user(user_params)
-
+        {:ok, user} = ActivityPlanner.Accounts.register_user(user_params)
+        {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"})
       _ ->
         IO.puts("Default admin account already exists, skipping.")
     end

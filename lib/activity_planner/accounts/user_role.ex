@@ -5,7 +5,7 @@ defmodule ActivityPlanner.Accounts.UserRole do
   schema "user_roles" do
     field :role, :string
 
-    belongs_to :company, ActivityPlanner.Companies.Company
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
     belongs_to :user, ActivityPlanner.Accounts.User
 
     timestamps()
