@@ -151,6 +151,7 @@ defmodule ActivityPlannerWeb.UserAuth do
     socket = mount_current_user(socket, session)
 
     if socket.assigns.current_user do
+      ensure_company_id(socket.assigns.current_user)
       {:cont, socket}
     else
       socket =
@@ -201,7 +202,7 @@ defmodule ActivityPlannerWeb.UserAuth do
   """
   def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
-      ActivityPlanner.Repo.put_company_id(conn.assigns[:current_user].companies |> List.first() |> Map.get(:company_id))
+      ensure_company_id(conn.assigns[:current_user])
       conn
     else
       conn
@@ -210,6 +211,10 @@ defmodule ActivityPlannerWeb.UserAuth do
       |> redirect(to: ~p"/users/log_in")
       |> halt()
     end
+  end
+
+  defp ensure_company_id(user) do
+    ActivityPlanner.Repo.put_company_id(user.companies |> List.first() |> Map.get(:company_id))
   end
 
   defp put_token_in_session(conn, token) do
