@@ -76,6 +76,13 @@ defmodule ActivityPlannerWeb.Router do
 
       live "/activities/:id", ActivityLive.Show, :show
       live "/activities/:id/show/edit", ActivityLive.Show, :edit
+
+      live "/activity_groups", ActivityGroupLive.Index, :index
+      live "/activity_groups/new", ActivityGroupLive.Index, :new
+      live "/activity_groups/:id/edit", ActivityGroupLive.Index, :edit
+
+      live "/activity_groups/:id", ActivityGroupLive.Show, :show
+      live "/activity_groups/:id/show/edit", ActivityGroupLive.Show, :edit
     end
   end
 

@@ -43,6 +43,8 @@ defmodule ActivityPlanner.Activities do
   """
   def get_activity!(id), do: Repo.get!(Activity, id)
 
+  def get_activity_group!(id), do: Repo.get!(ActivityGroup, id)
+
   @doc """
   Creates a activity.
 
@@ -85,6 +87,12 @@ defmodule ActivityPlanner.Activities do
     |> Repo.update()
   end
 
+  def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
+    activity_group
+    |> ActivityGroup.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a activity.
 
@@ -101,6 +109,10 @@ defmodule ActivityPlanner.Activities do
     Repo.delete(activity)
   end
 
+  def delete_activity_group(%ActivityGroup{} = activity) do
+    Repo.delete(activity)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking activity changes.
 
@@ -112,6 +124,10 @@ defmodule ActivityPlanner.Activities do
   """
   def change_activity(%Activity{} = activity, attrs \\ %{}) do
     Activity.changeset(activity, attrs)
+  end
+
+  def change_activity_group(%ActivityGroup{} = activity, attrs \\ %{}) do
+    ActivityGroup.changeset(activity, attrs)
   end
 
   @doc """
