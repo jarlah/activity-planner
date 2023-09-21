@@ -23,6 +23,10 @@ defmodule ActivityPlanner.Activities do
     Repo.all(Activity)
   end
 
+  def list_activity_groups do
+    Repo.all(ActivityGroup)
+  end
+
   @doc """
   Gets a single activity.
 
@@ -52,15 +56,15 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity(attrs \\ %{}) do
-    %Activity{}
+    %Activity{ company_id: Repo.get_company_id() }
     |> Activity.changeset(attrs)
     |> Repo.insert()
   end
 
-  def create_activity_group(attrs \\ %{}) do
-    %ActivityGroup{}
+  def create_activity_group(attrs \\ %{}, opts \\ []) do
+    %ActivityGroup{ company_id: Repo.get_company_id() }
     |> ActivityGroup.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(opts)
   end
 
   @doc """

@@ -17,8 +17,8 @@ defmodule ActivityPlanner.Participants.Participant do
   @doc false
   def changeset(participant, attrs) do
     participant
-    |> cast(attrs, [:name, :email, :phone, :description, :user_id])
-    |> validate_required([:name, :email, :phone])
+    |> cast(attrs, [:name, :email, :phone, :description, :user_id, :company_id])
+    |> validate_required([:name, :email, :phone, :company_id])
     |> unique_constraint(:phone)
     |> unique_constraint(:email)
   end

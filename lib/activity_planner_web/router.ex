@@ -69,6 +69,13 @@ defmodule ActivityPlannerWeb.Router do
       on_mount: [{ActivityPlannerWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/activities", ActivityLive.Index, :index
+      live "/activities/new", ActivityLive.Index, :new
+      live "/activities/:id/edit", ActivityLive.Index, :edit
+
+      live "/activities/:id", ActivityLive.Show, :show
+      live "/activities/:id/show/edit", ActivityLive.Show, :edit
     end
   end
 
