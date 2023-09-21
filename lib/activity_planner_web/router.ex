@@ -1,6 +1,5 @@
 defmodule ActivityPlannerWeb.Router do
   use ActivityPlannerWeb, :router
-  use Kaffy.Routes, scope: "/admin", pipe_through: [:browser, :require_authenticated_user]
 
   import ActivityPlannerWeb.UserAuth
 
@@ -93,7 +92,7 @@ defmodule ActivityPlannerWeb.Router do
   scope "/", ActivityPlannerWeb do
     pipe_through [:browser]
 
-    get "/users/log_out", UserSessionController, :delete
+    delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
       on_mount: [{ActivityPlannerWeb.UserAuth, :mount_current_user}] do
