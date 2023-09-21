@@ -64,20 +64,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :kaffy,
-  # required keys
-  otp_app: :activity_planner, # required
-  ecto_repo: ActivityPlanner.Repo, # required
-  router: ActivityPlannerWeb.Router, # required
-  # optional keys
-  admin_title: "My Awesome App",
-  admin_logo: "/images/logo.svg",
-  admin_logo_mini: "/images/logo.svg",
-  hide_dashboard: true,
-  home_page: [page: :calendar],
-  enable_context_dashboards: true, # since v0.10.0
-  admin_footer: "Kaffy @ 2023" # since v0.10.0
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

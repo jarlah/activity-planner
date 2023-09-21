@@ -29,6 +29,7 @@ defmodule ActivityPlannerWeb.ActivityLive.FormComponent do
           options={@activity_groups |> Enum.map(fn c -> {c.name, c.id} end)}
           prompt="Select activity group"
         />
+        <.link navigate={~p"/activity_groups/new"}>New activity group</.link>
         <.input
           field={@form[:responsible_participant_id]}
           type="select"
@@ -36,6 +37,7 @@ defmodule ActivityPlannerWeb.ActivityLive.FormComponent do
           options={@participants |> Enum.map(fn c -> {c.name, c.id} end)}
           prompt="Select participant"
         />
+        <.link navigate={~p"/participants/new"}>New participant</.link>
         <:actions>
           <.button phx-disable-with="Saving...">Save Activity</.button>
         </:actions>
