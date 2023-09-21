@@ -49,6 +49,6 @@ defmodule ActivityPlannerWeb.ActivityLive.Index do
     activity = Activities.get_activity!(id)
     {:ok, _} = Activities.delete_activity(activity)
 
-    {:noreply, stream_delete(socket, :activities, activity)}
+    {:noreply, stream_delete(socket, :activities, activity) |> put_flash(:info, "Activity deleted successfully") }
   end
 end

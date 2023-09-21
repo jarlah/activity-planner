@@ -1,7 +1,7 @@
-defmodule ActivityPlannerWeb.ActivityGroupLive.Show do
+defmodule ActivityPlannerWeb.ParticipantLive.Show do
   use ActivityPlannerWeb, :live_view
 
-  alias ActivityPlanner.Activities
+  alias ActivityPlanner.Participants
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,9 +13,9 @@ defmodule ActivityPlannerWeb.ActivityGroupLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:activity_group, Activities.get_activity_group!(id))}
+     |> assign(:participant, Participants.get_participant!(id))}
   end
 
-  defp page_title(:show), do: "Show activity group"
-  defp page_title(:edit), do: "Edit activity group"
+  defp page_title(:show), do: "Show participant"
+  defp page_title(:edit), do: "Edit participant"
 end

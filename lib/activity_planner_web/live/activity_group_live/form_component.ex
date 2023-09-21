@@ -22,7 +22,7 @@ defmodule ActivityPlannerWeb.ActivityGroupLive.FormComponent do
         <.input field={@form[:name]} type="text" label="Name" />
         <.input field={@form[:description]} type="text" label="Description" />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Activity</.button>
+          <.button phx-disable-with="Saving...">Save activity group</.button>
         </:actions>
       </.simple_form>
     </div>
