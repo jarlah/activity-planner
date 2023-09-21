@@ -22,9 +22,20 @@ defmodule ActivityPlannerWeb.ActivityLive.FormComponent do
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:start_time]} type="datetime-local" label="Start time" />
         <.input field={@form[:end_time]} type="datetime-local" label="End time" />
-        <.input field={@form[:company_id]} type="number" label="Company" />
-        <.input field={@form[:activity_group_id]} type="number" label="Activity Group" />
-        <.input field={@form[:responsible_participant_id]} type="number" label="Responsible participant" />
+        <.input
+          field={@form[:activity_group_id]}
+          type="select"
+          label="Activity Group"
+          options={@activity_groups |> Enum.map(fn c -> {c.name, c.id} end)}
+          prompt="Select activity group"
+        />
+        <.input
+          field={@form[:responsible_participant_id]}
+          type="select"
+          label="Responsible participant"
+          options={@participants |> Enum.map(fn c -> {c.name, c.id} end)}
+          prompt="Select participant"
+        />
         <:actions>
           <.button phx-disable-with="Saving...">Save Activity</.button>
         </:actions>
@@ -83,6 +94,7 @@ defmodule ActivityPlannerWeb.ActivityLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
         {:noreply, assign_form(socket, changeset)}
     end
   end

@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.ActivityLive.Index do
+  alias ActivityPlanner.Participants
   use ActivityPlannerWeb, :live_view
 
   alias ActivityPlanner.Activities
@@ -18,12 +19,16 @@ defmodule ActivityPlannerWeb.ActivityLive.Index do
     socket
     |> assign(:page_title, "Edit Activity")
     |> assign(:activity, Activities.get_activity!(id))
+    |> assign(:activity_groups, Activities.list_activity_groups())
+    |> assign(:participants, Participants.list_participants())
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Activity")
     |> assign(:activity, %Activity{})
+    |> assign(:activity_groups, Activities.list_activity_groups())
+    |> assign(:participants, Participants.list_participants())
   end
 
   defp apply_action(socket, :index, _params) do

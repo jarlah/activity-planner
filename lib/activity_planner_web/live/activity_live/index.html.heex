@@ -17,7 +17,6 @@
   <:col :let={{_id, activity}} label="End time"><%= activity.end_time %></:col>
   <:col :let={{_id, activity}} label="Responsible"><%= activity.responsible_participant_id %></:col>
   <:col :let={{_id, activity}} label="Activity group"><%= activity.activity_group_id %></:col>
-  <:col :let={{_id, activity}} label="company"><%= activity.company_id %></:col>
   <:action :let={{_id, activity}}>
     <div class="sr-only">
       <.link navigate={~p"/activities/#{activity}"}>Show</.link>
@@ -41,6 +40,8 @@
     title={@page_title}
     action={@live_action}
     activity={@activity}
+    activity_groups={@activity_groups}
+    participants={@participants}
     patch={~p"/activities"}
   />
 </.modal>
