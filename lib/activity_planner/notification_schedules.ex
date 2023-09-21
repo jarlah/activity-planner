@@ -27,13 +27,13 @@ defmodule ActivityPlanner.NotificationSchedules do
           }
         }
       ]
-    ActivityPlanner.Repo.one(query)
+    ActivityPlanner.Repo.one(query, skip_company_id: true)
   end
 
   defp get_hours_offset(schedule_id) do
     query = from s in ActivityPlanner.Notifications.NotificationSchedule,
           where: s.id == ^schedule_id,
           select: [s.hours_window_offset, s.hours_window_length]
-    ActivityPlanner.Repo.one!(query)
+    ActivityPlanner.Repo.one!(query, skip_company_id: true)
   end
 end
