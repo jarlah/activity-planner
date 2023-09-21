@@ -172,7 +172,7 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity_participant(attrs \\ %{}) do
-    %ActivityParticipant{}
+    %ActivityParticipant{ company_id: Repo.get_company_id() }
     |> ActivityParticipant.changeset(attrs)
     |> Repo.insert()
   end

@@ -86,6 +86,12 @@ defmodule ActivityPlannerWeb.Router do
       live "/participants/:id/edit", ParticipantLive.Index, :edit
       live "/participants/:id", ParticipantLive.Show, :show
       live "/participants/:id/show/edit", ParticipantLive.Show, :edit
+
+      live "/activity_participants", ActivityParticipantLive.Index, :index
+      live "/activity_participants/new", ActivityParticipantLive.Index, :new
+      live "/activity_participants/:id/edit", ActivityParticipantLive.Index, :edit
+      live "/activity_participants/:id", ActivityParticipantLive.Show, :show
+      live "/activity_participants/:id/show/edit", ActivityParticipantLive.Show, :edit
     end
   end
 
