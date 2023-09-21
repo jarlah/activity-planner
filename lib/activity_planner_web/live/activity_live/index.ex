@@ -7,7 +7,13 @@ defmodule ActivityPlannerWeb.ActivityLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :activities, Activities.list_activities())}
+    {
+      :ok,
+      socket
+      |> stream(:activities, Activities.list_activities())
+      |> assign(:activity_groups, Activities.list_activity_groups())
+      |> assign(:participants, Participants.list_participants())
+    }
   end
 
   @impl true
@@ -19,16 +25,12 @@ defmodule ActivityPlannerWeb.ActivityLive.Index do
     socket
     |> assign(:page_title, "Edit Activity")
     |> assign(:activity, Activities.get_activity!(id))
-    |> assign(:activity_groups, Activities.list_activity_groups())
-    |> assign(:participants, Participants.list_participants())
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Activity")
     |> assign(:activity, %Activity{})
-    |> assign(:activity_groups, Activities.list_activity_groups())
-    |> assign(:participants, Participants.list_participants())
   end
 
   defp apply_action(socket, :index, _params) do
