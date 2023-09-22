@@ -54,7 +54,7 @@ defmodule ActivityPlannerWeb.UserRegistrationLive do
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    case Accounts.register_user(user_params) do
+    case Accounts.register_user(user_params, skip_company_id: true) do
       {:ok, user} ->
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(

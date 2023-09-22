@@ -18,7 +18,7 @@ defmodule ActivityPlanner.AccountsFixtures do
     {:ok, user} =
       attrs
       |> valid_user_attributes()
-      |> ActivityPlanner.Accounts.register_user()
+      |> ActivityPlanner.Accounts.register_user(skip_company_id: true)
 
     user
   end

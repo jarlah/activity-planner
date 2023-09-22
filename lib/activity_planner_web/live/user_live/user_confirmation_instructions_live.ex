@@ -33,7 +33,7 @@ defmodule ActivityPlannerWeb.UserConfirmationInstructionsLive do
   end
 
   def handle_event("send_instructions", %{"user" => %{"email" => email}}, socket) do
-    if user = Accounts.get_user_by_email(email) do
+    if user = Accounts.get_user_by_email(email, skip_company_id: true) do
       Accounts.deliver_user_confirmation_instructions(
         user,
         &url(~p"/users/confirm/#{&1}")

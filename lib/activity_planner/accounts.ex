@@ -23,8 +23,8 @@ defmodule ActivityPlanner.Accounts do
       nil
 
   """
-  def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, [email: email], skip_company_id: true)
+  def get_user_by_email(email, opts \\ []) when is_binary(email) do
+    Repo.get_by(User, [email: email], opts)
   end
 
   @doc """
@@ -41,7 +41,7 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, [email: email], skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
+    user = get_user_by_email(email, skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
     if User.valid_password?(user, password), do: user
   end
 
@@ -75,16 +75,16 @@ defmodule ActivityPlanner.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
+  def register_user(attrs, opts \\ []) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert(skip_company_id: true)
+    |> Repo.insert(opts)
   end
 
-  def create_user_role(attrs \\ %{}) do
+  def create_user_role(attrs \\ %{}, opts \\ []) do
     %UserRole{}
     |> UserRole.changeset(attrs)
-    |> Repo.insert(skip_company_id: true)
+    |> Repo.insert(opts)
   end
 
   @doc """
@@ -371,7 +371,7 @@ defmodule ActivityPlanner.Accounts do
 
   """
   def create_admin_account(admin_email \\ "admin@example.com", password_length \\ 12) do
-    case ActivityPlanner.Accounts.get_user_by_email(admin_email) do
+    case ActivityPlanner.Accounts.get_user_by_email(admin_email, skip_company_id: true) do
       nil ->
         # Generate a strong random password
         random_bytes = :crypto.strong_rand_bytes(password_length)
@@ -388,8 +388,8 @@ defmodule ActivityPlanner.Accounts do
           company_id: company.company_id
         }
 
-        {:ok, user} = ActivityPlanner.Accounts.register_user(user_params)
-        {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"})
+        {:ok, user} = ActivityPlanner.Accounts.register_user(user_params, skip_company_id: true)
+        {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"}, skip_company_id: true)
       _ ->
         IO.puts("Default admin account already exists, skipping.")
     end

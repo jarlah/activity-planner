@@ -1,6 +1,7 @@
 defmodule ActivityPlanner.Notifications do
   import Swoosh.Email
 
+  alias ActivityPlanner.Notifications.NotificationTemplate
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS
   alias Timex.Format.DateTime.Formatter
@@ -8,8 +9,35 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Notifications.SentNotification
   alias ActivityPlanner.Repo
 
-  def list_notification_schedules do
-    ActivityPlanner.Repo.all(NotificationSchedule, skip_company_id: true)
+  def list_notification_schedules(opts \\ []) do
+    ActivityPlanner.Repo.all(NotificationSchedule, opts)
+  end
+
+  def list_notification_templates(opts \\ []) do
+    ActivityPlanner.Repo.all(NotificationTemplate, opts)
+  end
+
+  def get_notification_template!(id), do: Repo.get!(NotificationTemplate, id)
+
+  def create_notification_template(attrs \\ %{}) do
+    %NotificationTemplate{ company_id: Repo.get_company_id() }
+    |> NotificationTemplate.changeset(attrs)
+    |> IO.inspect()
+    |> Repo.insert()
+  end
+
+  def update_notification_template(%NotificationTemplate{} = participant, attrs) do
+    participant
+    |> NotificationTemplate.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_notification_template(%NotificationTemplate{} = participant) do
+    Repo.delete(participant)
+  end
+
+  def change_notification_template(%NotificationTemplate{} = participant, attrs \\ %{}) do
+    NotificationTemplate.changeset(participant, attrs)
   end
 
   def send_notifications_for_schedule(schedule_id) do
