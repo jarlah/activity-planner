@@ -16,7 +16,7 @@ defmodule ActivityPlannerWeb.ParticipantLive.FormComponent do
 
       <.simple_form
         for={@form}
-        id="activity-form"
+        id="participant-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"

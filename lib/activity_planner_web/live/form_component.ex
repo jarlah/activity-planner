@@ -1,7 +1,8 @@
 defmodule ActivityPlannerWeb.FormComponent do
-  defmacro __using__(opts) do
-    key = Keyword.get(opts, :key, :entity)
-    context = Keyword.get(opts, :context, nil)
+  defmacro __using__(options) do
+    key = options[:key]
+    context = options[:context]
+
     key_string = Atom.to_string(key)
 
     create_function = String.to_atom("create_#{key_string}")

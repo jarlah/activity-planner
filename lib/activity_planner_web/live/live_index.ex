@@ -1,6 +1,6 @@
 defmodule ActivityPlannerWeb.LiveIndex do
   defmacro __using__(options) do
-    key = options[:key] || :item
+    key = options[:key]
     context = options[:context]
     schema = options[:schema]
     assigns = options[:assigns] || []

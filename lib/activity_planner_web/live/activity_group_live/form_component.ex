@@ -17,7 +17,7 @@ defmodule ActivityPlannerWeb.ActivityGroupLive.FormComponent do
 
       <.simple_form
         for={@form}
-        id="activity-form"
+        id="activity-group-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
