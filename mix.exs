@@ -57,7 +57,8 @@ defmodule ActivityPlanner.MixProject do
       {:highlander, "~> 0.2.1"},
       {:timex, "~> 3.7"},
       {:httpoison, "~> 1.8"},
-      {:mustache, "~> 0.5.0"}
+      {:mustache, "~> 0.5.0"},
+      {:inflex, "~> 2.0"}
     ]
   end
 
