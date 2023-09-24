@@ -59,7 +59,7 @@ defmodule ActivityPlanner.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id, options \\ []), do: Repo.get!(User, id, options)
 
   ## User registration
 
@@ -145,7 +145,7 @@ defmodule ActivityPlanner.Accounts do
     context = "change:#{user.email}"
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
-         %UserToken{sent_to: email} <- Repo.one(query),
+         %UserToken{sent_to: email} <- Repo.one(query, skip_company_id: true),
          {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
       :ok
     else
@@ -161,7 +161,7 @@ defmodule ActivityPlanner.Accounts do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]), skip_company_id: true)
   end
 
   @doc ~S"""
@@ -214,7 +214,7 @@ defmodule ActivityPlanner.Accounts do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all), skip_company_id: true)
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
@@ -282,8 +282,8 @@ defmodule ActivityPlanner.Accounts do
   """
   def confirm_user(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
-         %User{} = user <- Repo.one(query),
-         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)) do
+         %User{} = user <- Repo.one(query, skip_company_id: true),
+         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user), skip_company_id: true) do
       {:ok, user}
     else
       _ -> :error
@@ -293,7 +293,7 @@ defmodule ActivityPlanner.Accounts do
   defp confirm_user_multi(user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]), skip_company_id: true)
   end
 
   ## Reset password
@@ -350,7 +350,7 @@ defmodule ActivityPlanner.Accounts do
   def reset_user_password(user, attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all), skip_company_id: true)
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

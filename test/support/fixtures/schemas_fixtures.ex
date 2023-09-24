@@ -14,14 +14,16 @@ defmodule ActivityPlanner.SchemasFixtures do
     {:ok, participant} =
       attrs
       |> Enum.into(%{
-        email: Integer.to_string(:rand.uniform(89999999) + 10000000) <> "@" <> Integer.to_string(:rand.uniform(89999999) + 10000000),
+        email: random_eight_digit_string() <> "@" <> random_eight_digit_string(),
         name: "some name",
-        phone: Integer.to_string(:rand.uniform(89999999) + 10000000)
+        phone: random_eight_digit_string()
       })
       |> ActivityPlanner.Participants.create_participant()
 
     participant
   end
+
+  defp random_eight_digit_string(), do: Integer.to_string(:rand.uniform(89999999) + 10000000)
 
   @doc """
   Generate a activity.

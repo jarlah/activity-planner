@@ -3,18 +3,29 @@ defmodule ActivityPlannerWeb.UserAuthTest do
 
   alias Phoenix.LiveView
   alias ActivityPlanner.Accounts
+  alias ActivityPlanner.Repo
   alias ActivityPlannerWeb.UserAuth
   import ActivityPlanner.AccountsFixtures
+  import ActivityPlanner.CompanyFixtures
 
   @remember_me_cookie "_activity_planner_web_user_remember_me"
 
-  setup %{conn: conn} do
+  setup do
+    {:ok, company: company_fixture()}
+  end
+
+  setup %{conn: conn, company: company} do
     conn =
       conn
       |> Map.replace!(:secret_key_base, ActivityPlannerWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    user = user_fixture(%{ company_id: company.company_id})
+
+    {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+    user = user |> Repo.preload([:companies], skip_company_id: true)
+
+    %{user: user, conn: conn}
   end
 
   describe "log_in_user/3" do

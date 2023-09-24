@@ -3,12 +3,17 @@ defmodule ActivityPlannerWeb.UserConfirmationLiveTest do
 
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
+  import ActivityPlanner.CompanyFixtures
 
   alias ActivityPlanner.Accounts
   alias ActivityPlanner.Repo
 
   setup do
-    %{user: user_fixture()}
+    {:ok, company: company_fixture()}
+  end
+
+  setup %{company: company} do
+    %{user: user_fixture(%{ company_id: company.company_id })}
   end
 
   describe "Confirm user" do
@@ -29,7 +34,7 @@ defmodule ActivityPlannerWeb.UserConfirmationLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
                "User confirmation link is invalid or it has expired"
 
-      refute Accounts.get_user!(user.id).confirmed_at
+      refute Accounts.get_user!(user.id, skip_company_id: true).confirmed_at
     end
   end
 end

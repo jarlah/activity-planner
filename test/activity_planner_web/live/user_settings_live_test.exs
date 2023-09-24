@@ -1,15 +1,28 @@
 defmodule ActivityPlannerWeb.UserSettingsLiveTest do
   use ActivityPlannerWeb.ConnCase
 
+  alias ActivityPlanner.Repo
   alias ActivityPlanner.Accounts
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
+  import ActivityPlanner.CompanyFixtures
 
   describe "Settings page" do
-    test "renders settings page", %{conn: conn} do
+    setup do
+      {:ok, company: company_fixture()}
+    end
+
+    setup %{company: company} do
+      user = user_fixture(%{ company_id: company.company_id })
+      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
+      %{user: user}
+    end
+
+    test "renders settings page", %{conn: conn, user: user} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(user_fixture())
+        |> log_in_user(user)
         |> live(~p"/users/settings")
 
       assert html =~ "Change Email"
@@ -26,9 +39,15 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
   end
 
   describe "update email form" do
-    setup %{conn: conn} do
+    setup do
+      {:ok, company: company_fixture()}
+    end
+
+    setup %{conn: conn, company: company} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{password: password, company_id: company.company_id})
+      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
@@ -83,9 +102,15 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
   end
 
   describe "update password form" do
-    setup %{conn: conn} do
+    setup do
+      {:ok, company: company_fixture()}
+    end
+
+    setup %{conn: conn, company: company} do
       password = valid_user_password()
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{password: password, company_id: company.company_id})
+      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
 
@@ -159,14 +184,21 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
   end
 
   describe "confirm email" do
-    setup %{conn: conn} do
-      user = user_fixture()
+    setup do
+      {:ok, company: company_fixture()}
+    end
+
+    setup %{conn: conn, company: company} do
+      user = user_fixture(%{company_id: company.company_id})
       email = unique_user_email()
 
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
         end)
+
+      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      user = user |> Repo.preload([:companies], skip_company_id: true)
 
       %{conn: log_in_user(conn, user), token: token, email: email, user: user}
     end

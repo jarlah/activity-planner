@@ -3,12 +3,17 @@ defmodule ActivityPlannerWeb.UserConfirmationInstructionsLiveTest do
 
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
+  import ActivityPlanner.CompanyFixtures
 
   alias ActivityPlanner.Accounts
   alias ActivityPlanner.Repo
 
   setup do
-    %{user: user_fixture()}
+    {:ok, company: company_fixture()}
+  end
+
+  setup %{company: company} do
+    %{user: user_fixture(%{ company_id: company.company_id })}
   end
 
   describe "Resend confirmation" do
@@ -29,7 +34,7 @@ defmodule ActivityPlannerWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "If your email is in our system"
 
-      assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
+      assert Repo.get_by!(Accounts.UserToken, [user_id: user.id], skip_company_id: true).context == "confirm"
     end
 
     test "does not send confirmation token if user is confirmed", %{conn: conn, user: user} do
@@ -46,7 +51,7 @@ defmodule ActivityPlannerWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "If your email is in our system"
 
-      refute Repo.get_by(Accounts.UserToken, user_id: user.id)
+      refute Repo.get_by(Accounts.UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not send confirmation token if email is invalid", %{conn: conn} do
@@ -61,7 +66,7 @@ defmodule ActivityPlannerWeb.UserConfirmationInstructionsLiveTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                "If your email is in our system"
 
-      assert Repo.all(Accounts.UserToken) == []
+      assert Repo.all(Accounts.UserToken, skip_company_id: true) == []
     end
   end
 end

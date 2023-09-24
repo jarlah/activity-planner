@@ -4,16 +4,18 @@ defmodule ActivityPlanner.AccountsTest do
   alias ActivityPlanner.Accounts
 
   import ActivityPlanner.AccountsFixtures
+  import ActivityPlanner.CompanyFixtures
   alias ActivityPlanner.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
-      refute Accounts.get_user_by_email("unknown@example.com")
+      refute Accounts.get_user_by_email("unknown@example.com", skip_company_id: true)
     end
 
     test "returns the user if the email exists" do
-      %{id: id} = user = user_fixture()
-      assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
+      company = company_fixture()
+      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      assert %User{id: ^id} = Accounts.get_user_by_email(user.email, skip_company_id: true)
     end
   end
 
@@ -23,12 +25,14 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not return the user if the password is not valid" do
-      user = user_fixture()
+      company = company_fixture()
+      %{id: id} = user = user_fixture(%{company_id: company.company_id})
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
-      %{id: id} = user = user_fixture()
+      company = company_fixture()
+      %{id: id} = user = user_fixture(%{company_id: company.company_id})
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
@@ -38,13 +42,14 @@ defmodule ActivityPlanner.AccountsTest do
   describe "get_user!/1" do
     test "raises if id is invalid" do
       assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
+        Accounts.get_user!(-1, skip_company_id: true)
       end
     end
 
     test "returns the user with the given id" do
-      %{id: id} = user = user_fixture()
-      assert %User{id: ^id} = Accounts.get_user!(user.id)
+      company = company_fixture()
+      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      assert %User{id: ^id} = Accounts.get_user!(user.id, skip_company_id: true)
     end
   end
 
@@ -75,7 +80,8 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "validates email uniqueness" do
-      %{email: email} = user_fixture()
+      company = company_fixture()
+      %{email: email} = user_fixture(%{company_id: company.company_id})
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
@@ -85,8 +91,9 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "registers users with a hashed password" do
+      company = company_fixture()
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email, company_id: company.company_id))
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -126,7 +133,8 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "apply_user_email/3" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      %{user: user_fixture(%{company_id: company.company_id}), company: company}
     end
 
     test "requires email to change", %{user: user} do
@@ -151,7 +159,8 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "validates email uniqueness", %{user: user} do
-      %{email: email} = user_fixture()
+      company = company_fixture()
+      %{email: email} = user_fixture(%{company_id: company.company_id})
       password = valid_user_password()
 
       {:error, changeset} = Accounts.apply_user_email(user, password, %{email: email})
@@ -170,13 +179,14 @@ defmodule ActivityPlanner.AccountsTest do
       email = unique_user_email()
       {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
       assert user.email == email
-      assert Accounts.get_user!(user.id).email != email
+      assert Accounts.get_user!(user.id, skip_company_id: true).email != email
     end
   end
 
   describe "deliver_user_update_email_instructions/3" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      %{user: user_fixture(%{company_id: company.company_id}), company: company}
     end
 
     test "sends token through notification", %{user: user} do
@@ -186,7 +196,7 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -195,7 +205,8 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "update_user_email/2" do
     setup do
-      user = user_fixture()
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
       email = unique_user_email()
 
       token =
@@ -208,31 +219,31 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "updates the email with a valid token", %{user: user, token: token, email: email} do
       assert Accounts.update_user_email(user, token) == :ok
-      changed_user = Repo.get!(User, user.id)
+      changed_user = Repo.get!(User, user.id, skip_company_id: true)
       assert changed_user.email != user.email
       assert changed_user.email == email
       assert changed_user.confirmed_at
       assert changed_user.confirmed_at != user.confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not update email with invalid token", %{user: user} do
       assert Accounts.update_user_email(user, "oops") == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, skip_company_id: true).email == user.email
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not update email if user email changed", %{user: user, token: token} do
       assert Accounts.update_user_email(%{user | email: "current@example.com"}, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, skip_company_id: true).email == user.email
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
       assert Accounts.update_user_email(user, token) == :error
-      assert Repo.get!(User, user.id).email == user.email
-      assert Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, skip_company_id: true).email == user.email
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
   end
 
@@ -256,7 +267,9 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "update_user_password/3" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
+      %{user: user}
     end
 
     test "validates password", %{user: user} do
@@ -306,25 +319,27 @@ defmodule ActivityPlanner.AccountsTest do
           password: "new valid password"
         })
 
-      refute Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
   end
 
   describe "generate_user_session_token/1" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
+      %{user: user, company: company}
     end
 
-    test "generates a token", %{user: user} do
+    test "generates a token", %{user: user, company: company} do
       token = Accounts.generate_user_session_token(user)
-      assert user_token = Repo.get_by(UserToken, token: token)
+      assert user_token = Repo.get_by(UserToken, [token: token], skip_company_id: true)
       assert user_token.context == "session"
 
       # Creating the same token for another user should fail
       assert_raise Ecto.ConstraintError, fn ->
         Repo.insert!(%UserToken{
           token: user_token.token,
-          user_id: user_fixture().id,
+          user_id: user_fixture(%{company_id: company.company_id}).id,
           context: "session"
         })
       end
@@ -333,7 +348,8 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "get_user_by_session_token/1" do
     setup do
-      user = user_fixture()
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
       token = Accounts.generate_user_session_token(user)
       %{user: user, token: token}
     end
@@ -348,14 +364,15 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
       refute Accounts.get_user_by_session_token(token)
     end
   end
 
   describe "delete_user_session_token/1" do
     test "deletes the token" do
-      user = user_fixture()
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_user_session_token(token) == :ok
       refute Accounts.get_user_by_session_token(token)
@@ -364,7 +381,9 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "deliver_user_confirmation_instructions/2" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
+      %{user: user, company: company}
     end
 
     test "sends token through notification", %{user: user} do
@@ -374,7 +393,7 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
@@ -383,7 +402,8 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "confirm_user/1" do
     setup do
-      user = user_fixture()
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
 
       token =
         extract_user_token(fn url ->
@@ -397,21 +417,21 @@ defmodule ActivityPlanner.AccountsTest do
       assert {:ok, confirmed_user} = Accounts.confirm_user(token)
       assert confirmed_user.confirmed_at
       assert confirmed_user.confirmed_at != user.confirmed_at
-      assert Repo.get!(User, user.id).confirmed_at
-      refute Repo.get_by(UserToken, user_id: user.id)
+      assert Repo.get!(User, user.id, skip_company_id: true).confirmed_at
+      refute Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not confirm with invalid token", %{user: user} do
       assert Accounts.confirm_user("oops") == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, user.id, skip_company_id: true).confirmed_at
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
+      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
       assert Accounts.confirm_user(token) == :error
-      refute Repo.get!(User, user.id).confirmed_at
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get!(User, user.id, skip_company_id: true).confirmed_at
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
   end
 
