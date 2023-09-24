@@ -1,21 +1,39 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.Show do
-  use ActivityPlannerWeb, :live_view
-
   alias ActivityPlanner.Notifications
 
-  @impl true
-  def mount(_params, _session, socket) do
-    {:ok, socket}
-  end
+  use ActivityPlannerWeb.LiveShow,
+    key: :notification_template,
+    context: Notifications
 
-  @impl true
-  def handle_params(%{"id" => id}, _, socket) do
-    {:noreply,
-     socket
-     |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:notification_template, Notifications.get_notification_template!(id))}
-  end
+  def render(assigns) do
+    ~H"""
+      <.header>
+        Notification template <%= @notification_template.id %>
+        <:subtitle>This is a notification template record from your database.</:subtitle>
+        <:actions>
+          <.link patch={~p"/notification_templates/#{@notification_template}/show/edit"} phx-click={JS.push_focus()}>
+            <.button>Edit notification template</.button>
+          </.link>
+        </:actions>
+      </.header>
 
-  defp page_title(:show), do: "Show notification template"
-  defp page_title(:edit), do: "Edit notification template"
+      <.list>
+        <:item title="Title"><%= @notification_template.title %></:item>
+        <:item title="Content"><%= @notification_template.template_content %></:item>
+      </.list>
+
+      <.back navigate={~p"/notification_templates"}>Back to notification templates</.back>
+
+      <.modal :if={@live_action == :edit} id="notification_template-modal" show on_cancel={JS.patch(~p"/notification_templates/#{@notification_template}")}>
+        <.live_component
+          module={ActivityPlannerWeb.NotificationTemplateLive.FormComponent}
+          id={@notification_template.id}
+          title={@page_title}
+          action={@live_action}
+          notification_template={@notification_template}
+          patch={~p"/notification_templates/#{@notification_template}"}
+        />
+      </.modal>
+    """
+  end
 end

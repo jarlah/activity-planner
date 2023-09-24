@@ -1,9 +1,14 @@
 defmodule ActivityPlannerWeb.ActivityLive.Show do
   alias ActivityPlanner.Activities
+  alias ActivityPlanner.Participants
 
   use ActivityPlannerWeb.LiveShow,
     key: :activity,
-    context: Activities
+    context: Activities,
+    assigns: [
+      {:activity_groups, mod: Activities, fun: :list_activity_groups},
+      {:participants, mod: Participants, fun: :list_participants}
+    ]
 
   def render(assigns) do
     ~H"""
@@ -32,6 +37,8 @@ defmodule ActivityPlannerWeb.ActivityLive.Show do
           title={@page_title}
           action={@live_action}
           activity={@activity}
+          activity_groups={@activity_groups}
+          participants={@participants}
           patch={~p"/activities/#{@activity}"}
         />
       </.modal>
