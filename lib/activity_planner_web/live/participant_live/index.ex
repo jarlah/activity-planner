@@ -44,7 +44,7 @@ defmodule ActivityPlannerWeb.ParticipantLive.Index do
         </:action>
       </.table>
 
-      <.modal :if={@live_action in [:new, :edit]} id="participant-group-modal" show on_cancel={JS.patch(~p"/participants")}>
+      <.modal :if={@live_action in [:new, :edit]} id="participant-modal" show on_cancel={JS.patch(~p"/participants")}>
         <.live_component
           module={FormComponent}
           id={@participant.id || :new}
