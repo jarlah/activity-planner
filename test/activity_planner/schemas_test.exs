@@ -72,19 +72,19 @@ defmodule ActivityPlanner.SchemasTest do
     @invalid_attrs %{end_time: nil, start_time: nil, title: nil}
 
     test "list_activities/0 returns all activities" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       assert Activities.list_activities() == [activity]
     end
 
     test "get_activity!/1 returns the activity with given id" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       assert Activities.get_activity!(activity.id) == activity
     end
 
     test "create_activity/1 with valid data creates a activity" do
       responsible_participant = participant_fixture()
       company = company_fixture()
-      activity_group = activity_group_fixture(%{}, company.id)
+      activity_group = activity_group_fixture(%{ company_id: company.company_id})
       valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id, activity_group_id: activity_group.id}
 
       assert {:ok, %Activity{} = activity} = Activities.create_activity(valid_attrs)
@@ -97,7 +97,7 @@ defmodule ActivityPlanner.SchemasTest do
     end
 
     test "update_activity/2 with valid data updates the activity" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       update_attrs = %{end_time: ~U[2023-09-11 18:09:00Z], start_time: ~U[2023-09-11 18:09:00Z], title: "some updated title"}
 
       assert {:ok, %Activity{} = activity} = Activities.update_activity(activity, update_attrs)
@@ -106,19 +106,19 @@ defmodule ActivityPlanner.SchemasTest do
     end
 
     test "update_activity/2 with invalid data returns error changeset" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       assert {:error, %Ecto.Changeset{}} = Activities.update_activity(activity, @invalid_attrs)
       assert activity == Activities.get_activity!(activity.id)
     end
 
     test "delete_activity/1 deletes the activity" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       assert {:ok, %Activity{}} = Activities.delete_activity(activity)
       assert_raise Ecto.NoResultsError, fn -> Activities.get_activity!(activity.id) end
     end
 
     test "change_activity/1 returns a activity changeset" do
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
       assert %Ecto.Changeset{} = Activities.change_activity(activity)
     end
   end
@@ -142,7 +142,7 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "create_activity_participant/1 with valid data creates a activity_participant" do
       participant = participant_fixture()
-      activity = activity_fixture()
+      activity = activity_fixture_deprecated()
 
       valid_attrs = %{participant_id: participant.id, activity_id: activity.id }
 
@@ -184,9 +184,9 @@ defmodule ActivityPlanner.SchemasTest do
     import ActivityPlanner.SchemasFixtures
 
     test "retrieves activities within the specified time range" do
-      _activity0 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: -4), end_time: Timex.shift(@fixed_time, days: -3)})
-      activity1 = activity_fixture(%{}, @fixed_time)
-      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+      _activity0 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: -4), end_time: Timex.shift(@fixed_time, days: -3)})
+      activity1 = activity_fixture_deprecated(%{}, @fixed_time)
+      _activity2 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
 
       minTime = @fixed_time
       maxTime = Timex.shift(@fixed_time, days: 2)
@@ -202,8 +202,8 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "retrieves activities for the next two days" do
       # Create some fixtures with a fixed time
-      activity1 = activity_fixture(%{start_time: @fixed_time, end_time: Timex.shift(@fixed_time, days: 1)})
-      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+      activity1 = activity_fixture_deprecated(%{start_time: @fixed_time, end_time: Timex.shift(@fixed_time, days: 1)})
+      _activity2 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
 
       [activity_one] = Activities.get_activities_for_the_next_two_days(@fixed_time)
 
@@ -216,8 +216,8 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "retrieves activities for the last two days" do
       # Create some fixtures with a fixed time
-      activity1 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: -1), end_time: @fixed_time})
-      _activity2 = activity_fixture(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
+      activity1 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: -1), end_time: @fixed_time})
+      _activity2 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
 
       [activity_one] = Activities.get_activities_for_the_last_two_days(@fixed_time)
 

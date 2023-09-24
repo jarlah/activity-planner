@@ -1,11 +1,10 @@
 defmodule ActivityPlanner.ActivityGroupFixtures do
-  def activity_group_fixture(attrs \\ %{}, company_id) do
+  def activity_group_fixture(attrs \\ %{}) do
     {:ok, activity_group} =
       attrs
       |> Enum.into(%{
         name: "some title",
-        description: "some description",
-        company_id: company_id
+        description: "some description"
       })
       |> ActivityPlanner.Activities.create_activity_group()
 
