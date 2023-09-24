@@ -14,7 +14,8 @@ defmodule ActivityPlannerWeb.LiveShow do
 
       @impl true
       def mount(_params, _session, socket) do
-        {:ok, socket}
+        socket
+        |> Kernel.then(&{:ok, &1})
       end
 
       @impl true
@@ -22,7 +23,8 @@ defmodule ActivityPlannerWeb.LiveShow do
         {:noreply,
          socket
          |> assign(:page_title, page_title(socket.assigns.live_action))
-         |> assign(:participant, apply(unquote(context), unquote(get_function), [id]))}
+         |> assign(unquote(key), apply(unquote(context), unquote(get_function), [id]))
+        }
       end
 
       defp page_title(:show), do: "Show #{unquote(title)}"

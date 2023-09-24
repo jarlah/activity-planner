@@ -6,7 +6,7 @@ defmodule ActivityPlanner.Activities.ActivityGroup do
     field :name, :string
     field :description, :string
 
-    belongs_to :company, ActivityPlanner.Companies.Company
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
     has_many :activities, ActivityPlanner.Activities.Activity
 
     timestamps()

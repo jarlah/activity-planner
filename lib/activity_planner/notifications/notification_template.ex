@@ -6,7 +6,7 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
     field :title, :string
     field :template_content, :string
 
-    belongs_to :company, ActivityPlanner.Companies.Company
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
 
     timestamps()
   end
