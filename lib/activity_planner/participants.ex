@@ -17,8 +17,8 @@ defmodule ActivityPlanner.Participants do
       [%Participant{}, ...]
 
   """
-  def list_participants do
-    Repo.all(Participant)
+  def list_participants(options \\ []) do
+    Repo.all(Participant, options)
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule ActivityPlanner.Participants do
       ** (Ecto.NoResultsError)
 
   """
-  def get_participant!(id), do: Repo.get!(Participant, id)
+  def get_participant!(id, options \\ []), do: Repo.get!(Participant, id, options)
 
   @doc """
   Creates a participant.
@@ -49,10 +49,10 @@ defmodule ActivityPlanner.Participants do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_participant(attrs \\ %{}) do
+  def create_participant(attrs \\ %{}, options \\ []) do
     %Participant{ company_id: Repo.get_company_id() }
     |> Participant.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(options)
   end
 
   @doc """
@@ -67,10 +67,10 @@ defmodule ActivityPlanner.Participants do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_participant(%Participant{} = participant, attrs) do
+  def update_participant(%Participant{} = participant, attrs, options \\ []) do
     participant
     |> Participant.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update(options)
   end
 
   @doc """
@@ -85,8 +85,8 @@ defmodule ActivityPlanner.Participants do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_participant(%Participant{} = participant) do
-    Repo.delete(participant)
+  def delete_participant(%Participant{} = participant, options \\ []) do
+    Repo.delete(participant, options)
   end
 
   @doc """

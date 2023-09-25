@@ -8,56 +8,64 @@ defmodule ActivityPlanner.SchemasTest do
     alias ActivityPlanner.Participants.Participant
 
     import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.CompanyFixtures
 
     @invalid_attrs %{email: nil, name: nil, phone: nil}
 
     test "list_participants/0 returns all participants" do
-      participant = participant_fixture()
-      assert Participants.list_participants() == [participant]
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      assert Participants.list_participants(skip_company_id: true) == [participant]
     end
 
     test "get_participant!/1 returns the participant with given id" do
-      participant = participant_fixture()
-      assert Participants.get_participant!(participant.id) == participant
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      assert Participants.get_participant!(participant.id, skip_company_id: true) == participant
     end
 
     test "create_participant/1 with valid data creates a participant" do
-      valid_attrs = %{email: "some email", name: "some name", phone: "some phone"}
+      company = company_fixture()
+      valid_attrs = %{email: "some@email", name: "some name", phone: "some phone", company_id: company.company_id}
 
-      assert {:ok, %Participant{} = participant} = Participants.create_participant(valid_attrs)
-      assert participant.email == "some email"
+      assert {:ok, %Participant{} = participant} = Participants.create_participant(valid_attrs, skip_company_id: true)
+      assert participant.email == "some@email"
       assert participant.name == "some name"
       assert participant.phone == "some phone"
     end
 
     test "create_participant/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Participants.create_participant(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Participants.create_participant(@invalid_attrs, skip_company_id: true)
     end
 
     test "update_participant/2 with valid data updates the participant" do
-      participant = participant_fixture()
-      update_attrs = %{email: "some updated email", name: "some updated name", phone: "some updated phone"}
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      update_attrs = %{email: "some.updated@email", name: "some updated name", phone: "some updated phone"}
 
-      assert {:ok, %Participant{} = participant} = Participants.update_participant(participant, update_attrs)
-      assert participant.email == "some updated email"
+      assert {:ok, %Participant{} = participant} = Participants.update_participant(participant, update_attrs, skip_company_id: true)
+      assert participant.email == "some.updated@email"
       assert participant.name == "some updated name"
       assert participant.phone == "some updated phone"
     end
 
     test "update_participant/2 with invalid data returns error changeset" do
-      participant = participant_fixture()
-      assert {:error, %Ecto.Changeset{}} = Participants.update_participant(participant, @invalid_attrs)
-      assert participant == Participants.get_participant!(participant.id)
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      assert {:error, %Ecto.Changeset{}} = Participants.update_participant(participant, @invalid_attrs, skip_company_id: true)
+      assert participant == Participants.get_participant!(participant.id, skip_company_id: true)
     end
 
     test "delete_participant/1 deletes the participant" do
-      participant = participant_fixture()
-      assert {:ok, %Participant{}} = Participants.delete_participant(participant)
-      assert_raise Ecto.NoResultsError, fn -> Participants.get_participant!(participant.id) end
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      assert {:ok, %Participant{}} = Participants.delete_participant(participant, skip_company_id: true)
+      assert_raise Ecto.NoResultsError, fn -> Participants.get_participant!(participant.id, skip_company_id: true) end
     end
 
     test "change_participant/1 returns a participant changeset" do
-      participant = participant_fixture()
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
       assert %Ecto.Changeset{} = Participants.change_participant(participant)
     end
   end
@@ -73,19 +81,19 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "list_activities/0 returns all activities" do
       activity = activity_fixture_deprecated()
-      assert Activities.list_activities() == [activity]
+      assert Activities.list_activities(skip_company_id: true) == [activity]
     end
 
     test "get_activity!/1 returns the activity with given id" do
       activity = activity_fixture_deprecated()
-      assert Activities.get_activity!(activity.id) == activity
+      assert Activities.get_activity!(activity.id, skip_company_id: true) == activity
     end
 
     test "create_activity/1 with valid data creates a activity" do
-      responsible_participant = participant_fixture()
       company = company_fixture()
+      responsible_participant = participant_fixture(%{ company_id: company.company_id})
       activity_group = activity_group_fixture(%{ company_id: company.company_id})
-      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id, activity_group_id: activity_group.id}
+      valid_attrs = %{end_time: ~U[2023-09-10 18:09:00Z], start_time: ~U[2023-09-10 18:09:00Z], title: "some title", responsible_participant_id: responsible_participant.id, activity_group_id: activity_group.id, company_id: company.company_id}
 
       assert {:ok, %Activity{} = activity} = Activities.create_activity(valid_attrs)
       assert activity.end_time == ~U[2023-09-10 18:09:00Z]
@@ -107,14 +115,14 @@ defmodule ActivityPlanner.SchemasTest do
 
     test "update_activity/2 with invalid data returns error changeset" do
       activity = activity_fixture_deprecated()
-      assert {:error, %Ecto.Changeset{}} = Activities.update_activity(activity, @invalid_attrs)
-      assert activity == Activities.get_activity!(activity.id)
+      assert {:error, %Ecto.Changeset{}} = Activities.update_activity(activity, @invalid_attrs, skip_company_id: true)
+      assert activity == Activities.get_activity!(activity.id, skip_company_id: true)
     end
 
     test "delete_activity/1 deletes the activity" do
       activity = activity_fixture_deprecated()
-      assert {:ok, %Activity{}} = Activities.delete_activity(activity)
-      assert_raise Ecto.NoResultsError, fn -> Activities.get_activity!(activity.id) end
+      assert {:ok, %Activity{}} = Activities.delete_activity(activity, skip_company_id: true)
+      assert_raise Ecto.NoResultsError, fn -> Activities.get_activity!(activity.id, skip_company_id: true) end
     end
 
     test "change_activity/1 returns a activity changeset" do
@@ -193,7 +201,7 @@ defmodule ActivityPlanner.SchemasTest do
       minTime = @fixed_time
       maxTime = Timex.shift(@fixed_time, days: 2)
 
-      [activity_one] = Activities.get_activities_in_time_range(minTime, maxTime)
+      [activity_one] = Activities.get_activities_in_time_range(minTime, maxTime, skip_company_id: true)
 
       assert activity_one == activity1
     end
@@ -207,7 +215,7 @@ defmodule ActivityPlanner.SchemasTest do
       activity1 = activity_fixture_deprecated(%{start_time: @fixed_time, end_time: Timex.shift(@fixed_time, days: 1)})
       _activity2 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
 
-      [activity_one] = Activities.get_activities_for_the_next_two_days(@fixed_time)
+      [activity_one] = Activities.get_activities_for_the_next_two_days(@fixed_time, skip_company_id: true)
 
       assert activity_one == activity1
     end
@@ -221,7 +229,7 @@ defmodule ActivityPlanner.SchemasTest do
       activity1 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: -1), end_time: @fixed_time})
       _activity2 = activity_fixture_deprecated(%{start_time: Timex.shift(@fixed_time, days: 3), end_time: Timex.shift(@fixed_time, days: 4)})
 
-      [activity_one] = Activities.get_activities_for_the_last_two_days(@fixed_time)
+      [activity_one] = Activities.get_activities_for_the_last_two_days(@fixed_time, skip_company_id: true)
 
       assert activity_one == activity1
     end

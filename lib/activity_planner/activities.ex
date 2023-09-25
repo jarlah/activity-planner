@@ -19,8 +19,8 @@ defmodule ActivityPlanner.Activities do
       [%Activity{}, ...]
 
   """
-  def list_activities do
-    Repo.all(Activity)
+  def list_activities(options \\ []) do
+    Repo.all(Activity, options)
   end
 
   def list_activity_groups do
@@ -41,9 +41,9 @@ defmodule ActivityPlanner.Activities do
       ** (Ecto.NoResultsError)
 
   """
-  def get_activity!(id), do: Repo.get!(Activity, id)
+  def get_activity!(id, options \\ []), do: Repo.get!(Activity, id, options)
 
-  def get_activity_group!(id), do: Repo.get!(ActivityGroup, id)
+  def get_activity_group!(id, options \\ []), do: Repo.get!(ActivityGroup, id, options)
 
   @doc """
   Creates a activity.
@@ -81,10 +81,10 @@ defmodule ActivityPlanner.Activities do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_activity(%Activity{} = activity, attrs) do
+  def update_activity(%Activity{} = activity, attrs, options \\ []) do
     activity
     |> Activity.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update(options)
   end
 
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
@@ -105,12 +105,12 @@ defmodule ActivityPlanner.Activities do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_activity(%Activity{} = activity) do
-    Repo.delete(activity)
+  def delete_activity(%Activity{} = activity, options \\ []) do
+    Repo.delete(activity, options)
   end
 
-  def delete_activity_group(%ActivityGroup{} = activity) do
-    Repo.delete(activity)
+  def delete_activity_group(%ActivityGroup{} = activity, options \\ []) do
+    Repo.delete(activity, options)
   end
 
   @doc """
@@ -228,22 +228,22 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Retrieves activities between minTime and maxTime.
   """
-  def get_activities_in_time_range(minTime, maxTime) do
+  def get_activities_in_time_range(minTime, maxTime, options \\ []) do
     from(a in ActivityPlanner.Activities.Activity,
       where: a.start_time >= ^minTime and a.end_time <= ^maxTime
     )
-    |> ActivityPlanner.Repo.all()
+    |> ActivityPlanner.Repo.all(options)
   end
 
-  def get_activities_for_the_next_two_days(current_time \\ Timex.now()) do
+  def get_activities_for_the_next_two_days(current_time \\ Timex.now(), options \\ []) do
     minTime = current_time
     maxTime = Timex.shift(minTime, days: 2)
-    get_activities_in_time_range(minTime, maxTime)
+    get_activities_in_time_range(minTime, maxTime, options)
   end
 
-  def get_activities_for_the_last_two_days(current_time \\ Timex.now()) do
+  def get_activities_for_the_last_two_days(current_time \\ Timex.now(), options \\ []) do
     maxTime = current_time
     minTime = Timex.shift(maxTime, days: -2)
-    get_activities_in_time_range(minTime, maxTime)
+    get_activities_in_time_range(minTime, maxTime, options)
   end
 end
