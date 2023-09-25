@@ -437,7 +437,9 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "deliver_user_reset_password_instructions/2" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
+      %{user: user}
     end
 
     test "sends token through notification", %{user: user} do
@@ -447,7 +449,7 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, token: :crypto.hash(:sha256, token))
+      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "reset_password"
@@ -456,7 +458,8 @@ defmodule ActivityPlanner.AccountsTest do
 
   describe "get_user_by_reset_password_token/1" do
     setup do
-      user = user_fixture()
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
 
       token =
         extract_user_token(fn url ->
@@ -467,25 +470,27 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "returns the user with valid token", %{user: %{id: id}, token: token} do
-      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token)
-      assert Repo.get_by(UserToken, user_id: id)
+      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token, skip_company_id: true)
+      assert Repo.get_by(UserToken, [user_id: id], skip_company_id: true)
     end
 
     test "does not return the user with invalid token", %{user: user} do
-      refute Accounts.get_user_by_reset_password_token("oops")
-      assert Repo.get_by(UserToken, user_id: user.id)
+      refute Accounts.get_user_by_reset_password_token("oops", skip_company_id: true)
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
 
     test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_reset_password_token(token)
-      assert Repo.get_by(UserToken, user_id: user.id)
+      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
+      refute Accounts.get_user_by_reset_password_token(token, skip_company_id: true)
+      assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
   end
 
   describe "reset_user_password/2" do
     setup do
-      %{user: user_fixture()}
+      company = company_fixture()
+      user = user_fixture(%{company_id: company.company_id})
+      %{user: user}
     end
 
     test "validates password", %{user: user} do
@@ -516,7 +521,7 @@ defmodule ActivityPlanner.AccountsTest do
     test "deletes all tokens for the given user", %{user: user} do
       _ = Accounts.generate_user_session_token(user)
       {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
-      refute Repo.get_by(UserToken, user_id: user.id)
+      refute Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end
   end
 

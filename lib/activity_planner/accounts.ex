@@ -326,9 +326,9 @@ defmodule ActivityPlanner.Accounts do
       nil
 
   """
-  def get_user_by_reset_password_token(token) do
+  def get_user_by_reset_password_token(token, options \\ []) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "reset_password"),
-         %User{} = user <- Repo.one(query) do
+         %User{} = user <- Repo.one(query, options) do
       user
     else
       _ -> nil
