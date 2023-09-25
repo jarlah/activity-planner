@@ -29,8 +29,8 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity.
   """
   def activity_fixture_deprecated(attrs \\ %{}, current_time \\ Timex.now()) do
-    responsible_participant = participant_fixture()
     company = company_fixture()
+    responsible_participant = participant_fixture(%{ company_id: company.company_id })
     activity_group = activity_group_fixture(%{ company_id: company.company_id })
     {:ok, activity} =
       attrs
@@ -39,7 +39,8 @@ defmodule ActivityPlanner.SchemasFixtures do
         start_time: current_time,
         end_time: Timex.shift(current_time, days: 1),
         responsible_participant_id: responsible_participant.id,
-        activity_group_id: activity_group.id
+        activity_group_id: activity_group.id,
+        company_id: company.company_id
       })
       |> ActivityPlanner.Activities.create_activity()
 
@@ -50,14 +51,16 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity_participant.
   """
   def activity_participant_fixture(attrs \\ %{}) do
-    participant = participant_fixture()
-    activity = activity_fixture_deprecated()
+    company = company_fixture()
+    participant = participant_fixture(%{ company_id: company.company_id })
+    activity = activity_fixture_deprecated(%{ company_id: company.company_id })
 
     {:ok, activity_participant} =
       attrs
       |> Enum.into(%{
         participant_id: participant.id,
-        activity_id: activity.id
+        activity_id: activity.id,
+        company_id: company.company_id
       })
       |> ActivityPlanner.Activities.create_activity_participant()
 

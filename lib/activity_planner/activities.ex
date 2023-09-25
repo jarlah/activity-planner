@@ -139,8 +139,8 @@ defmodule ActivityPlanner.Activities do
       [%ActivityParticipant{}, ...]
 
   """
-  def list_activity_participants do
-    Repo.all(ActivityParticipant)
+  def list_activity_participants(options \\ []) do
+    Repo.all(ActivityParticipant, options)
   end
 
   @doc """
@@ -157,7 +157,7 @@ defmodule ActivityPlanner.Activities do
       ** (Ecto.NoResultsError)
 
   """
-  def get_activity_participant!(id), do: Repo.get!(ActivityParticipant, id)
+  def get_activity_participant!(id, options \\ []), do: Repo.get!(ActivityParticipant, id, options)
 
   @doc """
   Creates a activity_participant.

@@ -14,7 +14,7 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
   @doc false
   def changeset(activity_participant, attrs) do
     activity_participant
-    |> cast(attrs, [:activity_id, :participant_id])
-    |> validate_required([:activity_id, :participant_id])
+    |> cast(attrs, [:activity_id, :participant_id, :company_id])
+    |> validate_required([:activity_id, :participant_id, :company_id])
   end
 end

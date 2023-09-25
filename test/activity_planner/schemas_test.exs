@@ -127,24 +127,26 @@ defmodule ActivityPlanner.SchemasTest do
     alias ActivityPlanner.Activities.ActivityParticipant
 
     import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.CompanyFixtures
 
     @invalid_attrs %{ participant_id: nil, activity_id: nil }
 
     test "list_activity_participants/0 returns all activity_participants" do
       activity_participant = activity_participant_fixture()
-      assert Activities.list_activity_participants() == [activity_participant]
+      assert Activities.list_activity_participants(skip_company_id: true) == [activity_participant]
     end
 
     test "get_activity_participant!/1 returns the activity_participant with given id" do
       activity_participant = activity_participant_fixture()
-      assert Activities.get_activity_participant!(activity_participant.id) == activity_participant
+      assert Activities.get_activity_participant!(activity_participant.id, skip_company_id: true) == activity_participant
     end
 
     test "create_activity_participant/1 with valid data creates a activity_participant" do
-      participant = participant_fixture()
-      activity = activity_fixture_deprecated()
+      company = company_fixture()
+      participant = participant_fixture(%{ company_id: company.company_id })
+      activity = activity_fixture_deprecated(%{ company_id: company.company_id })
 
-      valid_attrs = %{participant_id: participant.id, activity_id: activity.id }
+      valid_attrs = %{participant_id: participant.id, activity_id: activity.id, company_id: company.company_id }
 
       assert {:ok, %ActivityParticipant{}} = Activities.create_activity_participant(valid_attrs)
     end
@@ -163,13 +165,13 @@ defmodule ActivityPlanner.SchemasTest do
     test "update_activity_participant/2 with invalid data returns error changeset" do
       activity_participant = activity_participant_fixture()
       assert {:error, %Ecto.Changeset{}} = Activities.update_activity_participant(activity_participant, @invalid_attrs)
-      assert activity_participant == Activities.get_activity_participant!(activity_participant.id)
+      assert activity_participant == Activities.get_activity_participant!(activity_participant.id, skip_company_id: true)
     end
 
     test "delete_activity_participant/1 deletes the activity_participant" do
       activity_participant = activity_participant_fixture()
       assert {:ok, %ActivityParticipant{}} = Activities.delete_activity_participant(activity_participant)
-      assert_raise Ecto.NoResultsError, fn -> Activities.get_activity_participant!(activity_participant.id) end
+      assert_raise Ecto.NoResultsError, fn -> Activities.get_activity_participant!(activity_participant.id, skip_company_id: true) end
     end
 
     test "change_activity_participant/1 returns a activity_participant changeset" do
