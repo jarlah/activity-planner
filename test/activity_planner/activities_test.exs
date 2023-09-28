@@ -1,10 +1,14 @@
 defmodule ActivityPlanner.ActivitiesTest do
   use ActivityPlanner.DataCase
 
+  alias ActivityPlanner.Activities.Activity
+  alias ActivityPlanner.Activities.ActivityParticipant
   alias ActivityPlanner.Activities
 
+  import ActivityPlanner.Activities
+  doctest Activities
+
   describe "activities" do
-    alias ActivityPlanner.Activities.Activity
 
     import ActivityPlanner.ActivitiesFixtures
     import ActivityPlanner.ActivityGroupFixtures

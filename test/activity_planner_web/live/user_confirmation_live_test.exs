@@ -6,7 +6,6 @@ defmodule ActivityPlannerWeb.UserConfirmationLiveTest do
   import ActivityPlanner.CompanyFixtures
 
   alias ActivityPlanner.Accounts
-  alias ActivityPlanner.Repo
 
   setup do
     {:ok, company: company_fixture()}

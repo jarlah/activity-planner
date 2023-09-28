@@ -15,31 +15,31 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> list_activities()
-      [%Activity{}, ...]
+      iex> list_activities(skip_company_id: true)
+      []
 
   """
   def list_activities(options \\ []) do
     Repo.all(Activity, options)
   end
 
-  def list_activity_groups do
-    Repo.all(ActivityGroup)
+  @doc """
+  Returns the list of activity groups.
+
+  ## Examples
+
+      iex> list_activity_groups(skip_company_id: true)
+      []
+
+  """
+  def list_activity_groups(options \\ []) do
+    Repo.all(ActivityGroup, options)
   end
 
   @doc """
   Gets a single activity.
 
   Raises `Ecto.NoResultsError` if the Activity does not exist.
-
-  ## Examples
-
-      iex> get_activity!(123)
-      %Activity{}
-
-      iex> get_activity!(456)
-      ** (Ecto.NoResultsError)
-
   """
   def get_activity!(id, options \\ []), do: Repo.get!(Activity, id, options)
 
@@ -47,15 +47,6 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Creates a activity.
-
-  ## Examples
-
-      iex> create_activity(%{field: value})
-      {:ok, %Activity{}}
-
-      iex> create_activity(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def create_activity(attrs \\ %{}) do
     %Activity{ company_id: Repo.get_company_id() }
@@ -63,6 +54,9 @@ defmodule ActivityPlanner.Activities do
     |> Repo.insert()
   end
 
+  @doc """
+  Creates a activity group.
+  """
   def create_activity_group(attrs \\ %{}, opts \\ []) do
     %ActivityGroup{ company_id: Repo.get_company_id() }
     |> ActivityGroup.changeset(attrs)
@@ -71,15 +65,6 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Updates a activity.
-
-  ## Examples
-
-      iex> update_activity(activity, %{field: new_value})
-      {:ok, %Activity{}}
-
-      iex> update_activity(activity, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def update_activity(%Activity{} = activity, attrs, options \\ []) do
     activity
@@ -87,6 +72,9 @@ defmodule ActivityPlanner.Activities do
     |> Repo.update(options)
   end
 
+  @doc """
+  Updates a activity group.
+  """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
     activity_group
     |> ActivityGroup.changeset(attrs)
@@ -95,32 +83,20 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Deletes a activity.
-
-  ## Examples
-
-      iex> delete_activity(activity)
-      {:ok, %Activity{}}
-
-      iex> delete_activity(activity)
-      {:error, %Ecto.Changeset{}}
-
   """
   def delete_activity(%Activity{} = activity, options \\ []) do
     Repo.delete(activity, options)
   end
 
+  @doc """
+  Deletes a activity group.
+  """
   def delete_activity_group(%ActivityGroup{} = activity, options \\ []) do
     Repo.delete(activity, options)
   end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking activity changes.
-
-  ## Examples
-
-      iex> change_activity(activity)
-      %Ecto.Changeset{data: %Activity{}}
-
   """
   def change_activity(%Activity{} = activity, attrs \\ %{}) do
     Activity.changeset(activity, attrs)
@@ -132,12 +108,6 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Returns the list of activity_participants.
-
-  ## Examples
-
-      iex> list_activity_participants()
-      [%ActivityParticipant{}, ...]
-
   """
   def list_activity_participants(options \\ []) do
     Repo.all(ActivityParticipant, options)
@@ -147,28 +117,11 @@ defmodule ActivityPlanner.Activities do
   Gets a single activity_participant.
 
   Raises `Ecto.NoResultsError` if the Activity participant does not exist.
-
-  ## Examples
-
-      iex> get_activity_participant!(123)
-      %ActivityParticipant{}
-
-      iex> get_activity_participant!(456)
-      ** (Ecto.NoResultsError)
-
   """
   def get_activity_participant!(id, options \\ []), do: Repo.get!(ActivityParticipant, id, options)
 
   @doc """
   Creates a activity_participant.
-
-  ## Examples
-
-      iex> create_activity_participant(%{field: value})
-      {:ok, %ActivityParticipant{}}
-
-      iex> create_activity_participant(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
 
   """
   def create_activity_participant(attrs \\ %{}) do
@@ -179,15 +132,6 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Updates a activity_participant.
-
-  ## Examples
-
-      iex> update_activity_participant(activity_participant, %{field: new_value})
-      {:ok, %ActivityParticipant{}}
-
-      iex> update_activity_participant(activity_participant, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
   def update_activity_participant(%ActivityParticipant{} = activity_participant, attrs) do
     activity_participant
@@ -197,15 +141,6 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Deletes a activity_participant.
-
-  ## Examples
-
-      iex> delete_activity_participant(activity_participant)
-      {:ok, %ActivityParticipant{}}
-
-      iex> delete_activity_participant(activity_participant)
-      {:error, %Ecto.Changeset{}}
-
   """
   def delete_activity_participant(%ActivityParticipant{} = activity_participant) do
     Repo.delete(activity_participant)
@@ -216,8 +151,8 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> change_activity_participant(activity_participant)
-      %Ecto.Changeset{data: %ActivityParticipant{}}
+      iex> change_activity_participant(%ActivityParticipant{}, %{activity_id: 1, participant_id: 1, company_id: 1})
+      #Ecto.Changeset<action: nil, changes: %{company_id: 1, activity_id: 1, participant_id: 1}, errors: [], data: #ActivityPlanner.Activities.ActivityParticipant<>, valid?: true>
 
   """
   def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}) do

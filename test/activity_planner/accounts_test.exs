@@ -26,7 +26,7 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "does not return the user if the password is not valid" do
       company = company_fixture()
-      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(%{company_id: company.company_id})
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 

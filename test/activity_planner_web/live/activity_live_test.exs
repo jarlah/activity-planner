@@ -1,7 +1,6 @@
 defmodule ActivityPlannerWeb.ActivityLiveTest do
   use ActivityPlannerWeb.ConnCase
 
-  alias ActivityPlanner.Accounts.User
   alias ActivityPlanner.Accounts
 
   import Phoenix.LiveViewTest
@@ -9,7 +8,6 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   import ActivityPlanner.ActivityGroupFixtures
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.SchemasFixtures
-  import ActivityPlanner.AccountsFixtures
 
   @create_attrs %{description: "some description", start_time: "2023-09-19T06:31:00Z", end_time: "2023-09-19T06:31:00Z"}
   @update_attrs %{description: "some updated description", start_time: "2023-09-20T06:31:00Z", end_time: "2023-09-20T06:31:00Z"}
