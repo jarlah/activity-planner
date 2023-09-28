@@ -1,13 +1,24 @@
 defmodule ActivityPlannerWeb.FormComponent do
   defmacro __using__(options) do
     key = options[:key]
-    context = options[:context]
+    env = __CALLER__
+    context = Macro.expand(options[:context], env)
 
     key_string = Atom.to_string(key)
 
     create_function = String.to_atom("create_#{key_string}")
     change_function = String.to_atom("change_#{key_string}")
     update_function = String.to_atom("update_#{key_string}")
+
+    for {function, arity} <- [
+      {create_function, 1},
+      {change_function, 1},
+      {update_function, 2}
+    ] do
+      unless function_exported?(context, function, arity) do
+        raise "The function #{function}/#{arity} is required but not defined in #{context}"
+      end
+    end
 
     title = key
       |> to_string()

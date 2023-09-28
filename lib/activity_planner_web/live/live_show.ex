@@ -1,10 +1,15 @@
 defmodule ActivityPlannerWeb.LiveShow do
   defmacro __using__(options) do
     key = options[:key]
-    context = options[:context]
+    env = __CALLER__
+    context = Macro.expand(options[:context], env)
     assigns = options[:assigns] || []
 
     get_function = :"get_#{key}!"
+
+    unless function_exported?(context, get_function, 1) do
+      raise "The function #{get_function}/1 is required but not defined in #{context}"
+    end
 
     title = key
       |> to_string()
