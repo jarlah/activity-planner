@@ -1,7 +1,8 @@
 defmodule ActivityPlannerWeb.LiveIndex do
   defmacro __using__(options) do
     key = options[:key]
-    context = options[:context]
+    env = __CALLER__
+    context = Macro.expand(options[:context], env)
     schema = options[:schema]
     assigns = options[:assigns] || []
     form = options[:form]
@@ -9,6 +10,17 @@ defmodule ActivityPlannerWeb.LiveIndex do
     get_function = :"get_#{key}!"
     delete_function = :"delete_#{key}"
     list_function = :"list_#{Inflex.pluralize(key)}"
+
+    for {function, arity} <- [
+      {get_function, 1},
+      {delete_function, 1},
+      {list_function, 0}
+    ] do
+      unless function_exported?(context, function, arity) do
+        raise "The function #{function}/#{arity} is required but not defined in #{context}"
+      end
+    end
+
     stream_key = key |> Inflex.pluralize() |> String.to_atom()
 
     title = key
