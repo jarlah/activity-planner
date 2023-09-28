@@ -47,6 +47,15 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Creates a activity.
+
+    ## Examples
+
+      iex> company = company_fixture()
+      iex> participant = participant_fixture(%{ company_id: company.company_id })
+      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> now = Timex.now()
+      iex> {:ok, %Activity{}} = create_activity(%{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: now, end_time: Timex.shift(now, hours: 24) })
+
   """
   def create_activity(attrs \\ %{}) do
     %Activity{ company_id: Repo.get_company_id() }
@@ -56,6 +65,12 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Creates a activity group.
+
+      ## Examples
+
+      iex> company = company_fixture()
+      iex> {:ok, %ActivityGroup{}} = create_activity_group(%{ name: "Test", company_id: company.company_id })
+
   """
   def create_activity_group(attrs \\ %{}, opts \\ []) do
     %ActivityGroup{ company_id: Repo.get_company_id() }
@@ -65,6 +80,11 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Updates a activity.
+
+      ## Examples
+
+      iex> activity = activity_fixture_deprecated()
+      iex> {:ok, %Activity{}} = update_activity(activity, %{ end_time: Timex.shift(activity.start_time, days: 2) })
   """
   def update_activity(%Activity{} = activity, attrs, options \\ []) do
     activity
@@ -74,6 +94,12 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Updates a activity group.
+
+      ## Examples
+
+      iex> company = company_fixture()
+      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> {:ok, %ActivityGroup{}} = update_activity_group(activity_group, %{ name: "another name" })
   """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
     activity_group
