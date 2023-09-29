@@ -66,10 +66,10 @@ defmodule ActivityPlanner.Activities do
       iex> list_activities(company_id: company.company_id) == [activity]
 
   """
-  def create_activity(attrs \\ %{}, options \\ [company_id: Repo.get_company_id()]) do
-    %Activity{ company_id: Repo.get_company_id() }
+  def create_activity(attrs \\ %{}, opts \\ []) do
+    %Activity{ company_id: Repo.get_company_id() } # can be overridden by attrs or opts
     |> Activity.changeset(attrs)
-    |> Repo.insert(options)
+    |> Repo.insert(opts)
   end
 
   @doc """
