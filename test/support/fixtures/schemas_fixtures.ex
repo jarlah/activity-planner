@@ -1,7 +1,6 @@
 defmodule ActivityPlanner.SchemasFixtures do
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.ActivityGroupFixtures
-  import ActivityPlanner.FixtureHelpers
 
   @moduledoc """
   This module defines test helpers for creating
@@ -30,7 +29,7 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity.
   """
   def activity_fixture_deprecated(attrs \\ %{}, current_time \\ Timex.now()) do
-    company_id = get_with_lazy_default(attrs, :company_id, fn -> company_fixture().company_id end)
+    company_id = Map.get_lazy(attrs, :company_id, fn -> company_fixture().company_id end)
     responsible_participant = participant_fixture(%{ company_id: company_id })
     activity_group = activity_group_fixture(%{ company_id: company_id })
     {:ok, activity} =
@@ -52,7 +51,7 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity_participant.
   """
   def activity_participant_fixture(attrs \\ %{}) do
-    company_id = get_with_lazy_default(attrs, :company_id, fn -> company_fixture().company_id end)
+    company_id = Map.get_lazy(attrs, :company_id, fn -> company_fixture().company_id end)
     participant = participant_fixture(%{ company_id: company_id })
     activity = activity_fixture_deprecated(%{ company_id: company_id })
 
