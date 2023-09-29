@@ -1,5 +1,5 @@
 defmodule ActivityPlanner.Notifications do
-  import Swoosh.Email
+  import Ecto.Query
 
   alias ActivityPlanner.Notifications.NotificationTemplate
   alias ActivityPlanner.Mailer
@@ -41,7 +41,7 @@ defmodule ActivityPlanner.Notifications do
   end
 
   def send_notifications_for_schedule(schedule_id) do
-    case ActivityPlanner.NotificationSchedules.get_notification_schedules(
+    case get_notification_schedules(
            schedule_id,
            Timex.now()
          ) do
@@ -78,11 +78,11 @@ defmodule ActivityPlanner.Notifications do
 
   defp send_email(recipient, sender, subject, body) do
     email =
-      new()
-      |> to(recipient)
-      |> from(sender)
-      |> subject(subject)
-      |> html_body(body)
+      Swoosh.Email.new()
+      |> Swoosh.Email.to(recipient)
+      |> Swoosh.Email.from(sender)
+      |> Swoosh.Email.subject(subject)
+      |> Swoosh.Email.html_body(body)
 
     with {:ok, _metadata} <- Mailer.deliver(email) do
       {:ok, email}
@@ -113,5 +113,46 @@ defmodule ActivityPlanner.Notifications do
       participants: activity.participants |> Enum.map(&Map.from_struct/1),
       responsibleParticipant: activity.responsible_participant |> Map.from_struct()
     })
+  end
+
+  def get_notification_schedules(schedule_id, current_time \\ Timex.now()) do
+    [hours_window_offset, hours_window_length] = get_hours_offset(schedule_id)
+    minTime = Timex.shift(current_time, hours: hours_window_offset)
+    maxTime = Timex.shift(minTime, hours: hours_window_length)
+
+    query =
+      from schedule in ActivityPlanner.Notifications.NotificationSchedule,
+        join: activity_groups in assoc(schedule, :activity_group),
+        join: company in assoc(activity_groups, :company),
+        join: activities in assoc(activity_groups, :activities),
+        left_join: participants in assoc(activities, :participants),
+        join: responsible_participant in assoc(activities, :responsible_participant),
+        join: template in assoc(schedule, :template),
+        where: schedule.id == ^schedule_id,
+        where: activities.start_time >= ^minTime and activities.end_time <= ^maxTime,
+        preload: [
+          template: template,
+          activity_group: {
+            activity_groups,
+            company: company,
+            activities: {
+              activities,
+              activity_group: {activity_groups, company: company},
+              participants: participants,
+              responsible_participant: responsible_participant
+            }
+          }
+        ]
+
+    ActivityPlanner.Repo.one(query, skip_company_id: true)
+  end
+
+  defp get_hours_offset(schedule_id) do
+    query =
+      from s in ActivityPlanner.Notifications.NotificationSchedule,
+        where: s.id == ^schedule_id,
+        select: [s.hours_window_offset, s.hours_window_length]
+
+    ActivityPlanner.Repo.one!(query, skip_company_id: true)
   end
 end
