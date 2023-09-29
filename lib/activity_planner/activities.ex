@@ -13,9 +13,13 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Returns the list of activities.
 
-  ## Examples (smoke test)
+  ## Examples
 
-      iex> list_activities(skip_company_id: true)
+      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture_deprecated()
+      iex> assert [activity_fixture] == list_activities(company_id: company_id)
+      iex> assert [activity_fixture] == list_activities(skip_company_id: true)
+      iex> non_existent_company_id = -99999
+      iex> list_activities(company_id: non_existent_company_id)
       []
 
   """
@@ -26,9 +30,14 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Returns the list of activity groups.
 
-  ## Examples (smoke test)
+  ## Examples
 
-      iex> list_activity_groups(skip_company_id: true)
+      iex> company = company_fixture()
+      iex> activity_group_fixture = activity_group_fixture(%{ company_id: company.company_id })
+      iex> assert [activity_group_fixture] == list_activity_groups(company_id: company.company_id)
+      iex> assert [activity_group_fixture] == list_activity_groups(skip_company_id: true)
+      iex> non_existent_company_id = -99999
+      iex> list_activity_groups(company_id: non_existent_company_id)
       []
 
   """
@@ -39,10 +48,28 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Gets a single activity.
 
+  ## Example
+
+      iex> activity_fixture = %Activity{id: activity_id, company_id: company_id} = activity_fixture_deprecated()
+      iex> activity = get_activity!(activity_id, company_id: company_id)
+      iex> assert activity == activity_fixture
+
   Raises `Ecto.NoResultsError` if the Activity does not exist.
   """
   def get_activity!(id, options \\ []), do: Repo.get!(Activity, id, options)
 
+  @doc """
+  Gets a single activity group.
+
+  ## Example
+
+      iex> company = company_fixture()
+      iex> activity_group_fixture = %ActivityGroup{id: activity_group_id, company_id: company_id} = activity_group_fixture(%{ company_id: company.company_id })
+      iex> activity_group = get_activity_group!(activity_group_id, company_id: company_id)
+      iex> assert activity_group == activity_group_fixture
+
+  Raises `Ecto.NoResultsError` if the Activity does not exist.
+  """
   def get_activity_group!(id, options \\ []), do: Repo.get!(ActivityGroup, id, options)
 
   @doc """
@@ -111,6 +138,12 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Deletes a activity.
+
+  ## Example
+
+      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture_deprecated()
+      iex> {:ok, %Activity{}} = delete_activity(activity_fixture, company_id: company_id)
+
   """
   def delete_activity(%Activity{} = activity, options \\ []) do
     Repo.delete(activity, options)
@@ -118,6 +151,13 @@ defmodule ActivityPlanner.Activities do
 
   @doc """
   Deletes a activity group.
+
+  ## Example
+
+      iex> company = company_fixture()
+      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: company.company_id)
+
   """
   def delete_activity_group(%ActivityGroup{} = activity, options \\ []) do
     Repo.delete(activity, options)
