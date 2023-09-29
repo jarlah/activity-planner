@@ -1,4 +1,4 @@
-defmodule ActivityPlanner.SchemasTest do
+defmodule ActivityPlanner.SchemasPleaseRenameMeTest do
   use ActivityPlanner.DataCase
 
   alias ActivityPlanner.Activities
@@ -7,7 +7,7 @@ defmodule ActivityPlanner.SchemasTest do
   describe "participants" do
     alias ActivityPlanner.Participants.Participant
 
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
     import ActivityPlanner.CompanyFixtures
     import ActivityPlanner.ParticipantFixtures
 
@@ -98,7 +98,7 @@ defmodule ActivityPlanner.SchemasTest do
   describe "activities" do
     alias ActivityPlanner.Activities.Activity
 
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
     import ActivityPlanner.CompanyFixtures
     import ActivityPlanner.ActivityGroupFixtures
     import ActivityPlanner.ParticipantFixtures
@@ -179,7 +179,7 @@ defmodule ActivityPlanner.SchemasTest do
   describe "activity_participants" do
     alias ActivityPlanner.Activities.ActivityParticipant
 
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
     import ActivityPlanner.CompanyFixtures
     import ActivityPlanner.ParticipantFixtures
 
@@ -258,7 +258,7 @@ defmodule ActivityPlanner.SchemasTest do
   @fixed_time ~U[1970-01-01T00:00:00Z]
 
   describe "get_activities_in_time_range/2" do
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
 
     test "retrieves activities within the specified time range" do
       _activity0 =
@@ -286,7 +286,7 @@ defmodule ActivityPlanner.SchemasTest do
   end
 
   describe "get_activities_for_the_next_two_days/0" do
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
 
     test "retrieves activities for the next two days" do
       # Create some fixtures with a fixed time
@@ -310,7 +310,7 @@ defmodule ActivityPlanner.SchemasTest do
   end
 
   describe "get_activities_for_the_last_two_days/0" do
-    import ActivityPlanner.SchemasFixtures
+    import ActivityPlanner.ActivityFixtures
 
     test "retrieves activities for the last two days" do
       # Create some fixtures with a fixed time

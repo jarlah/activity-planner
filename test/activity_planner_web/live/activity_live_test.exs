@@ -4,7 +4,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   alias ActivityPlanner.Accounts
 
   import Phoenix.LiveViewTest
-  import ActivityPlanner.ActivitiesFixtures
+  import ActivityPlanner.ActivityFixtures
   import ActivityPlanner.ActivityGroupFixtures
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.ParticipantFixtures
@@ -64,7 +64,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/activities")
 
       assert html =~ "Listing activities"
-      assert html =~ activity.description
+      assert html =~ activity.description |> IO.inspect()
     end
 
     test "saves new activity", %{
@@ -137,7 +137,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
       {:ok, _show_live, html} = live(conn, ~p"/activities/#{activity}")
 
       assert html =~ "Show activity"
-      assert html =~ activity.description
+      assert html =~ activity.description |> IO.inspect()
     end
 
     test "updates activity within modal", %{conn: conn, activity: activity} do

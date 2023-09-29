@@ -9,7 +9,7 @@ defmodule ActivityPlanner.ActivitiesTest do
 
   import ActivityPlanner.ActivityGroupFixtures
   import ActivityPlanner.CompanyFixtures
-  import ActivityPlanner.SchemasFixtures
+  import ActivityPlanner.ActivityFixtures
   import ActivityPlanner.ParticipantFixtures
 
   doctest ActivityPlanner.Activities

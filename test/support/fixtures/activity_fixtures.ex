@@ -1,4 +1,4 @@
-defmodule ActivityPlanner.SchemasFixtures do
+defmodule ActivityPlanner.ActivityFixtures do
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.ActivityGroupFixtures
   import ActivityPlanner.ParticipantFixtures
@@ -30,6 +30,7 @@ defmodule ActivityPlanner.SchemasFixtures do
       attrs
       |> Enum.into(%{
         title: "some title",
+        description: "some description",
         start_time: current_time,
         end_time: Timex.shift(current_time, days: 1),
         responsible_participant_id: responsible_participant_id,

@@ -7,7 +7,7 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
 
   import Phoenix.LiveViewTest
   import ActivityPlanner.CompanyFixtures
-  import ActivityPlanner.SchemasFixtures
+  import ActivityPlanner.ActivityFixtures
   import ActivityPlanner.ParticipantFixtures
 
   setup do
