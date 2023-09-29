@@ -1,6 +1,7 @@
 defmodule ActivityPlanner.SchemasFixtures do
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.ActivityGroupFixtures
+  import ActivityPlanner.FixtureHelpers
 
   @moduledoc """
   This module defines test helpers for creating
@@ -29,9 +30,9 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity.
   """
   def activity_fixture_deprecated(attrs \\ %{}, current_time \\ Timex.now()) do
-    company = company_fixture()
-    responsible_participant = participant_fixture(%{ company_id: company.company_id })
-    activity_group = activity_group_fixture(%{ company_id: company.company_id })
+    company_id = get_with_lazy_default(attrs, :company_id, fn -> company_fixture().company_id end)
+    responsible_participant = participant_fixture(%{ company_id: company_id })
+    activity_group = activity_group_fixture(%{ company_id: company_id })
     {:ok, activity} =
       attrs
       |> Enum.into(%{
@@ -40,7 +41,7 @@ defmodule ActivityPlanner.SchemasFixtures do
         end_time: Timex.shift(current_time, days: 1),
         responsible_participant_id: responsible_participant.id,
         activity_group_id: activity_group.id,
-        company_id: company.company_id
+        company_id: company_id
       })
       |> ActivityPlanner.Activities.create_activity()
 

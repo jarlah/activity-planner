@@ -3,11 +3,12 @@ defmodule ActivityPlanner.Activities.Activity do
   import Ecto.Changeset
 
   schema "activities" do
+    field :title, :string
     field :description, :string
     field :start_time, :utc_datetime
     field :end_time, :utc_datetime
-    field :company_id, :integer
 
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
     belongs_to :activity_group, ActivityPlanner.Activities.ActivityGroup
     belongs_to :responsible_participant, ActivityPlanner.Participants.Participant
     many_to_many :participants, ActivityPlanner.Participants.Participant, join_through: "activity_participants"
