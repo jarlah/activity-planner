@@ -64,7 +64,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/activities")
 
       assert html =~ "Listing activities"
-      assert html =~ activity.description |> IO.inspect()
+      assert html =~ activity.description
     end
 
     test "saves new activity", %{
@@ -137,7 +137,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
       {:ok, _show_live, html} = live(conn, ~p"/activities/#{activity}")
 
       assert html =~ "Show activity"
-      assert html =~ activity.description |> IO.inspect()
+      assert html =~ activity.description
     end
 
     test "updates activity within modal", %{conn: conn, activity: activity} do
