@@ -52,16 +52,16 @@ defmodule ActivityPlanner.SchemasFixtures do
   Generate a activity_participant.
   """
   def activity_participant_fixture(attrs \\ %{}) do
-    company = company_fixture()
-    participant = participant_fixture(%{ company_id: company.company_id })
-    activity = activity_fixture_deprecated(%{ company_id: company.company_id })
+    company_id = get_with_lazy_default(attrs, :company_id, fn -> company_fixture().company_id end)
+    participant = participant_fixture(%{ company_id: company_id })
+    activity = activity_fixture_deprecated(%{ company_id: company_id })
 
     {:ok, activity_participant} =
       attrs
       |> Enum.into(%{
         participant_id: participant.id,
         activity_id: activity.id,
-        company_id: company.company_id
+        company_id: company_id
       })
       |> ActivityPlanner.Activities.create_activity_participant()
 
