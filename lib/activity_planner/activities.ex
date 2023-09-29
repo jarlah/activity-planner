@@ -13,7 +13,7 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Returns the list of activities.
 
-  ## Examples
+  ## Examples (smoke test)
 
       iex> list_activities(skip_company_id: true)
       []
@@ -26,7 +26,7 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Returns the list of activity groups.
 
-  ## Examples
+  ## Examples (smoke test)
 
       iex> list_activity_groups(skip_company_id: true)
       []
@@ -48,19 +48,28 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Creates a activity.
 
-    ## Examples
+    ## Example
 
       iex> company = company_fixture()
       iex> participant = participant_fixture(%{ company_id: company.company_id })
       iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
-      iex> now = Timex.now()
-      iex> {:ok, %Activity{}} = create_activity(%{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: now, end_time: Timex.shift(now, hours: 24) })
+      iex> start_time = Timex.now()
+      iex> end_time = Timex.shift(start_time, hours: 24)
+      iex> attrs = %{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
+      iex> {:ok, %Activity{id: new_activity_id}} = create_activity(attrs)
+      iex> activity = get_activity!(new_activity_id, company_id: company.company_id)
+      iex> assert activity.company_id == company.company_id
+      iex> assert activity.responsible_participant_id == participant.id
+      iex> assert activity.activity_group_id == activity_group.id
+      iex> assert activity.start_time == start_time |> DateTime.truncate(:second)
+      iex> assert activity.end_time == end_time |> DateTime.truncate(:second)
+      iex> list_activities(company_id: company.company_id) == [activity]
 
   """
-  def create_activity(attrs \\ %{}) do
+  def create_activity(attrs \\ %{}, options \\ [company_id: Repo.get_company_id()]) do
     %Activity{ company_id: Repo.get_company_id() }
     |> Activity.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(options)
   end
 
   @doc """
