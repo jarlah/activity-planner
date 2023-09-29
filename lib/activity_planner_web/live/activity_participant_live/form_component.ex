@@ -25,7 +25,7 @@ defmodule ActivityPlannerWeb.ActivityParticipantLive.FormComponent do
           field={@form[:activity_id]}
           type="select"
           label="Activity"
-          options={@activities |> Enum.map(fn c -> {c.description || c.title || Integer.to_string(c.id), c.id} end)}
+          options={@activities |> Enum.map(fn c -> {c.description || c.title || c.id |> Integer.to_string(), c.id} end)}
           prompt="Select activity"
         />
         <.input
