@@ -9,7 +9,9 @@ defmodule ActivityPlanner.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :company_id, :integer
 
-    many_to_many :companies, ActivityPlanner.Companies.Company, join_through: "user_roles", join_keys: [user_id: :id, company_id: :company_id]
+    many_to_many :companies, ActivityPlanner.Companies.Company,
+      join_through: "user_roles",
+      join_keys: [user_id: :id, company_id: :company_id]
 
     timestamps()
   end
@@ -37,7 +39,11 @@ defmodule ActivityPlanner.Accounts.User do
       submitting the form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def changeset(user, attrs, opts \\ [ hash_password: true, validate_email: true, skip_company_id: true ]) do
+  def changeset(
+        user,
+        attrs,
+        opts \\ [hash_password: true, validate_email: true, skip_company_id: true]
+      ) do
     user
     |> cast(attrs, [:email, :password, :company_id])
     |> validate_email(opts)

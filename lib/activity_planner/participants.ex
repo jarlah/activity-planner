@@ -50,7 +50,7 @@ defmodule ActivityPlanner.Participants do
 
   """
   def create_participant(attrs \\ %{}, options \\ []) do
-    %Participant{ company_id: Repo.get_company_id() }
+    %Participant{company_id: Repo.get_company_id()}
     |> Participant.changeset(attrs)
     |> Repo.insert(options)
   end

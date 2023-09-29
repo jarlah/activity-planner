@@ -41,7 +41,10 @@ defmodule ActivityPlanner.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = get_user_by_email(email, skip_company_id: true) |> Repo.preload([:companies], skip_company_id: true)
+    user =
+      get_user_by_email(email, skip_company_id: true)
+      |> Repo.preload([:companies], skip_company_id: true)
+
     if User.valid_password?(user, password), do: user
   end
 
@@ -161,7 +164,9 @@ defmodule ActivityPlanner.Accounts do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]), skip_company_id: true)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]),
+      skip_company_id: true
+    )
   end
 
   @doc ~S"""
@@ -214,7 +219,9 @@ defmodule ActivityPlanner.Accounts do
 
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all), skip_company_id: true)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all),
+      skip_company_id: true
+    )
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
@@ -293,7 +300,9 @@ defmodule ActivityPlanner.Accounts do
   defp confirm_user_multi(user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]), skip_company_id: true)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]),
+      skip_company_id: true
+    )
   end
 
   ## Reset password
@@ -350,7 +359,9 @@ defmodule ActivityPlanner.Accounts do
   def reset_user_password(user, attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all), skip_company_id: true)
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all),
+      skip_company_id: true
+    )
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
@@ -379,7 +390,11 @@ defmodule ActivityPlanner.Accounts do
 
         IO.puts("Generated admin account password: #{strong_password}")
 
-        {:ok, company} = ActivityPlanner.Companies.create_company(%{ name: "Example company", address: "Example address"})
+        {:ok, company} =
+          ActivityPlanner.Companies.create_company(%{
+            name: "Example company",
+            address: "Example address"
+          })
 
         user_params = %{
           email: admin_email,
@@ -389,7 +404,13 @@ defmodule ActivityPlanner.Accounts do
         }
 
         {:ok, user} = ActivityPlanner.Accounts.register_user(user_params, skip_company_id: true)
-        {:ok, _} = ActivityPlanner.Accounts.create_user_role(%{ user_id: user.id, company_id: company.company_id, role: "admin"}, skip_company_id: true)
+
+        {:ok, _} =
+          ActivityPlanner.Accounts.create_user_role(
+            %{user_id: user.id, company_id: company.company_id, role: "admin"},
+            skip_company_id: true
+          )
+
       _ ->
         IO.puts("Default admin account already exists, skipping.")
     end

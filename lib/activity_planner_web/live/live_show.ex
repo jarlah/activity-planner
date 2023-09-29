@@ -11,15 +11,17 @@ defmodule ActivityPlannerWeb.LiveShow do
       raise "The function #{get_function}/1 is required but not defined in #{context}"
     end
 
-    title = key
+    title =
+      key
       |> to_string()
       |> String.replace("_", " ")
 
-    assign_exprs = Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
-      quote do
-        assign(unquote(name), unquote(mod).unquote(fun)())
-      end
-    end)
+    assign_exprs =
+      Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
+        quote do
+          assign(unquote(name), unquote(mod).unquote(fun)())
+        end
+      end)
 
     quote do
       use ActivityPlannerWeb, :live_view
@@ -36,8 +38,7 @@ defmodule ActivityPlannerWeb.LiveShow do
         {:noreply,
          socket
          |> assign(:page_title, page_title(socket.assigns.live_action))
-         |> assign(unquote(key), apply(unquote(context), unquote(get_function), [id]))
-        }
+         |> assign(unquote(key), apply(unquote(context), unquote(get_function), [id]))}
       end
 
       defp page_title(:show), do: "Show #{unquote(title)}"
@@ -47,8 +48,21 @@ defmodule ActivityPlannerWeb.LiveShow do
 
   defp splicing_expr(exprs) do
     case exprs do
-      [] -> quote do end
-      _ -> Enum.reduce(exprs, quote do end, fn expr, acc -> quote do unquote(acc) |> unquote(expr) end end)
+      [] ->
+        quote do
+        end
+
+      _ ->
+        Enum.reduce(
+          exprs,
+          quote do
+          end,
+          fn expr, acc ->
+            quote do
+              unquote(acc) |> unquote(expr)
+            end
+          end
+        )
     end
   end
 end

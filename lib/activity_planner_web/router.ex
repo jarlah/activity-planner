@@ -52,7 +52,6 @@ defmodule ActivityPlannerWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ActivityPlannerWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-
       live "/users/log_in", UserLoginLive, :new
     end
 

@@ -13,8 +13,12 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
     end
 
     setup %{company: company} do
-      user = user_fixture(%{ company_id: company.company_id })
-      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      user = user_fixture(%{company_id: company.company_id})
+
+      {:ok, _} =
+        %{user_id: user.id, company_id: user.company_id, role: "admin"}
+        |> Accounts.create_user_role()
+
       user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
       %{user: user}
     end
@@ -46,7 +50,11 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
     setup %{conn: conn, company: company} do
       password = valid_user_password()
       user = user_fixture(%{password: password, company_id: company.company_id})
-      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+
+      {:ok, _} =
+        %{user_id: user.id, company_id: user.company_id, role: "admin"}
+        |> Accounts.create_user_role()
+
       user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
@@ -109,7 +117,11 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
     setup %{conn: conn, company: company} do
       password = valid_user_password()
       user = user_fixture(%{password: password, company_id: company.company_id})
-      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+
+      {:ok, _} =
+        %{user_id: user.id, company_id: user.company_id, role: "admin"}
+        |> Accounts.create_user_role()
+
       user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
       %{conn: log_in_user(conn, user), user: user, password: password}
     end
@@ -197,7 +209,10 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
           Accounts.deliver_user_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 
-      {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+      {:ok, _} =
+        %{user_id: user.id, company_id: user.company_id, role: "admin"}
+        |> Accounts.create_user_role()
+
       user = user |> Repo.preload([:companies], skip_company_id: true)
 
       %{conn: log_in_user(conn, user), token: token, email: email, user: user}

@@ -3,7 +3,7 @@ defmodule ActivityPlannerWeb.HomeLive do
 
   def render(assigns) do
     ~H"""
-      <h1>Activity planner</h1>
+    <h1>Activity planner</h1>
     """
   end
 end

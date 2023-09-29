@@ -62,7 +62,7 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
     ]
   ]
 
-  config :libcluster,
+config :libcluster,
   topologies: [
     example: [
       # The selected clustering strategy. Required.
@@ -77,7 +77,7 @@ config :activity_planner, ActivityPlannerWeb.Endpoint,
       disconnect: {:erlang, :disconnect_node, []},
       # The function to use for listing nodes.
       # This function must return a list of node names. Optional
-      list_nodes: {:erlang, :nodes, [:connected]},
+      list_nodes: {:erlang, :nodes, [:connected]}
     ]
   ]
 

@@ -20,7 +20,25 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
   @doc false
   def changeset(notification_setting, attrs) do
     notification_setting
-    |> cast(attrs, [:name, :medium, :cron_expression, :template_id, :activity_group_id, :hours_window_offset, :hours_window_length, :enabled])
-    |> validate_required([:name, :medium, :cron_expression, :template_id, :activity_group_id, :hours_window_offset, :hours_window_length, :enabled])
+    |> cast(attrs, [
+      :name,
+      :medium,
+      :cron_expression,
+      :template_id,
+      :activity_group_id,
+      :hours_window_offset,
+      :hours_window_length,
+      :enabled
+    ])
+    |> validate_required([
+      :name,
+      :medium,
+      :cron_expression,
+      :template_id,
+      :activity_group_id,
+      :hours_window_offset,
+      :hours_window_length,
+      :enabled
+    ])
   end
 end

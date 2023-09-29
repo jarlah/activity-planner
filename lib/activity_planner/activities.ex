@@ -15,7 +15,7 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture_deprecated()
+      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture()
       iex> assert [activity_fixture] == list_activities(company_id: company_id)
       iex> assert [activity_fixture] == list_activities(skip_company_id: true)
       iex> non_existent_company_id = -99999
@@ -50,7 +50,7 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> activity_fixture = %Activity{id: activity_id, company_id: company_id} = activity_fixture_deprecated()
+      iex> activity_fixture = %Activity{id: activity_id, company_id: company_id} = activity_fixture()
       iex> activity = get_activity!(activity_id, company_id: company_id)
       iex> assert activity == activity_fixture
 
@@ -87,7 +87,8 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity(attrs \\ %{}, opts \\ []) do
-    %Activity{ company_id: Repo.get_company_id() } # can be overridden by attrs or opts
+    # can be overridden by attrs or opts
+    %Activity{company_id: Repo.get_company_id()}
     |> Activity.changeset(attrs)
     |> Repo.insert(opts)
   end
@@ -102,7 +103,7 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity_group(attrs \\ %{}, opts \\ []) do
-    %ActivityGroup{ company_id: Repo.get_company_id() }
+    %ActivityGroup{company_id: Repo.get_company_id()}
     |> ActivityGroup.changeset(attrs)
     |> Repo.insert(opts)
   end
@@ -112,7 +113,7 @@ defmodule ActivityPlanner.Activities do
 
       ## Examples
 
-      iex> activity = activity_fixture_deprecated()
+      iex> activity = activity_fixture()
       iex> {:ok, %Activity{}} = update_activity(activity, %{ end_time: Timex.shift(activity.start_time, days: 2) })
   """
   def update_activity(%Activity{} = activity, attrs, options \\ []) do
@@ -141,7 +142,7 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture_deprecated()
+      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture()
       iex> {:ok, %Activity{}} = delete_activity(activity_fixture, company_id: company_id)
 
   """
@@ -186,14 +187,15 @@ defmodule ActivityPlanner.Activities do
 
   Raises `Ecto.NoResultsError` if the Activity participant does not exist.
   """
-  def get_activity_participant!(id, options \\ []), do: Repo.get!(ActivityParticipant, id, options)
+  def get_activity_participant!(id, options \\ []),
+    do: Repo.get!(ActivityParticipant, id, options)
 
   @doc """
   Creates a activity_participant.
 
   """
   def create_activity_participant(attrs \\ %{}) do
-    %ActivityParticipant{ company_id: Repo.get_company_id() }
+    %ActivityParticipant{company_id: Repo.get_company_id()}
     |> ActivityParticipant.changeset(attrs)
     |> Repo.insert()
   end

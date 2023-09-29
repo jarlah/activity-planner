@@ -18,7 +18,23 @@ defmodule ActivityPlanner.Notifications.SentNotification do
   @doc false
   def changeset(sent_notification, attrs) do
     sent_notification
-    |> cast(attrs, [:sent_at, :status, :medium, :receiver, :actual_content, :actual_title, :activity_id])
-    |> validate_required([:sent_at, :status, :medium, :receiver, :actual_content, :actual_title, :activity_id])
+    |> cast(attrs, [
+      :sent_at,
+      :status,
+      :medium,
+      :receiver,
+      :actual_content,
+      :actual_title,
+      :activity_id
+    ])
+    |> validate_required([
+      :sent_at,
+      :status,
+      :medium,
+      :receiver,
+      :actual_content,
+      :actual_title,
+      :activity_id
+    ])
   end
 end

@@ -25,7 +25,7 @@ defmodule ActivityPlanner.Application do
       {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]},
       # TODO what happens if the node dies, will the jobs continue ob the next
       {Highlander, ActivityPlanner.Scheduler},
-      {Highlander, {ActivityPlanner.JobManager, :ok}},
+      {Highlander, {ActivityPlanner.JobManager, :ok}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

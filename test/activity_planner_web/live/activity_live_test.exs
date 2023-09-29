@@ -7,10 +7,18 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   import ActivityPlanner.ActivitiesFixtures
   import ActivityPlanner.ActivityGroupFixtures
   import ActivityPlanner.CompanyFixtures
-  import ActivityPlanner.SchemasFixtures
+  import ActivityPlanner.ParticipantFixtures
 
-  @create_attrs %{description: "some description", start_time: "2023-09-19T06:31:00Z", end_time: "2023-09-19T06:31:00Z"}
-  @update_attrs %{description: "some updated description", start_time: "2023-09-20T06:31:00Z", end_time: "2023-09-20T06:31:00Z"}
+  @create_attrs %{
+    description: "some description",
+    start_time: "2023-09-19T06:31:00Z",
+    end_time: "2023-09-19T06:31:00Z"
+  }
+  @update_attrs %{
+    description: "some updated description",
+    start_time: "2023-09-20T06:31:00Z",
+    end_time: "2023-09-20T06:31:00Z"
+  }
   @invalid_attrs %{description: nil, start_time: nil, end_time: nil}
 
   setup do
@@ -18,17 +26,35 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   end
 
   setup %{company: company} do
-    {:ok, user} = %{email: "test@example.com", password: "passwordpassword", company_id: company.company_id} |> Accounts.register_user()
+    {:ok, user} =
+      %{email: "test@example.com", password: "passwordpassword", company_id: company.company_id}
+      |> Accounts.register_user()
+
     user = user |> ActivityPlanner.Repo.preload([:companies], skip_company_id: true)
-    {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+
+    {:ok, _} =
+      %{user_id: user.id, company_id: user.company_id, role: "admin"}
+      |> Accounts.create_user_role()
+
     {:ok, conn: log_in_user(build_conn(), user), user: user}
   end
 
   defp create_activity(%{company: company}) do
-    activity_group = activity_group_fixture(%{ company_id: company.company_id })
-    responsible_participant = participant_fixture(%{ company_id: company.company_id })
-    activity = activity_fixture(%{ responsible_participant_id: responsible_participant.id, activity_group_id: activity_group.id, company_id: company.company_id })
-    %{activity: activity, activity_group: activity_group, responsible_participant: responsible_participant}
+    activity_group = activity_group_fixture(%{company_id: company.company_id})
+    responsible_participant = participant_fixture(%{company_id: company.company_id})
+
+    activity =
+      activity_fixture(%{
+        responsible_participant_id: responsible_participant.id,
+        activity_group_id: activity_group.id,
+        company_id: company.company_id
+      })
+
+    %{
+      activity: activity,
+      activity_group: activity_group,
+      responsible_participant: responsible_participant
+    }
   end
 
   describe "Index" do
@@ -41,7 +67,11 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
       assert html =~ activity.description
     end
 
-    test "saves new activity", %{conn: conn, activity_group: activity_group, responsible_participant: responsible_participant} do
+    test "saves new activity", %{
+      conn: conn,
+      activity_group: activity_group,
+      responsible_participant: responsible_participant
+    } do
       {:ok, index_live, _html} = live(conn, ~p"/activities")
 
       assert index_live |> element("a", "New activity") |> render_click() =~
@@ -53,7 +83,8 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
              |> form("#activity-form", activity: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      attrs = @create_attrs
+      attrs =
+        @create_attrs
         |> Map.put(:activity_group_id, activity_group.id)
         |> Map.put(:responsible_participant_id, responsible_participant.id)
 

@@ -44,12 +44,16 @@ defmodule ActivityPlanner.JobManager do
 
   defp add_job_to_quantum(%ActivityPlanner.Notifications.NotificationSchedule{} = schedule) do
     IO.puts("Processing notification schedule #{schedule.id}")
+
     ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
     |> Quantum.Job.set_overlap(false)
     |> Quantum.Job.set_name(job_name(schedule))
     |> Quantum.Job.set_schedule(schedule.cron_expression)
-    |> Quantum.Job.set_task({ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]})
+    |> Quantum.Job.set_task(
+      {ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]}
+    )
     |> ActivityPlanner.Scheduler.add_job()
+
     {:ok, "Quantum job added successfully"}
   end
 

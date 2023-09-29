@@ -9,6 +9,6 @@ defmodule ActivityPlanner.CompanyFixtures do
       })
       |> ActivityPlanner.Companies.create_company()
 
-      company
+    company
   end
 end

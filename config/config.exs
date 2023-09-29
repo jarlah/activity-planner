@@ -31,8 +31,7 @@ config :activity_planner, ActivityPlanner.Mailer,
   adapter: Swoosh.Adapters.Local,
   from_email: {"Activity Planner", "admin@example.com"}
 
-config :activity_planner, :clicksend,
-  enabled: false
+config :activity_planner, :clicksend, enabled: false
 
 # Configure esbuild (the version is required)
 config :esbuild,

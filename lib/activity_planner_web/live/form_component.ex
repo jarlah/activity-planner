@@ -11,16 +11,17 @@ defmodule ActivityPlannerWeb.FormComponent do
     update_function = String.to_atom("update_#{key_string}")
 
     for {function, arity} <- [
-      {create_function, 1},
-      {change_function, 1},
-      {update_function, 2}
-    ] do
+          {create_function, 1},
+          {change_function, 1},
+          {update_function, 2}
+        ] do
       unless function_exported?(context, function, arity) do
         raise "The function #{function}/#{arity} is required but not defined in #{context}"
       end
     end
 
-    title = key
+    title =
+      key
       |> to_string()
       |> String.replace("_", " ")
       |> String.capitalize()
@@ -41,6 +42,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       @impl true
       def handle_event("validate", %{unquote(key_string) => params}, socket) do
         entity = Map.fetch!(socket.assigns, unquote(key))
+
         changeset =
           entity
           |> unquote(context).unquote(change_function)(params)
@@ -60,6 +62,7 @@ defmodule ActivityPlannerWeb.FormComponent do
         case apply(unquote(context), unquote(update_function), [entity, params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
+
             {:noreply,
              socket
              |> put_flash(:info, "#{unquote(title)} updated successfully")
@@ -74,6 +77,7 @@ defmodule ActivityPlannerWeb.FormComponent do
         case apply(unquote(context), unquote(create_function), [params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
+
             {:noreply,
              socket
              |> put_flash(:info, "#{unquote(title)} created successfully")
@@ -84,10 +88,10 @@ defmodule ActivityPlannerWeb.FormComponent do
         end
       end
 
-      defp assign_form(socket, %Ecto.Changeset{} = changeset), do: assign(socket, :form, to_form(changeset))
+      defp assign_form(socket, %Ecto.Changeset{} = changeset),
+        do: assign(socket, :form, to_form(changeset))
 
       defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
-
     end
   end
 end

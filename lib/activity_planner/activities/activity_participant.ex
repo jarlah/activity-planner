@@ -3,7 +3,6 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
   import Ecto.Changeset
 
   schema "activity_participants" do
-
     belongs_to :activity, ActivityPlanner.Activities.Activity
     belongs_to :participant, ActivityPlanner.Participants.Participant
     field :company_id, :integer

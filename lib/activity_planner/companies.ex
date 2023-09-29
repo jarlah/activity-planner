@@ -11,5 +11,4 @@ defmodule ActivityPlanner.Companies do
   def list_companies(opts \\ []) do
     Repo.all(Company, opts)
   end
-
 end

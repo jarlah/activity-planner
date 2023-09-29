@@ -93,7 +93,12 @@ defmodule ActivityPlanner.AccountsTest do
     test "registers users with a hashed password" do
       company = company_fixture()
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email, company_id: company.company_id))
+
+      {:ok, user} =
+        Accounts.register_user(
+          valid_user_attributes(email: email, company_id: company.company_id)
+        )
+
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -196,7 +201,12 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
+
+      assert user_token =
+               Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)],
+                 skip_company_id: true
+               )
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "change:current@example.com"
@@ -240,7 +250,11 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not update email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
+      {1, nil} =
+        Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]],
+          skip_company_id: true
+        )
+
       assert Accounts.update_user_email(user, token) == :error
       assert Repo.get!(User, user.id, skip_company_id: true).email == user.email
       assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
@@ -364,7 +378,11 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not return user for expired token", %{token: token} do
-      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
+      {1, nil} =
+        Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]],
+          skip_company_id: true
+        )
+
       refute Accounts.get_user_by_session_token(token)
     end
   end
@@ -393,7 +411,12 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
+
+      assert user_token =
+               Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)],
+                 skip_company_id: true
+               )
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "confirm"
@@ -428,7 +451,11 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
+      {1, nil} =
+        Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]],
+          skip_company_id: true
+        )
+
       assert Accounts.confirm_user(token) == :error
       refute Repo.get!(User, user.id, skip_company_id: true).confirmed_at
       assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
@@ -449,7 +476,12 @@ defmodule ActivityPlanner.AccountsTest do
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
-      assert user_token = Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)], skip_company_id: true)
+
+      assert user_token =
+               Repo.get_by(UserToken, [token: :crypto.hash(:sha256, token)],
+                 skip_company_id: true
+               )
+
       assert user_token.user_id == user.id
       assert user_token.sent_to == user.email
       assert user_token.context == "reset_password"
@@ -470,7 +502,9 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "returns the user with valid token", %{user: %{id: id}, token: token} do
-      assert %User{id: ^id} = Accounts.get_user_by_reset_password_token(token, skip_company_id: true)
+      assert %User{id: ^id} =
+               Accounts.get_user_by_reset_password_token(token, skip_company_id: true)
+
       assert Repo.get_by(UserToken, [user_id: id], skip_company_id: true)
     end
 
@@ -480,7 +514,11 @@ defmodule ActivityPlanner.AccountsTest do
     end
 
     test "does not return the user if token expired", %{user: user, token: token} do
-      {1, nil} = Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]], skip_company_id: true)
+      {1, nil} =
+        Repo.update_all(UserToken, [set: [inserted_at: ~N[2020-01-01 00:00:00]]],
+          skip_company_id: true
+        )
+
       refute Accounts.get_user_by_reset_password_token(token, skip_company_id: true)
       assert Repo.get_by(UserToken, [user_id: user.id], skip_company_id: true)
     end

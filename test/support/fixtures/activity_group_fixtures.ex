@@ -8,6 +8,6 @@ defmodule ActivityPlanner.ActivityGroupFixtures do
       })
       |> ActivityPlanner.Activities.create_activity_group()
 
-      activity_group
+    activity_group
   end
 end

@@ -12,10 +12,10 @@ defmodule ActivityPlannerWeb.LiveIndex do
     list_function = :"list_#{Inflex.pluralize(key)}"
 
     for {function, arity} <- [
-      {get_function, 1},
-      {delete_function, 1},
-      {list_function, 0}
-    ] do
+          {get_function, 1},
+          {delete_function, 1},
+          {list_function, 0}
+        ] do
       unless function_exported?(context, function, arity) do
         raise "The function #{function}/#{arity} is required but not defined in #{context}"
       end
@@ -23,15 +23,17 @@ defmodule ActivityPlannerWeb.LiveIndex do
 
     stream_key = key |> Inflex.pluralize() |> String.to_atom()
 
-    title = key
+    title =
+      key
       |> to_string()
       |> String.replace("_", " ")
 
-    assign_exprs = Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
-      quote do
-        assign(unquote(name), unquote(mod).unquote(fun)())
-      end
-    end)
+    assign_exprs =
+      Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
+        quote do
+          assign(unquote(name), unquote(mod).unquote(fun)())
+        end
+      end)
 
     quote do
       use ActivityPlannerWeb, :live_view
@@ -77,15 +79,30 @@ defmodule ActivityPlannerWeb.LiveIndex do
         obj = apply(unquote(context), unquote(get_function), [id])
         {:ok, _} = apply(unquote(context), unquote(delete_function), [obj])
 
-        {:noreply, stream_delete(socket, unquote(stream_key), obj) |> put_flash(:info, (unquote(title) |> String.capitalize()) <> " deleted successfully")  }
+        {:noreply,
+         stream_delete(socket, unquote(stream_key), obj)
+         |> put_flash(:info, (unquote(title) |> String.capitalize()) <> " deleted successfully")}
       end
     end
   end
 
   defp splicing_expr(exprs) do
     case exprs do
-      [] -> quote do end
-      _ -> Enum.reduce(exprs, quote do end, fn expr, acc -> quote do unquote(acc) |> unquote(expr) end end)
+      [] ->
+        quote do
+        end
+
+      _ ->
+        Enum.reduce(
+          exprs,
+          quote do
+          end,
+          fn expr, acc ->
+            quote do
+              unquote(acc) |> unquote(expr)
+            end
+          end
+        )
     end
   end
 end

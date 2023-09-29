@@ -20,7 +20,7 @@ defmodule ActivityPlanner.Notifications do
   def get_notification_template!(id), do: Repo.get!(NotificationTemplate, id)
 
   def create_notification_template(attrs \\ %{}) do
-    %NotificationTemplate{ company_id: Repo.get_company_id() }
+    %NotificationTemplate{company_id: Repo.get_company_id()}
     |> NotificationTemplate.changeset(attrs)
     |> IO.inspect()
     |> Repo.insert()
@@ -41,17 +41,24 @@ defmodule ActivityPlanner.Notifications do
   end
 
   def send_notifications_for_schedule(schedule_id) do
-    case ActivityPlanner.NotificationSchedules.get_notification_schedules(schedule_id, Timex.now()) do
+    case ActivityPlanner.NotificationSchedules.get_notification_schedules(
+           schedule_id,
+           Timex.now()
+         ) do
       nil ->
         IO.puts("No matching schedule with activities found")
+
       schedule ->
         schedule.activity_group.activities
-        |> Enum.each(fn activity -> send_notifications(schedule.template, schedule.medium, activity) end)
+        |> Enum.each(fn activity ->
+          send_notifications(schedule.template, schedule.medium, activity)
+        end)
     end
   end
 
   defp send_notifications(template, :email, activity) do
     from_email = Application.fetch_env!(:activity_planner, ActivityPlanner.Mailer)[:from_email]
+
     (activity.participants ++ [activity.responsible_participant])
     |> Enum.each(fn participant ->
       content = render_template_for_activity(template.template_content, participant, activity)

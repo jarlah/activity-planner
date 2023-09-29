@@ -20,9 +20,12 @@ defmodule ActivityPlannerWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, ActivityPlannerWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    user = user_fixture(%{ company_id: company.company_id})
+    user = user_fixture(%{company_id: company.company_id})
 
-    {:ok, _} = %{user_id: user.id, company_id: user.company_id, role: "admin"} |> Accounts.create_user_role()
+    {:ok, _} =
+      %{user_id: user.id, company_id: user.company_id, role: "admin"}
+      |> Accounts.create_user_role()
+
     user = user |> Repo.preload([:companies], skip_company_id: true)
 
     %{user: user, conn: conn}

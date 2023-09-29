@@ -7,27 +7,30 @@ defmodule ActivityPlanner.SMS do
       api_key = Application.get_env(:activity_planner, :clicksend)[:api_key]
       username = Application.get_env(:activity_planner, :clicksend)[:username]
 
-      body = Jason.encode!(%{
-        "messages" => [
-          %{
-            "source" => "elixir",
-            "from" => from_name,
-            "body" => message,
-            "to" => to
-          }
-        ]
-      })
+      body =
+        Jason.encode!(%{
+          "messages" => [
+            %{
+              "source" => "elixir",
+              "from" => from_name,
+              "body" => message,
+              "to" => to
+            }
+          ]
+        })
 
       headers = [
-        {"Authorization", "Basic " <> :base64.encode(username <>":" <> api_key)},
+        {"Authorization", "Basic " <> :base64.encode(username <> ":" <> api_key)},
         {"Content-Type", "application/json"}
       ]
 
       case HTTPoison.post(@clicksend_api, body, headers) do
         {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
           {:ok, body}
+
         {:ok, %HTTPoison.Response{status_code: status_code}} ->
           {:error, "Received status code #{status_code}"}
+
         {:error, %HTTPoison.Error{reason: reason}} ->
           {:error, "HTTP error: #{reason}"}
       end
