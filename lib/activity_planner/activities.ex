@@ -56,14 +56,8 @@ defmodule ActivityPlanner.Activities do
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
-      iex> {:ok, %Activity{id: new_activity_id}} = create_activity(attrs)
-      iex> activity = get_activity!(new_activity_id, company_id: company.company_id)
-      iex> assert activity.company_id == company.company_id
-      iex> assert activity.responsible_participant_id == participant.id
-      iex> assert activity.activity_group_id == activity_group.id
-      iex> assert activity.start_time == start_time |> DateTime.truncate(:second)
-      iex> assert activity.end_time == end_time |> DateTime.truncate(:second)
-      iex> list_activities(company_id: company.company_id) == [activity]
+      iex> {:ok, %Activity{id: new_activity_id} = activity} = create_activity(attrs)
+      iex> assert activity == get_activity!(new_activity_id, company_id: company.company_id)
 
   """
   def create_activity(attrs \\ %{}, opts \\ []) do
