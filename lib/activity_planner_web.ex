@@ -58,14 +58,6 @@ defmodule ActivityPlannerWeb do
     end
   end
 
-  def view do
-    quote do
-      use Phoenix.View, root: "lib/activity_planner_web/templates"
-
-      unquote(html_helpers())
-    end
-  end
-
   def live_component do
     quote do
       use Phoenix.LiveComponent
