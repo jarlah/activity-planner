@@ -18,8 +18,8 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
   end
 
   @doc false
-  def changeset(notification_setting, attrs) do
-    notification_setting
+  def changeset(notification_schedule, attrs) do
+    notification_schedule
     |> cast(attrs, [
       :name,
       :medium,
