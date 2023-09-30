@@ -18,7 +18,7 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
   end
 
   @doc false
-  def changeset(notification_schedule, attrs) do
+  def changeset(notification_schedule, attrs, opts \\ []) do
     notification_schedule
     |> cast(attrs, [
       :name,
@@ -30,7 +30,7 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
       :hours_window_length,
       :enabled
     ])
-    |> Companies.common_changeset(attrs)
+    |> Companies.common_changeset(attrs, opts)
     |> validate_required([
       :name,
       :medium,

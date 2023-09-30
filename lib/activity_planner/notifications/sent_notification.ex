@@ -16,7 +16,7 @@ defmodule ActivityPlanner.Notifications.SentNotification do
   end
 
   @doc false
-  def changeset(sent_notification, attrs) do
+  def changeset(sent_notification, attrs, opts \\ []) do
     sent_notification
     |> cast(attrs, [
       :sent_at,
@@ -27,7 +27,7 @@ defmodule ActivityPlanner.Notifications.SentNotification do
       :actual_title,
       :activity_id
     ])
-    |> Companies.common_changeset(attrs)
+    |> Companies.common_changeset(attrs, opts)
     |> validate_required([
       :sent_at,
       :status,
