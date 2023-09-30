@@ -1,7 +1,6 @@
 defmodule ActivityPlanner.Notifications do
   import Ecto.Query
 
-  alias ActivityPlanner.Companies
   alias ActivityPlanner.Notifications.NotificationTemplate
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS

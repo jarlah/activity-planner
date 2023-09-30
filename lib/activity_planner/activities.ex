@@ -4,7 +4,6 @@ defmodule ActivityPlanner.Activities do
   """
 
   import Ecto.Query, warn: false
-  alias ActivityPlanner.Companies
   alias ActivityPlanner.Repo
 
   alias ActivityPlanner.Activities.Activity
@@ -90,7 +89,6 @@ defmodule ActivityPlanner.Activities do
   def create_activity(attrs \\ %{}, opts \\ []) do
     %Activity{}
     |> Activity.changeset(attrs)
-    |> Companies.common_changeset(attrs, opts)
     |> Repo.insert(opts)
   end
 
@@ -214,10 +212,9 @@ defmodule ActivityPlanner.Activities do
   Creates a activity_participant.
 
   """
-  def create_activity_participant(attrs \\ %{}, opts \\ []) do
+  def create_activity_participant(attrs \\ %{}) do
     %ActivityParticipant{}
     |> ActivityParticipant.changeset(attrs)
-    |> Companies.common_changeset(attrs, opts)
     |> Repo.insert()
   end
 
