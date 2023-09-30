@@ -61,8 +61,8 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/activity_participants")
 
       assert html =~ "Listing activity participants"
-      assert html =~ activity_participant.participant_id |> Integer.to_string()
-      assert html =~ activity_participant.activity_id |> Integer.to_string()
+      assert html =~ activity_participant.participant_id
+      assert html =~ activity_participant.activity_id
     end
 
     test "saves new activity participant", %{
@@ -94,8 +94,8 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
 
       html = render(index_live)
       assert html =~ "Activity participant created successfully"
-      assert html =~ activity.id |> Integer.to_string()
-      assert html =~ participant.id |> Integer.to_string()
+      assert html =~ activity.id
+      assert html =~ participant.id
     end
   end
 end

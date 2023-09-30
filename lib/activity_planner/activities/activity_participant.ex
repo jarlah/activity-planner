@@ -1,4 +1,5 @@
 defmodule ActivityPlanner.Activities.ActivityParticipant do
+  alias ActivityPlanner.Companies
   use ActivityPlanner.Schema
 
   schema "activity_participants" do
@@ -10,9 +11,10 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
   end
 
   @doc false
-  def changeset(activity_participant, attrs) do
+  def changeset(activity_participant, attrs, opts \\ []) do
     activity_participant
     |> cast(attrs, [:activity_id, :participant_id, :company_id])
+    |> Companies.common_changeset(attrs, opts)
     |> validate_required([:activity_id, :participant_id, :company_id])
   end
 end

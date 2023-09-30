@@ -1,6 +1,7 @@
 defmodule ActivityPlanner.Notifications do
   import Ecto.Query
 
+  alias ActivityPlanner.Companies
   alias ActivityPlanner.Notifications.NotificationTemplate
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS
@@ -19,9 +20,9 @@ defmodule ActivityPlanner.Notifications do
 
   def get_notification_template!(id), do: Repo.get!(NotificationTemplate, id)
 
-  def create_notification_template(attrs \\ %{}) do
-    %NotificationTemplate{company_id: Repo.get_company_id()}
-    |> NotificationTemplate.changeset(attrs)
+  def create_notification_template(attrs \\ %{}, opts \\ []) do
+    %NotificationTemplate{}
+    |> NotificationTemplate.changeset(attrs, opts)
     |> Repo.insert()
   end
 

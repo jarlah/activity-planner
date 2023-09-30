@@ -64,7 +64,7 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :description, :text
       add :start_time, :utc_datetime
       add :end_time, :utc_datetime
-      add :responsible_participant_id, :integer
+      add :responsible_participant_id, :uuid
       add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing), null: false
       add :company_id, :uuid, null: false
       timestamps()

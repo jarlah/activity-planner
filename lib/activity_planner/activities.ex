@@ -4,6 +4,7 @@ defmodule ActivityPlanner.Activities do
   """
 
   import Ecto.Query, warn: false
+  alias ActivityPlanner.Companies
   alias ActivityPlanner.Repo
 
   alias ActivityPlanner.Activities.Activity
@@ -18,7 +19,7 @@ defmodule ActivityPlanner.Activities do
       iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture()
       iex> assert [activity_fixture] == list_activities(company_id: company_id)
       iex> assert [activity_fixture] == list_activities(skip_company_id: true)
-      iex> non_existent_company_id = -99999
+      iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activities(company_id: non_existent_company_id)
       []
 
@@ -36,7 +37,7 @@ defmodule ActivityPlanner.Activities do
       iex> activity_group_fixture = activity_group_fixture(%{ company_id: company.company_id })
       iex> assert [activity_group_fixture] == list_activity_groups(company_id: company.company_id)
       iex> assert [activity_group_fixture] == list_activity_groups(skip_company_id: true)
-      iex> non_existent_company_id = -99999
+      iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activity_groups(company_id: non_existent_company_id)
       []
 
@@ -87,10 +88,29 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity(attrs \\ %{}, opts \\ []) do
-    # can be overridden by attrs or opts
-    %Activity{company_id: Repo.get_company_id()}
+    %Activity{}
     |> Activity.changeset(attrs)
+    |> Companies.common_changeset(attrs, opts)
     |> Repo.insert(opts)
+  end
+
+  @doc """
+  Creates a activity.
+
+    ## Example
+
+      iex> company = company_fixture()
+      iex> participant = participant_fixture(%{ company_id: company.company_id })
+      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> start_time = Timex.now()
+      iex> end_time = Timex.shift(start_time, hours: 24)
+      iex> attrs = %{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
+      iex> %Activity{} = create_activity!(attrs)
+
+  """
+  def create_activity!(attrs \\ %{}, opts \\ []) do
+    {:ok, activity} = create_activity(attrs, opts)
+    activity
   end
 
   @doc """
@@ -103,7 +123,7 @@ defmodule ActivityPlanner.Activities do
 
   """
   def create_activity_group(attrs \\ %{}, opts \\ []) do
-    %ActivityGroup{company_id: Repo.get_company_id()}
+    %ActivityGroup{}
     |> ActivityGroup.changeset(attrs)
     |> Repo.insert(opts)
   end
@@ -194,9 +214,10 @@ defmodule ActivityPlanner.Activities do
   Creates a activity_participant.
 
   """
-  def create_activity_participant(attrs \\ %{}) do
-    %ActivityParticipant{company_id: Repo.get_company_id()}
+  def create_activity_participant(attrs \\ %{}, opts \\ []) do
+    %ActivityParticipant{}
     |> ActivityParticipant.changeset(attrs)
+    |> Companies.common_changeset(attrs, opts)
     |> Repo.insert()
   end
 
@@ -221,8 +242,11 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> change_activity_participant(%ActivityParticipant{}, %{activity_id: 1, participant_id: 1, company_id: 1})
-      #Ecto.Changeset<action: nil, changes: %{company_id: 1, activity_id: 1, participant_id: 1}, errors: [], data: #ActivityPlanner.Activities.ActivityParticipant<>, valid?: true>
+      iex> id1 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd1")
+      iex> id2 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd2")
+      iex> id3 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd3")
+      iex> change_activity_participant(%ActivityParticipant{}, %{activity_id: id1, participant_id: id2, company_id: id3})
+      #Ecto.Changeset<action: nil, changes: %{company_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd3", activity_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd1", participant_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd2"}, errors: [], data: #ActivityPlanner.Activities.ActivityParticipant<>, valid?: true>
 
   """
   def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}) do
@@ -237,7 +261,7 @@ defmodule ActivityPlanner.Activities do
     from(a in ActivityPlanner.Activities.Activity,
       where: a.start_time >= ^minTime and a.end_time <= ^maxTime
     )
-    |> ActivityPlanner.Repo.all(options)
+    |> Repo.all(options)
   end
 
   def get_activities_for_the_next_two_days(current_time \\ Timex.now(), options \\ []) do
