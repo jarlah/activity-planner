@@ -1,13 +1,12 @@
 defmodule ActivityPlanner.Accounts.User do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
-    field :company_id, :integer
+    field :company_id, :binary_id
 
     many_to_many :companies, ActivityPlanner.Companies.Company,
       join_through: "user_roles",

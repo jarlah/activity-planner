@@ -6,19 +6,19 @@ defmodule ActivityPlannerWeb.FormComponent do
 
     key_string = Atom.to_string(key)
 
-    create_function = String.to_atom("create_#{key_string}")
-    change_function = String.to_atom("change_#{key_string}")
-    update_function = String.to_atom("update_#{key_string}")
+    create_function = :"create_#{key}"
+    change_function = :"change_#{key}"
+    update_function = :"update_#{key}"
 
-    for {function, arity} <- [
-          {create_function, 1},
-          {change_function, 1},
-          {update_function, 2}
-        ] do
-      unless function_exported?(context, function, arity) do
-        raise "The function #{function}/#{arity} is required but not defined in #{context}"
-      end
-    end
+    # for {function, arity} <- [
+    #       {create_function, 1},
+    #       {change_function, 1},
+    #       {update_function, 2}
+    #     ] do
+    #   unless function_exported?(context, function, arity) do
+    #     raise "The function #{function}/#{arity} is required but not defined in #{context}"
+    #   end
+    # end
 
     title =
       key

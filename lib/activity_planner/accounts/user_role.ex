@@ -1,6 +1,5 @@
 defmodule ActivityPlanner.Accounts.UserRole do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "user_roles" do
     field :role, :string

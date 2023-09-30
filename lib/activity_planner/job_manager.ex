@@ -62,6 +62,6 @@ defmodule ActivityPlanner.JobManager do
   end
 
   defp job_name(schedule) do
-    String.to_atom(schedule.name <> "_" <> Integer.to_string(schedule.activity_group_id))
+    String.to_atom(schedule.name <> "_" <> schedule.activity_group_id)
   end
 end

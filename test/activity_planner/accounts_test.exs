@@ -1,4 +1,5 @@
 defmodule ActivityPlanner.AccountsTest do
+  alias Ecto.UUID
   use ActivityPlanner.DataCase
 
   alias ActivityPlanner.Accounts
@@ -42,7 +43,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "get_user!/1" do
     test "raises if id is invalid" do
       assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1, skip_company_id: true)
+        Accounts.get_user!(UUID.generate(), skip_company_id: true)
       end
     end
 
@@ -354,7 +355,8 @@ defmodule ActivityPlanner.AccountsTest do
         Repo.insert!(%UserToken{
           token: user_token.token,
           user_id: user_fixture(%{company_id: company.company_id}).id,
-          context: "session"
+          context: "session",
+          company_id: company.company_id
         })
       end
     end

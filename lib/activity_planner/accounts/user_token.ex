@@ -1,5 +1,5 @@
 defmodule ActivityPlanner.Accounts.UserToken do
-  use Ecto.Schema
+  use ActivityPlanner.Schema
   import Ecto.Query
   alias ActivityPlanner.Accounts.UserToken
 
@@ -17,6 +17,7 @@ defmodule ActivityPlanner.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
+    field :company_id, :binary_id
 
     belongs_to :user, ActivityPlanner.Accounts.User
 
@@ -44,7 +45,7 @@ defmodule ActivityPlanner.Accounts.UserToken do
   """
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
-    {token, %UserToken{token: token, context: "session", user_id: user.id}}
+    {token, %UserToken{token: token, context: "session", user_id: user.id, company_id: user.company_id }}
   end
 
   @doc """
@@ -91,7 +92,8 @@ defmodule ActivityPlanner.Accounts.UserToken do
        token: hashed_token,
        context: context,
        sent_to: sent_to,
-       user_id: user.id
+       user_id: user.id,
+       company_id: user.company_id
      }}
   end
 
