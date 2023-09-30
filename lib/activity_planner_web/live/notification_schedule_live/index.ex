@@ -29,10 +29,10 @@ defmodule ActivityPlannerWeb.NotificationScheduleLive.Index do
         end
       }
     >
-      <:col :let={{_id, notification_schedule}} label="Activity">
+      <:col :let={{_id, notification_schedule}} label="Name">
         <%= notification_schedule.name %>
       </:col>
-      <:col :let={{_id, notification_schedule}} label="Participant">
+      <:col :let={{_id, notification_schedule}} label="Medium">
         <%= notification_schedule.medium %>
       </:col>
       <:action :let={{_id, notification_schedule}}>
