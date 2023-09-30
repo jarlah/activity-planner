@@ -1,5 +1,5 @@
 defmodule ActivityPlanner.Accounts.UserToken do
-  use Ecto.Schema
+  use ActivityPlanner.Schema
   import Ecto.Query
   alias ActivityPlanner.Accounts.UserToken
 

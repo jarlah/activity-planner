@@ -1,13 +1,12 @@
 defmodule ActivityPlanner.Participants.Participant do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "participants" do
     field :email, :string
     field :name, :string
     field :phone, :string
     field :description, :string
-    field :company_id, :integer
+    field :company_id, :binary_id
 
     belongs_to :user, ActivityPlanner.Accounts.User
 

@@ -1,6 +1,5 @@
 defmodule ActivityPlanner.Activities.Activity do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "activities" do
     field :title, :string

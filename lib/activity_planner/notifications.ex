@@ -22,7 +22,6 @@ defmodule ActivityPlanner.Notifications do
   def create_notification_template(attrs \\ %{}) do
     %NotificationTemplate{company_id: Repo.get_company_id()}
     |> NotificationTemplate.changeset(attrs)
-    |> IO.inspect()
     |> Repo.insert()
   end
 

@@ -18,7 +18,7 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
-      add :company_uuid, :uuid, null: false
+      add :company_id, :uuid, null: false
       timestamps()
     end
 
@@ -30,7 +30,7 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string
-      add :company_uuid, :uuid, null: false
+      add :company_id, :uuid, null: false
       timestamps(updated_at: false)
     end
 
@@ -119,6 +119,7 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :cron_expression, :map
       add :hours_window_offset, :integer, default: 0
       add :hours_window_length, :integer
+      add :enabled, :boolean, default: true
       add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing), null: false
       add :template_id, references(:notification_templates, type: :uuid, on_delete: :nothing), null: false
       add :company_id, :uuid, null: false

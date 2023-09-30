@@ -2,7 +2,7 @@ defmodule ActivityPlanner.Companies.Company do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:company_id, :id, autogenerate: true}
+  @primary_key {:company_id, :binary_id, autogenerate: true}
   schema "companies" do
     field :address, :string
     field :description, :string

@@ -1,6 +1,5 @@
 defmodule ActivityPlanner.Notifications.NotificationTemplate do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "notification_templates" do
     field :title, :string

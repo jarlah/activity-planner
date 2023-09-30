@@ -1,11 +1,10 @@
 defmodule ActivityPlanner.Activities.ActivityParticipant do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use ActivityPlanner.Schema
 
   schema "activity_participants" do
     belongs_to :activity, ActivityPlanner.Activities.Activity
     belongs_to :participant, ActivityPlanner.Participants.Participant
-    field :company_id, :integer
+    field :company_id, :binary_id
 
     timestamps()
   end
