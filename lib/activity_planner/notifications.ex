@@ -1,6 +1,7 @@
 defmodule ActivityPlanner.Notifications do
   import Ecto.Query
 
+  alias ActivityPlanner.JobManager
   alias ActivityPlanner.Notifications.NotificationTemplate
   alias ActivityPlanner.Mailer
   alias ActivityPlanner.SMS
@@ -155,5 +156,88 @@ defmodule ActivityPlanner.Notifications do
         select: [s.hours_window_offset, s.hours_window_length]
 
     ActivityPlanner.Repo.one!(query, skip_company_id: true)
+  end
+
+  def create_notification_schedule(attrs \\ %{}) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(
+        :notification_schedule,
+        NotificationSchedule.changeset(%NotificationSchedule{}, attrs)
+      )
+      |> Ecto.Multi.run(:job_manager, fn _repo, %{notification_schedule: notification_schedule} ->
+        case JobManager.add_job(notification_schedule) do
+          {:ok, _job} -> {:ok, notification_schedule}
+          {:error, _reason} -> {:error, :job_manager_failed}
+        end
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{notification_schedule: notification_schedule}} ->
+        {:ok, notification_schedule}
+
+      {:error, :notification_schedule, changeset, _} ->
+        {:error, changeset}
+
+      {:error, :job_manager, reason, _} ->
+        {:error, reason}
+    end
+  end
+
+  def delete_notification_schedule(id) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.delete(:notification_schedule, Repo.get!(NotificationSchedule, id))
+      |> Ecto.Multi.run(:job_manager, fn _repo, %{notification_schedule: notification_schedule} ->
+        case JobManager.delete_job(notification_schedule) do
+          {:ok, _job} -> {:ok, notification_schedule}
+          {:error, _reason} -> {:error, :job_manager_failed}
+        end
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{notification_schedule: notification_schedule}} ->
+        {:ok, notification_schedule}
+
+      {:error, :notification_schedule, reason, _} ->
+        {:error, reason}
+
+      {:error, :job_manager, reason, _} ->
+        {:error, reason}
+    end
+  end
+
+  def update_notification_schedule(id, attrs) do
+    multi =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:notification_schedule, fn _repo, _ ->
+        case Repo.get(NotificationSchedule, id) do
+          nil -> {:error, :not_found}
+          notification_schedule -> {:ok, notification_schedule}
+        end
+      end)
+      |> Ecto.Multi.update(:updated_notification_schedule, fn %{notification_schedule: schedule} ->
+        NotificationSchedule.changeset(schedule, attrs)
+      end)
+      |> Ecto.Multi.run(:job_manager, fn _repo, %{updated_notification_schedule: notification_schedule} ->
+        case JobManager.add_job(notification_schedule) do
+          {:ok, _job} -> {:ok, notification_schedule}
+          {:error, _reason} -> {:error, :job_manager_failed}
+        end
+      end)
+
+    case Repo.transaction(multi) do
+      {:ok, %{updated_notification_schedule: notification_schedule}} ->
+        {:ok, notification_schedule}
+
+      {:error, :notification_schedule, _reason, _} ->
+        {:error, :not_found}
+
+      {:error, :updated_notification_schedule, changeset, _} ->
+        {:error, changeset}
+
+      {:error, :job_manager, reason, _} ->
+        {:error, reason}
+    end
   end
 end
