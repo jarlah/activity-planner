@@ -19,8 +19,8 @@ defmodule ActivityPlanner.ActivitiesTest do
 
     test "list_activities/0 returns all activities" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
@@ -34,8 +34,8 @@ defmodule ActivityPlanner.ActivitiesTest do
 
     test "get_activity!/1 returns the activity with given id" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
@@ -44,24 +44,23 @@ defmodule ActivityPlanner.ActivitiesTest do
           responsible_participant_id: participant.id
         })
 
-      assert get_activity!(activity.id, skip_company_id: true) == activity
+      assert get_activity!(activity.id, company_id: company.company_id) == activity
     end
 
     test "create_activity/1 with valid data creates a activity" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       valid_attrs = %{
         description: "some description",
         start_time: ~U[2023-09-19 06:31:00Z],
         end_time: ~U[2023-09-19 06:31:00Z],
-        company_id: company.company_id,
         activity_group_id: activity_group.id,
         responsible_participant_id: participant.id
       }
 
-      assert {:ok, %Activity{} = activity} = create_activity(valid_attrs)
+      assert {:ok, %Activity{} = activity} = create_activity(valid_attrs, company_id: company.company_id)
       assert activity.description == "some description"
       assert activity.start_time == ~U[2023-09-19 06:31:00Z]
       assert activity.end_time == ~U[2023-09-19 06:31:00Z]
@@ -73,12 +72,11 @@ defmodule ActivityPlanner.ActivitiesTest do
 
     test "update_activity/2 with valid data updates the activity" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
-          company_id: company.company_id,
           activity_group_id: activity_group.id,
           responsible_participant_id: participant.id
         })
@@ -89,7 +87,7 @@ defmodule ActivityPlanner.ActivitiesTest do
         end_time: ~U[2023-09-20 06:31:00Z]
       }
 
-      assert {:ok, %Activity{} = activity} = update_activity(activity, update_attrs)
+      assert {:ok, %Activity{} = activity} = update_activity(activity, update_attrs, company_id: company.company_id)
       assert activity.description == "some updated description"
       assert activity.start_time == ~U[2023-09-20 06:31:00Z]
       assert activity.end_time == ~U[2023-09-20 06:31:00Z]
@@ -97,8 +95,8 @@ defmodule ActivityPlanner.ActivitiesTest do
 
     test "update_activity/2 with invalid data returns error changeset" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
@@ -108,43 +106,41 @@ defmodule ActivityPlanner.ActivitiesTest do
         })
 
       assert {:error, %Ecto.Changeset{}} =
-               update_activity(activity, @invalid_attrs, skip_company_id: true)
+               update_activity(activity, @invalid_attrs, company_id: company.company_id)
 
-      assert activity == get_activity!(activity.id, skip_company_id: true)
+      assert activity == get_activity!(activity.id, company_id: company.company_id)
     end
 
     test "delete_activity/1 deletes the activity" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
-          company_id: company.company_id,
           activity_group_id: activity_group.id,
           responsible_participant_id: participant.id
         })
 
-      assert {:ok, %Activity{}} = delete_activity(activity, skip_company_id: true)
+      assert {:ok, %Activity{}} = delete_activity(activity, company_id: company.company_id)
 
       assert_raise Ecto.NoResultsError, fn ->
-        get_activity!(activity.id, skip_company_id: true)
+        get_activity!(activity.id, company_id: company.company_id)
       end
     end
 
     test "change_activity/1 returns a activity changeset" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
-      activity_group = activity_group_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
+      activity_group = activity_group_fixture(%{}, company_id: company.company_id)
 
       activity =
         activity_fixture(%{
-          company_id: company.company_id,
           activity_group_id: activity_group.id,
           responsible_participant_id: participant.id
         })
 
-      assert %Ecto.Changeset{} = change_activity(activity)
+      assert %Ecto.Changeset{} = change_activity(activity, %{}, company_id: company.company_id)
     end
   end
 
@@ -174,16 +170,15 @@ defmodule ActivityPlanner.ActivitiesTest do
 
     test "create_activity_participant/1 with valid data creates a activity_participant" do
       company = company_fixture()
-      participant = participant_fixture(%{company_id: company.company_id})
+      participant = participant_fixture(%{}, company_id: company.company_id)
       activity = activity_fixture(%{company_id: company.company_id})
 
       valid_attrs = %{
         participant_id: participant.id,
-        activity_id: activity.id,
-        company_id: company.company_id
+        activity_id: activity.id
       }
 
-      assert {:ok, %ActivityParticipant{}} = create_activity_participant(valid_attrs)
+      assert {:ok, %ActivityParticipant{}} = create_activity_participant(valid_attrs, company_id: company.company_id)
     end
 
     test "create_activity_participant/1 with invalid data returns error changeset" do

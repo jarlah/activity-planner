@@ -17,13 +17,13 @@ defmodule ActivityPlanner.ActivityFixtures do
     responsible_participant_id =
       attrs
       |> Map.get_lazy(:responsible_participant_id, fn ->
-        participant_fixture(%{company_id: company_id}).id
+        participant_fixture(%{}, company_id: company_id).id
       end)
 
     activity_group_id =
       attrs
       |> Map.get_lazy(:activity_group_id, fn ->
-        activity_group_fixture(%{company_id: company_id}).id
+        activity_group_fixture(%{}, company_id: company_id).id
       end)
 
     {:ok, activity} =
@@ -34,10 +34,9 @@ defmodule ActivityPlanner.ActivityFixtures do
         start_time: current_time,
         end_time: Timex.shift(current_time, days: 1),
         responsible_participant_id: responsible_participant_id,
-        activity_group_id: activity_group_id,
-        company_id: company_id
+        activity_group_id: activity_group_id
       })
-      |> ActivityPlanner.Activities.create_activity()
+      |> ActivityPlanner.Activities.create_activity(company_id: company_id)
 
     activity
   end
@@ -47,17 +46,16 @@ defmodule ActivityPlanner.ActivityFixtures do
   """
   def activity_participant_fixture(attrs \\ %{}) do
     company_id = Map.get_lazy(attrs, :company_id, fn -> company_fixture().company_id end)
-    participant = participant_fixture(%{company_id: company_id})
+    participant = participant_fixture(%{}, company_id: company_id)
     activity = activity_fixture(%{company_id: company_id})
 
     {:ok, activity_participant} =
       attrs
       |> Enum.into(%{
         participant_id: participant.id,
-        activity_id: activity.id,
-        company_id: company_id
+        activity_id: activity.id
       })
-      |> ActivityPlanner.Activities.create_activity_participant()
+      |> ActivityPlanner.Activities.create_activity_participant(company_id: company_id)
 
     activity_participant
   end

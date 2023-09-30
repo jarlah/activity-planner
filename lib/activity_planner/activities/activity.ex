@@ -19,17 +19,16 @@ defmodule ActivityPlanner.Activities.Activity do
   end
 
   @doc false
-  def changeset(activity, attrs) do
+  def changeset(activity, attrs, opts \\ []) do
     activity
     |> cast(attrs, [
       :responsible_participant_id,
       :activity_group_id,
-      :company_id,
       :description,
       :start_time,
       :end_time
     ])
-    |> Companies.common_changeset(attrs)
+    |> Companies.common_changeset(attrs, opts)
     |> validate_required([
       :responsible_participant_id,
       :activity_group_id,

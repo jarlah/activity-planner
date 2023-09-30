@@ -40,8 +40,8 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   end
 
   defp create_activity(%{company: company}) do
-    activity_group = activity_group_fixture(%{company_id: company.company_id})
-    responsible_participant = participant_fixture(%{company_id: company.company_id})
+    activity_group = activity_group_fixture(%{}, company_id: company.company_id)
+    responsible_participant = participant_fixture(%{}, company_id: company.company_id)
 
     activity =
       activity_fixture(%{

@@ -51,7 +51,7 @@ defmodule ActivityPlanner.Participants do
   """
   def create_participant(attrs \\ %{}, options \\ []) do
     %Participant{}
-    |> Participant.changeset(attrs)
+    |> Participant.changeset(attrs, options)
     |> Repo.insert(options)
   end
 

@@ -34,8 +34,8 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
       activity_fixture(%{company_id: company.company_id})
       |> Repo.preload([:activity_group, :responsible_participant], company_id: company.company_id)
 
-    other_participant = participant_fixture(%{company_id: company.company_id})
-    other_participant2 = participant_fixture(%{company_id: company.company_id})
+    other_participant = participant_fixture(%{}, company_id: company.company_id)
+    other_participant2 = participant_fixture(%{}, company_id: company.company_id)
 
     activity_participant =
       activity_participant_fixture(%{

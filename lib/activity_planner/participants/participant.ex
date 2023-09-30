@@ -13,10 +13,10 @@ defmodule ActivityPlanner.Participants.Participant do
   end
 
   @doc false
-  def changeset(participant, attrs) do
+  def changeset(participant, attrs, opts \\ []) do
     participant
-    |> cast(attrs, [:name, :email, :phone, :description, :company_id])
-    |> Companies.common_changeset(attrs)
+    |> cast(attrs, [:name, :email, :phone, :description])
+    |> Companies.common_changeset(attrs, opts)
     |> validate_required([:name, :email, :phone, :company_id])
     |> unique_constraint(:phone)
     |> unique_constraint(:email)

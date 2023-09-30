@@ -95,6 +95,12 @@ defmodule ActivityPlannerWeb.Router do
       live "/notification_templates/:id/edit", NotificationTemplateLive.Index, :edit
       live "/notification_templates/:id", NotificationTemplateLive.Show, :show
       live "/notification_templates/:id/show/edit", NotificationTemplateLive.Show, :edit
+
+      live "/notification_schedules", NotificationScheduleLive.Index, :index
+      live "/notification_schedules/new", NotificationScheduleLive.Index, :new
+      live "/notification_schedules/:id/edit", NotificationScheduleLive.Index, :edit
+      live "/notification_schedules/:id", NotificationScheduleLive.Show, :show
+      live "/notification_schedules/:id/show/edit", NotificationScheduleLive.Show, :edit
     end
   end
 

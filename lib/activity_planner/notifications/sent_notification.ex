@@ -1,5 +1,6 @@
 defmodule ActivityPlanner.Notifications.SentNotification do
   use ActivityPlanner.Schema
+  alias ActivityPlanner.Companies
 
   schema "sent_notifications" do
     field :sent_at, :utc_datetime
@@ -26,6 +27,7 @@ defmodule ActivityPlanner.Notifications.SentNotification do
       :actual_title,
       :activity_id
     ])
+    |> Companies.common_changeset(attrs)
     |> validate_required([
       :sent_at,
       :status,
@@ -33,7 +35,8 @@ defmodule ActivityPlanner.Notifications.SentNotification do
       :receiver,
       :actual_content,
       :actual_title,
-      :activity_id
+      :activity_id,
+      :company_id
     ])
   end
 end

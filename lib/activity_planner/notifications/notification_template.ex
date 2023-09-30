@@ -14,7 +14,7 @@ defmodule ActivityPlanner.Notifications.NotificationTemplate do
   @doc false
   def changeset(notification_template, attrs) do
     notification_template
-    |> cast(attrs, [:template_content, :title, :company_id])
+    |> cast(attrs, [:template_content, :title])
     |> Companies.common_changeset(attrs)
     |> validate_required([:template_content, :title, :company_id])
   end

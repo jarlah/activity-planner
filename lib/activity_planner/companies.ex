@@ -24,9 +24,9 @@ defmodule ActivityPlanner.Companies do
     Repo.all(Company, opts)
   end
 
-  def common_changeset(schema, _attrs) do
+  def common_changeset(schema, _attrs, opts \\ []) do
     schema
-    |> put_company_id(get_company_id())
+    |> put_company_id(get_company_id() || opts[:company_id])
   end
 
   defp put_company_id(changeset, nil), do: changeset

@@ -1,5 +1,6 @@
 defmodule ActivityPlanner.Notifications.NotificationSchedule do
   use ActivityPlanner.Schema
+  alias ActivityPlanner.Companies
 
   schema "notification_schedules" do
     field :name, :string
@@ -29,6 +30,7 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
       :hours_window_length,
       :enabled
     ])
+    |> Companies.common_changeset(attrs)
     |> validate_required([
       :name,
       :medium,
@@ -37,7 +39,8 @@ defmodule ActivityPlanner.Notifications.NotificationSchedule do
       :activity_group_id,
       :hours_window_offset,
       :hours_window_length,
-      :enabled
+      :enabled,
+      :company_id
     ])
   end
 end

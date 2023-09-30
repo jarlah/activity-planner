@@ -240,4 +240,13 @@ defmodule ActivityPlanner.Notifications do
         {:error, reason}
     end
   end
+
+  def change_notification_schedule(%NotificationSchedule{} = notification_schedule, attrs \\ %{}) do
+    NotificationSchedule.changeset(notification_schedule, attrs)
+  end
+
+  def get_notification_schedule!(id, opts \\ []) do
+    Repo.get!(NotificationSchedule, id, opts)
+  end
+
 end

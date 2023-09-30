@@ -2,7 +2,7 @@ defmodule ActivityPlanner.ParticipantFixtures do
   @doc """
   Generate a participant.
   """
-  def participant_fixture(attrs \\ %{}) do
+  def participant_fixture(attrs \\ %{}, opts \\ []) do
     {:ok, participant} =
       attrs
       |> Enum.into(%{
@@ -10,7 +10,7 @@ defmodule ActivityPlanner.ParticipantFixtures do
         name: "some name",
         phone: random_eight_digit_string()
       })
-      |> ActivityPlanner.Participants.create_participant()
+      |> ActivityPlanner.Participants.create_participant(opts)
 
     participant
   end

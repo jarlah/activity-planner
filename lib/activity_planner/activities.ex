@@ -33,7 +33,7 @@ defmodule ActivityPlanner.Activities do
   ## Examples
 
       iex> company = company_fixture()
-      iex> activity_group_fixture = activity_group_fixture(%{ company_id: company.company_id })
+      iex> activity_group_fixture = activity_group_fixture(%{}, company_id: company.company_id)
       iex> assert [activity_group_fixture] == list_activity_groups(company_id: company.company_id)
       iex> assert [activity_group_fixture] == list_activity_groups(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
@@ -64,7 +64,7 @@ defmodule ActivityPlanner.Activities do
   ## Example
 
       iex> company = company_fixture()
-      iex> activity_group_fixture = %ActivityGroup{id: activity_group_id, company_id: company_id} = activity_group_fixture(%{ company_id: company.company_id })
+      iex> activity_group_fixture = %ActivityGroup{id: activity_group_id, company_id: company_id} = activity_group_fixture(%{}, company_id: company.company_id)
       iex> activity_group = get_activity_group!(activity_group_id, company_id: company_id)
       iex> assert activity_group == activity_group_fixture
 
@@ -78,17 +78,17 @@ defmodule ActivityPlanner.Activities do
     ## Example
 
       iex> company = company_fixture()
-      iex> participant = participant_fixture(%{ company_id: company.company_id })
-      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> participant = participant_fixture(%{}, company_id: company.company_id)
+      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
-      iex> attrs = %{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
-      iex> {:ok, %Activity{}} = create_activity(attrs)
+      iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
+      iex> {:ok, %Activity{}} = create_activity(attrs, company_id: company.company_id)
 
   """
   def create_activity(attrs \\ %{}, opts \\ []) do
     %Activity{}
-    |> Activity.changeset(attrs)
+    |> Activity.changeset(attrs, opts)
     |> Repo.insert(opts)
   end
 
@@ -98,12 +98,12 @@ defmodule ActivityPlanner.Activities do
     ## Example
 
       iex> company = company_fixture()
-      iex> participant = participant_fixture(%{ company_id: company.company_id })
-      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> participant = participant_fixture(%{}, company_id: company.company_id)
+      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
-      iex> attrs = %{ company_id: company.company_id, responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
-      iex> %Activity{} = create_activity!(attrs)
+      iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
+      iex> %Activity{} = create_activity!(attrs, company_id: company.company_id)
 
   """
   def create_activity!(attrs \\ %{}, opts \\ []) do
@@ -117,12 +117,12 @@ defmodule ActivityPlanner.Activities do
       ## Examples
 
       iex> company = company_fixture()
-      iex> {:ok, %ActivityGroup{}} = create_activity_group(%{ name: "Test", company_id: company.company_id })
+      iex> {:ok, %ActivityGroup{}} = create_activity_group(%{ name: "Test" }, company_id: company.company_id)
 
   """
   def create_activity_group(attrs \\ %{}, opts \\ []) do
     %ActivityGroup{}
-    |> ActivityGroup.changeset(attrs)
+    |> ActivityGroup.changeset(attrs, opts)
     |> Repo.insert(opts)
   end
 
@@ -146,7 +146,7 @@ defmodule ActivityPlanner.Activities do
       ## Examples
 
       iex> company = company_fixture()
-      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
       iex> {:ok, %ActivityGroup{}} = update_activity_group(activity_group, %{ name: "another name" })
   """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
@@ -174,7 +174,7 @@ defmodule ActivityPlanner.Activities do
   ## Example
 
       iex> company = company_fixture()
-      iex> activity_group = activity_group_fixture(%{ company_id: company.company_id })
+      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
       iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: company.company_id)
 
   """
@@ -185,12 +185,12 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking activity changes.
   """
-  def change_activity(%Activity{} = activity, attrs \\ %{}) do
-    Activity.changeset(activity, attrs)
+  def change_activity(%Activity{} = activity, attrs \\ %{}, opts \\ []) do
+    Activity.changeset(activity, attrs, opts)
   end
 
-  def change_activity_group(%ActivityGroup{} = activity, attrs \\ %{}) do
-    ActivityGroup.changeset(activity, attrs)
+  def change_activity_group(%ActivityGroup{} = activity, attrs \\ %{}, opts \\ []) do
+    ActivityGroup.changeset(activity, attrs, opts)
   end
 
   @doc """
@@ -212,9 +212,9 @@ defmodule ActivityPlanner.Activities do
   Creates a activity_participant.
 
   """
-  def create_activity_participant(attrs \\ %{}) do
+  def create_activity_participant(attrs \\ %{}, opts \\ []) do
     %ActivityParticipant{}
-    |> ActivityParticipant.changeset(attrs)
+    |> ActivityParticipant.changeset(attrs, opts)
     |> Repo.insert()
   end
 
@@ -242,12 +242,12 @@ defmodule ActivityPlanner.Activities do
       iex> id1 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd1")
       iex> id2 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd2")
       iex> id3 = Ecto.UUID.cast!("ec8b4aaa-52a3-4222-9ae0-40e718af2dd3")
-      iex> change_activity_participant(%ActivityParticipant{}, %{activity_id: id1, participant_id: id2, company_id: id3})
+      iex> change_activity_participant(%ActivityParticipant{}, %{activity_id: id1, participant_id: id2}, company_id: id3)
       #Ecto.Changeset<action: nil, changes: %{company_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd3", activity_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd1", participant_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd2"}, errors: [], data: #ActivityPlanner.Activities.ActivityParticipant<>, valid?: true>
 
   """
-  def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}) do
-    ActivityParticipant.changeset(activity_participant, attrs)
+  def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}, opts \\ []) do
+    ActivityParticipant.changeset(activity_participant, attrs, opts)
   end
 
   @spec get_activities_in_time_range(%DateTime{}, %DateTime{}) :: list()
