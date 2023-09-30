@@ -5,6 +5,8 @@ defmodule ActivityPlanner.Repo do
 
   require Ecto.Query
 
+  alias ActivityPlanner.Companies
+
   @impl true
   def prepare_query(_operation, query, opts) do
     cond do
@@ -19,18 +21,8 @@ defmodule ActivityPlanner.Repo do
     end
   end
 
-  @tenant_key {__MODULE__, :company_id}
-
-  def put_company_id(company_id) do
-    Process.put(@tenant_key, company_id)
-  end
-
-  def get_company_id() do
-    Process.get(@tenant_key)
-  end
-
   @impl true
   def default_options(_operation) do
-    [company_id: get_company_id()]
+    [company_id: Companies.get_company_id()]
   end
 end

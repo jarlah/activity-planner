@@ -21,9 +21,9 @@ defmodule ActivityPlanner.Notifications do
     Repo.get!(NotificationTemplate, id, opts)
   end
 
-  def create_notification_template(attrs \\ %{}, opts \\ []) do
+  def create_notification_template(attrs \\ %{}) do
     %NotificationTemplate{}
-    |> NotificationTemplate.changeset(attrs, opts)
+    |> NotificationTemplate.changeset(attrs)
     |> Repo.insert()
   end
 

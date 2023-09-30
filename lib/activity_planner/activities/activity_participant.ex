@@ -11,10 +11,10 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
   end
 
   @doc false
-  def changeset(activity_participant, attrs, opts \\ []) do
+  def changeset(activity_participant, attrs) do
     activity_participant
     |> cast(attrs, [:activity_id, :participant_id, :company_id])
-    |> Companies.common_changeset(attrs, opts)
+    |> Companies.common_changeset(attrs)
     |> validate_required([:activity_id, :participant_id, :company_id])
   end
 end

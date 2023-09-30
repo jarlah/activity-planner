@@ -214,7 +214,10 @@ defmodule ActivityPlannerWeb.UserAuth do
   end
 
   defp ensure_company_id(user) do
-    ActivityPlanner.Repo.put_company_id(user.companies |> List.first() |> Map.get(:company_id))
+    user.companies
+    |> List.first()
+    |> Map.get(:company_id)
+    |> ActivityPlanner.Companies.put_company_id()
   end
 
   defp put_token_in_session(conn, token) do
