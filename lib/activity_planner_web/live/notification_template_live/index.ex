@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.Index do
+  require ActivityPlanner.Notifications
   alias ActivityPlanner.Notifications
   alias ActivityPlanner.Notifications.NotificationTemplate
 

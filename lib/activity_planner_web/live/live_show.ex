@@ -7,9 +7,9 @@ defmodule ActivityPlannerWeb.LiveShow do
 
     get_function = :"get_#{key}!"
 
-    # unless function_exported?(context, get_function, 1) do
-    #   raise "The function #{get_function}/1 is required but not defined in #{context}"
-    # end
+    unless function_exported?(context, get_function, 1) do
+      raise "The function #{get_function}/1 is required but not defined in #{context}"
+    end
 
     title =
       key

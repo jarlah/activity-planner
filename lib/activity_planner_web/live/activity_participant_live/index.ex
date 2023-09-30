@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.ActivityParticipantLive.Index do
+  require ActivityPlanner.Activities
   alias ActivityPlanner.Activities
   alias ActivityPlanner.Activities.ActivityParticipant
   alias ActivityPlanner.Participants

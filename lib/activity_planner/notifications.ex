@@ -10,14 +10,16 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Repo
 
   def list_notification_schedules(opts \\ []) do
-    ActivityPlanner.Repo.all(NotificationSchedule, opts)
+    Repo.all(NotificationSchedule, opts)
   end
 
   def list_notification_templates(opts \\ []) do
-    ActivityPlanner.Repo.all(NotificationTemplate, opts)
+    Repo.all(NotificationTemplate, opts)
   end
 
-  def get_notification_template!(id), do: Repo.get!(NotificationTemplate, id)
+  def get_notification_template!(id, opts \\ []) do
+    Repo.get!(NotificationTemplate, id, opts)
+  end
 
   def create_notification_template(attrs \\ %{}, opts \\ []) do
     %NotificationTemplate{}

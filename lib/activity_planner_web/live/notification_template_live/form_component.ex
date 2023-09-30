@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.FormComponent do
+  require ActivityPlanner.Notifications
   alias ActivityPlanner.Notifications
 
   use ActivityPlannerWeb.FormComponent,

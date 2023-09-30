@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.ActivityGroupLive.Show do
+  require ActivityPlanner.Activities
   alias ActivityPlanner.Activities
 
   use ActivityPlannerWeb.LiveShow,

@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.Show do
+  require ActivityPlanner.Notifications
   alias ActivityPlanner.Notifications
 
   use ActivityPlannerWeb.LiveShow,

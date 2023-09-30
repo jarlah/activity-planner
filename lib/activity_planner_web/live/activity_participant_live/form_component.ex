@@ -1,4 +1,5 @@
 defmodule ActivityPlannerWeb.ActivityParticipantLive.FormComponent do
+  require ActivityPlanner.Activities
   alias ActivityPlanner.Activities
 
   use ActivityPlannerWeb.FormComponent,
