@@ -1,12 +1,8 @@
 defmodule ActivityPlannerWeb.ActivityGroupLive.Index do
-  require ActivityPlanner.Activities
-  alias ActivityPlanner.Activities
-  alias ActivityPlanner.Activities.ActivityGroup
-
   use ActivityPlannerWeb.LiveIndex,
     key: :activity_group,
-    context: Activities,
-    schema: ActivityGroup,
+    context: ActivityPlanner.Activities,
+    schema: ActivityPlanner.Activities.ActivityGroup,
     form: ActivityPlannerWeb.ActivityGroupLive.FormComponent
 
   def render(assigns) do

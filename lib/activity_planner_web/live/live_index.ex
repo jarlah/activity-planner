@@ -11,14 +11,20 @@ defmodule ActivityPlannerWeb.LiveIndex do
     delete_function = :"delete_#{key}"
     list_function = :"list_#{Inflex.pluralize(key)}"
 
-    for {function, arity} <- [
-          {get_function, 1},
-          {delete_function, 1},
-          {list_function, 0}
-        ] do
-      unless function_exported?(context, function, arity) do
-        raise "The function #{function}/#{arity} is required but not defined in #{context}"
-      end
+    case Code.ensure_compiled(context) do
+      {:module, _} ->
+        for {function, arity} <- [
+              {get_function, 1},
+              {delete_function, 1},
+              {list_function, 0}
+            ] do
+          unless function_exported?(context, function, arity) do
+            raise "The function #{function}/#{arity} is required but not defined in #{context}"
+          end
+        end
+
+      _ ->
+        raise "Unable to compile #{context}"
     end
 
     stream_key = key |> Inflex.pluralize() |> String.to_atom()

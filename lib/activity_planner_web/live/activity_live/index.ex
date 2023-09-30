@@ -1,18 +1,12 @@
 defmodule ActivityPlannerWeb.ActivityLive.Index do
-  require ActivityPlanner.Activities
-  alias ActivityPlanner.Participants
-  alias ActivityPlanner.Activities
-  alias ActivityPlanner.Activities.Activity
-  alias ActivityPlannerWeb.ActivityLive.FormComponent
-
   use ActivityPlannerWeb.LiveIndex,
     key: :activity,
-    context: Activities,
-    schema: Activity,
-    form: FormComponent,
+    context: ActivityPlanner.Activities,
+    schema: ActivityPlanner.Activities.Activity,
+    form: ActivityPlannerWeb.ActivityLive.FormComponent,
     assigns: [
-      {:activity_groups, mod: Activities, fun: :list_activity_groups},
-      {:participants, mod: Participants, fun: :list_participants}
+      {:activity_groups, mod: ActivityPlanner.Activities, fun: :list_activity_groups},
+      {:participants, mod: ActivityPlanner.Participants, fun: :list_participants}
     ]
 
   def render(assigns) do

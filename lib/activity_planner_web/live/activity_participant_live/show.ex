@@ -1,14 +1,10 @@
 defmodule ActivityPlannerWeb.ActivityParticipantLive.Show do
-  require ActivityPlanner.Activities
-  alias ActivityPlanner.Activities
-  alias ActivityPlanner.Participants
-
   use ActivityPlannerWeb.LiveShow,
     key: :activity_participant,
-    context: Activities,
+    context: ActivityPlanner.Activities,
     assigns: [
-      {:activities, mod: Activities, fun: :list_activities},
-      {:participants, mod: Participants, fun: :list_participants}
+      {:activities, mod: ActivityPlanner.Activities, fun: :list_activities},
+      {:participants, mod: ActivityPlanner.Participants, fun: :list_participants}
     ]
 
   def render(assigns) do

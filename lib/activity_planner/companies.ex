@@ -16,11 +16,13 @@ defmodule ActivityPlanner.Companies do
 
   def common_changeset(schema, _attrs, opts \\ []) do
     company_id = Repo.get_company_id() || opts[:company_id]
+
     schema
     |> put_company_id(company_id)
   end
 
   defp put_company_id(changeset, nil), do: changeset
+
   defp put_company_id(changeset, company_id) do
     put_change(changeset, :company_id, company_id)
   end

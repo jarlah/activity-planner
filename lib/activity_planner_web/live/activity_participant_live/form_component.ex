@@ -1,10 +1,7 @@
 defmodule ActivityPlannerWeb.ActivityParticipantLive.FormComponent do
-  require ActivityPlanner.Activities
-  alias ActivityPlanner.Activities
-
   use ActivityPlannerWeb.FormComponent,
     key: :activity_participant,
-    context: Activities
+    context: ActivityPlanner.Activities
 
   @impl true
   def render(assigns) do

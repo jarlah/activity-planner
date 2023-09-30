@@ -1,10 +1,7 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.Show do
-  require ActivityPlanner.Notifications
-  alias ActivityPlanner.Notifications
-
   use ActivityPlannerWeb.LiveShow,
     key: :notification_template,
-    context: Notifications
+    context: ActivityPlanner.Notifications
 
   def render(assigns) do
     ~H"""

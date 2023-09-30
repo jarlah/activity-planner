@@ -10,14 +10,20 @@ defmodule ActivityPlannerWeb.FormComponent do
     change_function = :"change_#{key}"
     update_function = :"update_#{key}"
 
-    for {function, arity} <- [
-          {create_function, 1},
-          {change_function, 1},
-          {update_function, 2}
-        ] do
-      unless function_exported?(context, function, arity) do
-        raise "The function #{function}/#{arity} is required but not defined in #{context}"
-      end
+    case Code.ensure_compiled(context) do
+      {:module, _} ->
+        for {function, arity} <- [
+              {create_function, 1},
+              {change_function, 1},
+              {update_function, 2}
+            ] do
+          unless function_exported?(context, function, arity) do
+            raise "The function #{function}/#{arity} is required but not defined in #{context}"
+          end
+        end
+
+      _ ->
+        raise "Unable to compile #{context}"
     end
 
     title =

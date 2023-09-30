@@ -1,14 +1,9 @@
 defmodule ActivityPlannerWeb.ParticipantLive.Index do
-  require ActivityPlanner.Participants
-  alias ActivityPlanner.Participants
-  alias ActivityPlanner.Participants.Participant
-  alias ActivityPlannerWeb.ParticipantLive.FormComponent
-
   use ActivityPlannerWeb.LiveIndex,
     key: :participant,
-    context: Participants,
-    schema: Participant,
-    form: FormComponent
+    context: ActivityPlanner.Participants,
+    schema: ActivityPlanner.Participants.Participant,
+    form: ActivityPlannerWeb.ParticipantLive.FormComponent
 
   def render(assigns) do
     ~H"""
@@ -52,7 +47,7 @@ defmodule ActivityPlannerWeb.ParticipantLive.Index do
       on_cancel={JS.patch(~p"/participants")}
     >
       <.live_component
-        module={FormComponent}
+        module={ActivityPlannerWeb.ParticipantLive.FormComponent}
         id={@participant.id || :new}
         title={@page_title}
         action={@live_action}

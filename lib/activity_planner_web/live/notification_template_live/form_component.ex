@@ -1,10 +1,7 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.FormComponent do
-  require ActivityPlanner.Notifications
-  alias ActivityPlanner.Notifications
-
   use ActivityPlannerWeb.FormComponent,
     key: :notification_template,
-    context: Notifications
+    context: ActivityPlanner.Notifications
 
   @impl true
   def render(assigns) do

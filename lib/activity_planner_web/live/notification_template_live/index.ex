@@ -1,12 +1,8 @@
 defmodule ActivityPlannerWeb.NotificationTemplateLive.Index do
-  require ActivityPlanner.Notifications
-  alias ActivityPlanner.Notifications
-  alias ActivityPlanner.Notifications.NotificationTemplate
-
   use ActivityPlannerWeb.LiveIndex,
     key: :notification_template,
-    context: Notifications,
-    schema: NotificationTemplate,
+    context: ActivityPlanner.Notifications,
+    schema: ActivityPlanner.Notifications.NotificationTemplate,
     form: ActivityPlannerWeb.NotificationTemplateLive.FormComponent
 
   def render(assigns) do

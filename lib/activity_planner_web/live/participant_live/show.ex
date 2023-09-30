@@ -1,11 +1,7 @@
 defmodule ActivityPlannerWeb.ParticipantLive.Show do
-  require ActivityPlanner.Participants
-  alias ActivityPlanner.Participants
-  alias ActivityPlannerWeb.ParticipantLive.FormComponent
-
   use ActivityPlannerWeb.LiveShow,
     key: :participant,
-    context: Participants
+    context: ActivityPlanner.Participants
 
   def render(assigns) do
     ~H"""
@@ -34,7 +30,7 @@ defmodule ActivityPlannerWeb.ParticipantLive.Show do
       on_cancel={JS.patch(~p"/participants/#{@participant}")}
     >
       <.live_component
-        module={FormComponent}
+        module={ActivityPlannerWeb.ParticipantLive.FormComponent}
         id={@participant.id}
         title={@page_title}
         action={@live_action}

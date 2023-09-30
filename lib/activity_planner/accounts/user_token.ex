@@ -45,7 +45,9 @@ defmodule ActivityPlanner.Accounts.UserToken do
   """
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
-    {token, %UserToken{token: token, context: "session", user_id: user.id, company_id: user.company_id }}
+
+    {token,
+     %UserToken{token: token, context: "session", user_id: user.id, company_id: user.company_id}}
   end
 
   @doc """

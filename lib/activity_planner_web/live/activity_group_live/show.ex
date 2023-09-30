@@ -1,10 +1,7 @@
 defmodule ActivityPlannerWeb.ActivityGroupLive.Show do
-  require ActivityPlanner.Activities
-  alias ActivityPlanner.Activities
-
   use ActivityPlannerWeb.LiveShow,
     key: :activity_group,
-    context: Activities
+    context: ActivityPlanner.Activities
 
   def render(assigns) do
     ~H"""
