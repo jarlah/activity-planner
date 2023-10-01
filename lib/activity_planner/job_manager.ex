@@ -57,6 +57,7 @@ defmodule ActivityPlanner.JobManager do
       # this is necessary to avoid leakage.
       # Without it `[debug] Scheduling job for execution` is spammed the number of times any job has been added with add_job
       # see https://github.com/quantum-elixir/quantum-core/discussions/580
+      # and https://elixirforum.com/t/programmatic-scheduling-of-quantum-jobs-leakage/58609
       :ok = ActivityPlanner.Scheduler.delete_job(job_name(schedule))
 
       :ok =
