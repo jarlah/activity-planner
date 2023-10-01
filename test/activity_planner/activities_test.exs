@@ -11,6 +11,7 @@ defmodule ActivityPlanner.ActivitiesTest do
   import ActivityPlanner.CompanyFixtures
   import ActivityPlanner.ActivityFixtures
   import ActivityPlanner.ParticipantFixtures
+  import ActivityPlanner.Factory
 
   doctest ActivityPlanner.Activities
 

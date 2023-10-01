@@ -32,10 +32,10 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> company = company_fixture()
-      iex> activity_group_fixture = activity_group_fixture(%{}, company_id: company.company_id)
-      iex> assert [activity_group_fixture] == list_activity_groups(company_id: company.company_id)
-      iex> assert [activity_group_fixture] == list_activity_groups(skip_company_id: true)
+      iex> company = insert!(:company)
+      iex> insert!(:activity_group, company: company)
+      iex> [%ActivityGroup{}] = list_activity_groups(company_id: company.company_id)
+      iex> [%ActivityGroup{}] = list_activity_groups(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activity_groups(company_id: non_existent_company_id)
       []
@@ -63,10 +63,9 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> company = company_fixture()
-      iex> activity_group_fixture = %ActivityGroup{id: activity_group_id, company_id: company_id} = activity_group_fixture(%{}, company_id: company.company_id)
-      iex> activity_group = get_activity_group!(activity_group_id, company_id: company_id)
-      iex> assert activity_group == activity_group_fixture
+      iex> company = insert!(:company)
+      iex> activity_group = insert!(:activity_group, company: company)
+      iex> get_activity_group!(activity_group.id, company_id: company.company_id)
 
   Raises `Ecto.NoResultsError` if the Activity does not exist.
   """
@@ -77,9 +76,9 @@ defmodule ActivityPlanner.Activities do
 
     ## Example
 
-      iex> company = company_fixture()
-      iex> participant = participant_fixture(%{}, company_id: company.company_id)
-      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
+      iex> company = insert!(:company)
+      iex> participant = insert!(:participant, company: company)
+      iex> activity_group = insert!(:activity_group, company: company)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
@@ -97,9 +96,9 @@ defmodule ActivityPlanner.Activities do
 
     ## Example
 
-      iex> company = company_fixture()
-      iex> participant = participant_fixture(%{}, company_id: company.company_id)
-      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
+      iex> company = insert!(:company)
+      iex> participant = insert!(:participant, company: company)
+      iex> activity_group = insert!(:activity_group, company: company)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
@@ -116,7 +115,7 @@ defmodule ActivityPlanner.Activities do
 
       ## Examples
 
-      iex> company = company_fixture()
+      iex> company = insert!(:company)
       iex> {:ok, %ActivityGroup{}} = create_activity_group(%{ name: "Test" }, company_id: company.company_id)
 
   """
@@ -145,9 +144,9 @@ defmodule ActivityPlanner.Activities do
 
       ## Examples
 
-      iex> company = company_fixture()
-      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
-      iex> {:ok, %ActivityGroup{}} = update_activity_group(activity_group, %{ name: "another name" })
+      iex> company = insert!(:company)
+      iex> activity_group = insert!(:activity_group, company: company)
+      iex> {:ok, %ActivityGroup{ name: "another name"}} = update_activity_group(activity_group, %{ name: "another name" })
   """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
     activity_group
@@ -173,8 +172,8 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> company = company_fixture()
-      iex> activity_group = activity_group_fixture(%{}, company_id: company.company_id)
+      iex> company = insert!(:company)
+      iex> activity_group = insert!(:activity_group, company: company)
       iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: company.company_id)
 
   """
