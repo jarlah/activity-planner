@@ -47,7 +47,7 @@ defmodule ActivityPlanner.JobManager do
 
   def handle_call({:delete, job}, _from, state) do
     case delete_job_from_quantum(job) do
-      :ok -> {:reply, :ok, state}
+      {:ok, _} -> {:reply, :ok, state}
       {:error, reason} -> {:reply, {:error, reason}, state}
     end
   end
@@ -79,8 +79,8 @@ defmodule ActivityPlanner.JobManager do
 
   defp delete_job_from_quantum(schedule) do
     try do
-      ActivityPlanner.Scheduler.delete_job(job_name(schedule))
-      :ok
+      :ok = ActivityPlanner.Scheduler.delete_job(job_name(schedule))
+      {:ok, "Quantum job deleted successfully"}
     rescue
       exception ->
         {:error, Exception.message(exception)}

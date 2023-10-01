@@ -28,22 +28,22 @@ defmodule ActivityPlannerWeb.NotificationScheduleLive.FormComponent do
         <.input
           field={@form[:activity_group_id]}
           type="select"
-          label="Activity"
+          label="Activity group"
           options={
             @activity_groups
             |> Enum.map(fn c -> {c.name || c.id, c.id} end)
           }
-          prompt="Select activity"
+          prompt="Select activity group"
         />
         <.input
           field={@form[:template_id]}
           type="select"
-          label="Template"
+          label="Notification emplate"
           options={
             @templates
             |> Enum.map(fn c -> {c.title || c.id, c.id} end)
           }
-          prompt="Select template"
+          prompt="Select notification template"
         />
         <:actions>
           <.button phx-disable-with="Saving...">Save notification schedule</.button>
