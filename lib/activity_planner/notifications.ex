@@ -10,22 +10,66 @@ defmodule ActivityPlanner.Notifications do
   alias ActivityPlanner.Notifications.SentNotification
   alias ActivityPlanner.Repo
 
+  @doc """
+  Returns the list of notification schedules.
+
+  ## Examples
+
+      iex> schedule = %NotificationSchedule{company_id: company_id} = notification_schedule_fixture()
+      iex> assert [schedule] == list_notification_schedules(company_id: company_id)
+      iex> assert [schedule] == list_notification_schedules(skip_company_id: true)
+      iex> non_existent_company_id = Ecto.UUID.generate()
+      iex> list_notification_schedules(company_id: non_existent_company_id)
+      []
+
+  """
   def list_notification_schedules(opts \\ []) do
     Repo.all(NotificationSchedule, opts)
   end
 
+  @doc """
+  Returns the list of notification templates.
+
+  ## Examples
+
+      iex> template = %NotificationTemplate{company_id: company_id} = notification_template_fixture()
+      iex> assert [template] == list_notification_templates(company_id: company_id)
+      iex> assert [template] == list_notification_templates(skip_company_id: true)
+      iex> non_existent_company_id = Ecto.UUID.generate()
+      iex> list_notification_templates(company_id: non_existent_company_id)
+      []
+
+  """
   def list_notification_templates(opts \\ []) do
     Repo.all(NotificationTemplate, opts)
   end
 
+  @doc """
+  Gets a single notification template.
+
+  ## Examples
+
+      iex> template = %NotificationTemplate{id: id, company_id: company_id} = notification_template_fixture()
+      iex> assert template == get_notification_template!(id, company_id: company_id)
+
+  """
   def get_notification_template!(id, opts \\ []) do
     Repo.get!(NotificationTemplate, id, opts)
   end
 
-  def create_notification_template(attrs \\ %{}) do
+  @doc """
+  Creates a notification template.
+
+  ## Examples
+
+      iex> company = company_fixture()
+      iex> {:ok, %NotificationTemplate{}} = create_notification_template(%{ title: "test template", template_content: "test content"}, company_id: company.company_id)
+
+  """
+  def create_notification_template(attrs \\ %{}, opts \\ []) do
     %NotificationTemplate{}
-    |> NotificationTemplate.changeset(attrs)
-    |> Repo.insert()
+    |> NotificationTemplate.changeset(attrs, opts)
+    |> Repo.insert(opts)
   end
 
   def update_notification_template(%NotificationTemplate{} = participant, attrs) do
@@ -158,12 +202,13 @@ defmodule ActivityPlanner.Notifications do
     ActivityPlanner.Repo.one!(query, skip_company_id: true)
   end
 
-  def create_notification_schedule(attrs \\ %{}) do
+  def create_notification_schedule(attrs \\ %{}, opts \\ []) do
     multi =
       Ecto.Multi.new()
       |> Ecto.Multi.insert(
         :notification_schedule,
-        NotificationSchedule.changeset(%NotificationSchedule{}, attrs)
+        NotificationSchedule.changeset(%NotificationSchedule{}, attrs, opts),
+        opts
       )
       |> Ecto.Multi.run(:job_manager, fn _repo, %{notification_schedule: notification_schedule} ->
         case JobManager.add_job(notification_schedule) do
@@ -207,12 +252,16 @@ defmodule ActivityPlanner.Notifications do
     end
   end
 
-  def update_notification_schedule(%NotificationSchedule{} = schedule, attrs) do
+  def update_notification_schedule(%NotificationSchedule{} = schedule, attrs, opts \\ []) do
     multi =
       Ecto.Multi.new()
-      |> Ecto.Multi.update(:updated_notification_schedule, fn _ ->
-        NotificationSchedule.changeset(schedule, attrs)
-      end)
+      |> Ecto.Multi.update(
+        :updated_notification_schedule,
+        fn _ ->
+          NotificationSchedule.changeset(schedule, attrs, opts)
+        end,
+        opts
+      )
       |> Ecto.Multi.run(:job_manager, fn _repo, %{updated_notification_schedule: schedule} ->
         case JobManager.add_job(schedule) do
           {:ok, _job} -> {:ok, schedule}
@@ -242,5 +291,4 @@ defmodule ActivityPlanner.Notifications do
   def get_notification_schedule!(id, opts \\ []) do
     Repo.get!(NotificationSchedule, id, opts)
   end
-
 end

@@ -3,7 +3,7 @@ defmodule ActivityPlanner.Protocols do
 
   defimpl Phoenix.HTML.Safe, for: CronExpression do
     def to_iodata(expression) do
-       Phoenix.HTML.Safe.to_iodata(Crontab.CronExpression.Composer.compose(expression))
+      Phoenix.HTML.Safe.to_iodata(Crontab.CronExpression.Composer.compose(expression))
     end
   end
 end

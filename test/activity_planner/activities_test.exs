@@ -60,7 +60,9 @@ defmodule ActivityPlanner.ActivitiesTest do
         responsible_participant_id: participant.id
       }
 
-      assert {:ok, %Activity{} = activity} = create_activity(valid_attrs, company_id: company.company_id)
+      assert {:ok, %Activity{} = activity} =
+               create_activity(valid_attrs, company_id: company.company_id)
+
       assert activity.description == "some description"
       assert activity.start_time == ~U[2023-09-19 06:31:00Z]
       assert activity.end_time == ~U[2023-09-19 06:31:00Z]
@@ -87,7 +89,9 @@ defmodule ActivityPlanner.ActivitiesTest do
         end_time: ~U[2023-09-20 06:31:00Z]
       }
 
-      assert {:ok, %Activity{} = activity} = update_activity(activity, update_attrs, company_id: company.company_id)
+      assert {:ok, %Activity{} = activity} =
+               update_activity(activity, update_attrs, company_id: company.company_id)
+
       assert activity.description == "some updated description"
       assert activity.start_time == ~U[2023-09-20 06:31:00Z]
       assert activity.end_time == ~U[2023-09-20 06:31:00Z]
@@ -178,7 +182,8 @@ defmodule ActivityPlanner.ActivitiesTest do
         activity_id: activity.id
       }
 
-      assert {:ok, %ActivityParticipant{}} = create_activity_participant(valid_attrs, company_id: company.company_id)
+      assert {:ok, %ActivityParticipant{}} =
+               create_activity_participant(valid_attrs, company_id: company.company_id)
     end
 
     test "create_activity_participant/1 with invalid data returns error changeset" do

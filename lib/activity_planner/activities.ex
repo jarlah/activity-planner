@@ -246,7 +246,11 @@ defmodule ActivityPlanner.Activities do
       #Ecto.Changeset<action: nil, changes: %{company_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd3", activity_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd1", participant_id: "ec8b4aaa-52a3-4222-9ae0-40e718af2dd2"}, errors: [], data: #ActivityPlanner.Activities.ActivityParticipant<>, valid?: true>
 
   """
-  def change_activity_participant(%ActivityParticipant{} = activity_participant, attrs \\ %{}, opts \\ []) do
+  def change_activity_participant(
+        %ActivityParticipant{} = activity_participant,
+        attrs \\ %{},
+        opts \\ []
+      ) do
     ActivityParticipant.changeset(activity_participant, attrs, opts)
   end
 
