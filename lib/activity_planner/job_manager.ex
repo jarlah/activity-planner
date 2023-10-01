@@ -45,8 +45,8 @@ defmodule ActivityPlanner.JobManager do
     end
   end
 
-  def handle_call({:delete, job_name}, _from, state) do
-    case delete_job_from_quantum(job_name) do
+  def handle_call({:delete, job}, _from, state) do
+    case delete_job_from_quantum(job) do
       :ok -> {:reply, :ok, state}
       {:error, reason} -> {:reply, {:error, reason}, state}
     end
@@ -54,15 +54,20 @@ defmodule ActivityPlanner.JobManager do
 
   defp add_job_to_quantum(%ActivityPlanner.Notifications.NotificationSchedule{} = schedule) do
     try do
-      # Your existing logic here
-      ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
-      |> Quantum.Job.set_overlap(false)
-      |> Quantum.Job.set_name(job_name(schedule))
-      |> Quantum.Job.set_schedule(schedule.cron_expression)
-      |> Quantum.Job.set_task(
-        {ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]}
-      )
-      |> ActivityPlanner.Scheduler.add_job()
+      # this is necessary to avoid leakage.
+      # Without it `[debug] Scheduling job for execution` is spammed the number of times any job has been added with add_job
+      # see https://github.com/quantum-elixir/quantum-core/discussions/580
+      :ok = ActivityPlanner.Scheduler.delete_job(job_name(schedule))
+
+      :ok =
+        ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
+        |> Quantum.Job.set_overlap(false)
+        |> Quantum.Job.set_name(job_name(schedule))
+        |> Quantum.Job.set_schedule(schedule.cron_expression)
+        |> Quantum.Job.set_task(
+          {ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]}
+        )
+        |> ActivityPlanner.Scheduler.add_job()
 
       {:ok, "Quantum job added successfully"}
     rescue
@@ -82,6 +87,6 @@ defmodule ActivityPlanner.JobManager do
   end
 
   defp job_name(schedule) do
-    String.to_atom(schedule.name <> "_" <> schedule.activity_group_id)
+    :"#{schedule.id}"
   end
 end
