@@ -5,7 +5,7 @@ defmodule ActivityPlanner.Activities.ActivityParticipant do
   schema "activity_participants" do
     belongs_to :activity, ActivityPlanner.Activities.Activity
     belongs_to :participant, ActivityPlanner.Participants.Participant
-    field :company_id, :binary_id
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
 
     timestamps()
   end

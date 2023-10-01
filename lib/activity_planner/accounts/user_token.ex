@@ -17,8 +17,8 @@ defmodule ActivityPlanner.Accounts.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    field :company_id, :binary_id
 
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
     belongs_to :user, ActivityPlanner.Accounts.User
 
     timestamps(updated_at: false)

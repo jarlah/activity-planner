@@ -7,7 +7,8 @@ defmodule ActivityPlanner.Participants.Participant do
     field :name, :string
     field :phone, :string
     field :description, :string
-    field :company_id, :binary_id
+
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
 
     timestamps()
   end

@@ -6,10 +6,13 @@ defmodule ActivityPlanner.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
-    field :company_id, :binary_id
 
+    # inserted by company
+    belongs_to :company, ActivityPlanner.Companies.Company, references: :company_id
+
+    # connected to companies via user roles
     many_to_many :companies, ActivityPlanner.Companies.Company,
-      join_through: "user_roles",
+      join_through: ActivityPlanner.Accounts.UserRole,
       join_keys: [user_id: :id, company_id: :company_id]
 
     timestamps()
