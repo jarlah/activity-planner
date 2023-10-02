@@ -6,7 +6,11 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
     execute "CREATE EXTENSION IF NOT EXISTS pgcrypto", ""
 
     create table(:companies, primary_key: false) do
-      add :company_id, :uuid, primary_key: true, null: false, default: fragment("gen_random_uuid()")
+      add :company_id, :uuid,
+        primary_key: true,
+        null: false,
+        default: fragment("gen_random_uuid()")
+
       add :name, :string
       add :address, :string
       add :description, :text
@@ -65,7 +69,10 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :start_time, :utc_datetime
       add :end_time, :utc_datetime
       add :responsible_participant_id, :uuid
-      add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing), null: false
+
+      add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing),
+        null: false
+
       add :company_id, :uuid, null: false
       timestamps()
     end
@@ -90,7 +97,10 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
     create table(:activity_participants, primary_key: false) do
       add :id, :uuid, primary_key: true, null: false, default: fragment("gen_random_uuid()")
       add :activity_id, references(:activities, type: :uuid, on_delete: :nothing), null: false
-      add :participant_id, references(:participants, type: :uuid, on_delete: :nothing), null: false
+
+      add :participant_id, references(:participants, type: :uuid, on_delete: :nothing),
+        null: false
+
       add :company_id, :uuid, null: false
       timestamps()
     end
@@ -109,8 +119,11 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       timestamps()
     end
 
-    execute "CREATE TYPE notification_status_enum AS ENUM ('sent', 'failed');", "DROP TYPE notification_status_enum"
-    execute "CREATE TYPE notification_medium_enum AS ENUM ('sms', 'email');", "DROP TYPE notification_medium_enum"
+    execute "CREATE TYPE notification_status_enum AS ENUM ('sent', 'failed');",
+            "DROP TYPE notification_status_enum"
+
+    execute "CREATE TYPE notification_medium_enum AS ENUM ('sms', 'email');",
+            "DROP TYPE notification_medium_enum"
 
     create table(:notification_schedules, primary_key: false) do
       add :id, :uuid, primary_key: true, null: false, default: fragment("gen_random_uuid()")
@@ -120,8 +133,13 @@ defmodule ActivityPlanner.Repo.Migrations.RecreateTables do
       add :hours_window_offset, :integer, default: 0
       add :hours_window_length, :integer
       add :enabled, :boolean, default: true
-      add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing), null: false
-      add :template_id, references(:notification_templates, type: :uuid, on_delete: :nothing), null: false
+
+      add :activity_group_id, references(:activity_groups, type: :uuid, on_delete: :nothing),
+        null: false
+
+      add :template_id, references(:notification_templates, type: :uuid, on_delete: :nothing),
+        null: false
+
       add :company_id, :uuid, null: false
       timestamps()
     end

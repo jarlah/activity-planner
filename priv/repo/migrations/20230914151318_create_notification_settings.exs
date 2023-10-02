@@ -13,13 +13,13 @@ defmodule ActivityPlanner.Repo.Migrations.CreateNotificationSettings do
     end
 
     create table(:notification_settings) do
-      add :day_in_advance_template_id, references(:notification_templates, on_delete: :nothing )
+      add :day_in_advance_template_id, references(:notification_templates, on_delete: :nothing)
 
       timestamps()
     end
 
     alter table(:activity_groups) do
-      add :notification_setting_id, references(:notification_settings, on_delete: :nothing )
+      add :notification_setting_id, references(:notification_settings, on_delete: :nothing)
     end
 
     create table(:sent_notifications) do

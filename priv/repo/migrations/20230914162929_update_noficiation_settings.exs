@@ -7,7 +7,7 @@ defmodule ActivityPlanner.Repo.Migrations.UpdateNoficiationSettings do
     end
 
     alter table(:notification_settings) do
-      add :activity_group_id, references(:activity_groups, on_delete: :nothing )
+      add :activity_group_id, references(:activity_groups, on_delete: :nothing)
     end
   end
 end

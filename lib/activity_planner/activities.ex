@@ -93,7 +93,7 @@ defmodule ActivityPlanner.Activities do
   @doc """
   Creates a activity.
 
-    ## Example
+    ## Examples
 
       iex> company = insert!(:company)
       iex> participant = insert!(:participant, company: company)
@@ -102,6 +102,7 @@ defmodule ActivityPlanner.Activities do
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
       iex> %Activity{} = create_activity!(attrs, company_id: company.company_id)
+      iex> assert {:error, %Ecto.Changeset{}} = create_activity(%{description: nil, start_time: nil, end_time: nil})
 
   """
   def create_activity!(attrs \\ %{}, opts \\ []) do
