@@ -19,7 +19,7 @@ defmodule ActivityPlanner.AccountsFixtures do
       attrs
       |> Enum.into(%{})
       |> valid_user_attributes()
-      |> ActivityPlanner.Accounts.register_user(skip_company_id: true)
+      |> ActivityPlanner.Accounts.register_user()
 
     user
   end
