@@ -3,6 +3,13 @@ defmodule ActivityPlanner.Factory do
 
   import Ecto.Changeset, only: [apply_changes: 1, put_assoc: 3]
 
+  def insert!(factory_name, attributes \\ []) do
+    Enum.into(attributes, %{})
+    |> build(factory_name)
+    |> apply_changes()
+    |> Repo.insert!()
+  end
+
   defp build(attributes, :company) do
     %ActivityPlanner.Companies.Company{
       name: "Default Company Name",
@@ -149,12 +156,5 @@ defmodule ActivityPlanner.Factory do
     |> ActivityPlanner.Notifications.SentNotification.changeset(attributes)
     |> put_assoc(:company, company)
     |> put_assoc(:activity, activity)
-  end
-
-  def insert!(factory_name, attributes \\ []) do
-    Enum.into(attributes, %{})
-    |> build(factory_name)
-    |> apply_changes()
-    |> Repo.insert!()
   end
 end
