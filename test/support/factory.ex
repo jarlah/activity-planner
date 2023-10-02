@@ -12,49 +12,54 @@ defmodule ActivityPlanner.Factory do
   end
 
   defp build(attributes, :activity_group) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
     %ActivityPlanner.Activities.ActivityGroup{
       name: "Default Company Name",
       description: "Default Description"
     }
-    |> ActivityPlanner.Activities.ActivityGroup.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Activities.ActivityGroup.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
   end
 
   defp build(attributes, :participant) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
     %ActivityPlanner.Participants.Participant{
       name: "Default Participant Name",
       description: "Default Description",
       email: "default@email.com",
       phone: "12345678"
     }
-    |> ActivityPlanner.Participants.Participant.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Participants.Participant.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
   end
 
   defp build(attributes, :activity_participant) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
+    activity =
+      attributes
+      |> Map.get_lazy(:activity_group, fn ->
+        insert!(:activity, company: company)
+      end)
+
+    participant =
+      attributes
+      |> Map.get_lazy(:participant, fn ->
+        insert!(:participant, company_id: company.company_id)
+      end)
+
     %ActivityPlanner.Activities.ActivityParticipant{}
-    |> ActivityPlanner.Activities.ActivityParticipant.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Activities.ActivityParticipant.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:activity, activity)
+    |> Ecto.Changeset.put_assoc(:participant, participant)
   end
 
   defp build(attributes, :activity) do
     now = DateTime.truncate(Timex.now(), :second)
 
-    %ActivityPlanner.Activities.Activity{
-      title: "Title",
-      description: "Description",
-      start_time: now,
-      end_time: Timex.shift(now, days: 2)
-    }
-    |> ActivityPlanner.Activities.Activity.changeset(attributes,
-      company_id: attributes.company_id
-    )
-  end
-
-  defp build(attributes, :activity_with_dependencies) do
     company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
 
     activity_group =
@@ -69,23 +74,44 @@ defmodule ActivityPlanner.Factory do
         insert!(:participant, company_id: company.company_id)
       end)
 
-    build(attributes |> Map.put(:company_id, company.company_id), :activity)
+    %ActivityPlanner.Activities.Activity{
+      title: "Title",
+      description: "Description",
+      start_time: now,
+      end_time: Timex.shift(now, days: 2)
+    }
+    |> ActivityPlanner.Activities.Activity.changeset(attributes)
     |> Ecto.Changeset.put_assoc(:company, company)
     |> Ecto.Changeset.put_assoc(:activity_group, activity_group)
     |> Ecto.Changeset.put_assoc(:responsible_participant, responsible_participant)
   end
 
   defp build(attributes, :notification_template) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
     %ActivityPlanner.Notifications.NotificationTemplate{
       title: "Title",
       template_content: "Content"
     }
-    |> ActivityPlanner.Notifications.NotificationTemplate.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Notifications.NotificationTemplate.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
   end
 
   defp build(attributes, :notification_schedule) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
+    activity_group =
+      attributes
+      |> Map.get_lazy(:activity_group, fn ->
+        insert!(:activity_group, company_id: company.company_id)
+      end)
+
+    notification_template =
+      attributes
+      |> Map.get_lazy(:template, fn ->
+        insert!(:notification_template, company_id: company.company_id)
+      end)
+
     %ActivityPlanner.Notifications.NotificationSchedule{
       name: "Name",
       cron_expression: "* * * * *",
@@ -94,12 +120,21 @@ defmodule ActivityPlanner.Factory do
       hours_window_length: 24,
       enabled: true
     }
-    |> ActivityPlanner.Notifications.NotificationSchedule.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Notifications.NotificationSchedule.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:activity_group, activity_group)
+    |> Ecto.Changeset.put_assoc(:template, notification_template)
   end
 
   defp build(attributes, :sent_notification) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
+    activity =
+      attributes
+      |> Map.get_lazy(:activity, fn ->
+        insert!(:activity, company: company)
+      end)
+
     %ActivityPlanner.Notifications.SentNotification{
       sent_at: Timex.now(),
       status: "sent",
@@ -108,9 +143,9 @@ defmodule ActivityPlanner.Factory do
       actual_content: "content",
       actual_title: "title"
     }
-    |> ActivityPlanner.Notifications.SentNotification.changeset(attributes,
-      company_id: attributes.company_id
-    )
+    |> ActivityPlanner.Notifications.SentNotification.changeset(attributes)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:activity, activity)
   end
 
   def insert!(factory_name, attributes \\ []) do
