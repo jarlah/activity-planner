@@ -15,8 +15,8 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> %NotificationSchedule{company_id: company_id} = insert!(:notification_schedule)
-      iex> [%NotificationSchedule{}] = list_notification_schedules(company_id: company_id)
+      iex> schedule = insert!(:notification_schedule)
+      iex> [%NotificationSchedule{}] = list_notification_schedules(company_id: schedule.company_id)
       iex> [%NotificationSchedule{}] = list_notification_schedules(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_notification_schedules(company_id: non_existent_company_id)
@@ -32,8 +32,8 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> %NotificationTemplate{company_id: company_id} = insert!(:notification_template)
-      iex> [%NotificationTemplate{}] = list_notification_templates(company_id: company_id)
+      iex> template = insert!(:notification_template)
+      iex> [%NotificationTemplate{}] = list_notification_templates(company_id: template.company_id)
       iex> [%NotificationTemplate{}] = list_notification_templates(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_notification_templates(company_id: non_existent_company_id)
@@ -49,8 +49,8 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> %NotificationTemplate{id: id, company_id: company_id} = insert!(:notification_template)
-      iex> get_notification_template!(id, company_id: company_id)
+      iex> template = insert!(:notification_template)
+      iex> get_notification_template!(template.id, company_id: template.company_id)
 
   """
   def get_notification_template!(id, opts \\ []) do
@@ -63,7 +63,8 @@ defmodule ActivityPlanner.Notifications do
   ## Examples
 
       iex> company = insert!(:company)
-      iex> {:ok, %NotificationTemplate{}} = create_notification_template(%{ title: "test template", template_content: "test content"}, company_id: company.company_id)
+      iex> attrs = %{ title: "test template", template_content: "test content" }
+      iex> {:ok, %NotificationTemplate{}} = create_notification_template(attrs, company_id: company.company_id)
 
   """
   def create_notification_template(attrs \\ %{}, opts \\ []) do
@@ -202,6 +203,19 @@ defmodule ActivityPlanner.Notifications do
     ActivityPlanner.Repo.one!(query, skip_company_id: true)
   end
 
+  @doc """
+  Creates a notification schedule.
+
+  ## Examples
+
+      iex> company = insert!(:company)
+      iex> activity_group = insert!(:activity_group, company: company)
+      iex> template = insert!(:notification_template, company: company)
+      iex> {:ok, cron_expression} = Crontab.CronExpression.Ecto.Type.cast("* * * * *")
+      iex> attrs = %{ name: "test schedule", medium: :sms, cron_expression: cron_expression, hours_window_length: 24, enabled: true, template_id: template.id, activity_group_id: activity_group.id }
+      iex> {:ok, %NotificationSchedule{}} = create_notification_schedule(attrs, company_id: company.company_id)
+
+  """
   def create_notification_schedule(attrs \\ %{}, opts \\ []) do
     multi =
       Ecto.Multi.new()
@@ -229,6 +243,15 @@ defmodule ActivityPlanner.Notifications do
     end
   end
 
+  @doc """
+  Deletes a notification schedule.
+
+  ## Examples
+
+      iex> schedule = insert!(:notification_schedule)
+      iex> {:ok, _} = delete_notification_schedule(schedule)
+
+  """
   def delete_notification_schedule(%NotificationSchedule{} = schedule) do
     multi =
       Ecto.Multi.new()
@@ -252,6 +275,15 @@ defmodule ActivityPlanner.Notifications do
     end
   end
 
+  @doc """
+  Updates a notification schedule.
+
+  ## Examples
+
+      iex> schedule = insert!(:notification_schedule)
+      iex> {:ok, _} = update_notification_schedule(schedule, %{ enabled: false })
+
+  """
   def update_notification_schedule(%NotificationSchedule{} = schedule, attrs, opts \\ []) do
     multi =
       Ecto.Multi.new()
@@ -272,9 +304,6 @@ defmodule ActivityPlanner.Notifications do
     case Repo.transaction(multi) do
       {:ok, %{updated_notification_schedule: notification_schedule}} ->
         {:ok, notification_schedule}
-
-      {:error, :notification_schedule, _reason, _} ->
-        {:error, :not_found}
 
       {:error, :updated_notification_schedule, changeset, _} ->
         {:error, changeset}
