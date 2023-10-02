@@ -1,7 +1,7 @@
 defmodule ActivityPlanner.Factory do
   alias ActivityPlanner.Repo
 
-  # Factories
+  # Internal factory methods
 
   defp build(:company) do
     %ActivityPlanner.Companies.Company{
@@ -20,6 +20,10 @@ defmodule ActivityPlanner.Factory do
     }
   end
 
+  defp build(:activity_participant) do
+    %ActivityPlanner.Activities.ActivityParticipant{}
+  end
+
   defp build(:activity_group) do
     %ActivityPlanner.Activities.ActivityGroup{
       name: "Name",
@@ -36,7 +40,36 @@ defmodule ActivityPlanner.Factory do
     }
   end
 
-  # Convenience API
+  defp build(:notification_template) do
+    %ActivityPlanner.Notifications.NotificationTemplate{
+      title: "Title",
+      template_content: "Content"
+    }
+  end
+
+  defp build(:notification_schedule) do
+    %ActivityPlanner.Notifications.NotificationSchedule{
+      name: "Name",
+      cron_expression: "* * * * *",
+      medium: "sms",
+      hours_window_offset: 0,
+      hours_window_length: 24,
+      enabled: true
+    }
+  end
+
+  defp build(:sent_notification) do
+    %ActivityPlanner.Notifications.SentNotification{
+      sent_at: Timex.now(),
+      status: "sent",
+      medium: "sms",
+      receiver: "receiver",
+      actual_content: "content",
+      actual_title: "title"
+    }
+  end
+
+  # Public convenience API
 
   def build(factory_name, attributes) do
     factory_name |> build() |> struct!(attributes)
