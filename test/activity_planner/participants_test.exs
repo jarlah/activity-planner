@@ -10,15 +10,15 @@ defmodule ActivityPlanner.ParticipantsTest do
     @invalid_attrs %{email: nil, name: nil, phone: nil}
 
     test "list_participants/0 returns all participants" do
-      company = insert!(:company)
-      insert!(:participant, company: company)
-      [%Participant{}] = Participants.list_participants(skip_company_id: true)
+      participant = insert!(:participant)
+      [%Participant{}] = Participants.list_participants(company_id: participant.company_id)
     end
 
     test "get_participant!/1 returns the participant with given id" do
-      company = insert!(:company)
-      participant = insert!(:participant, company: company)
-      %Participant{} = Participants.get_participant!(participant.id, skip_company_id: true)
+      participant = insert!(:participant)
+
+      %Participant{} =
+        Participants.get_participant!(participant.id, company_id: participant.company_id)
     end
 
     test "create_participant/1 with valid data creates a participant" do
@@ -44,8 +44,7 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "update_participant/2 with valid data updates the participant" do
-      company = insert!(:company)
-      participant = insert!(:participant, company: company)
+      participant = insert!(:participant)
 
       update_attrs = %{
         email: "some.updated@email",
@@ -54,7 +53,7 @@ defmodule ActivityPlanner.ParticipantsTest do
       }
 
       assert {:ok, %Participant{} = participant} =
-               Participants.update_participant(participant, update_attrs, skip_company_id: true)
+               Participants.update_participant(participant, update_attrs)
 
       assert participant.email == "some.updated@email"
       assert participant.name == "some updated name"
@@ -62,13 +61,13 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "update_participant/2 with invalid data returns error changeset" do
-      company = insert!(:company)
-      participant = insert!(:participant, company: company)
+      participant = insert!(:participant)
 
       assert {:error, %Ecto.Changeset{}} =
-               Participants.update_participant(participant, @invalid_attrs, skip_company_id: true)
+               Participants.update_participant(participant, @invalid_attrs)
 
-      fetched_participant = Participants.get_participant!(participant.id, skip_company_id: true)
+      fetched_participant =
+        Participants.get_participant!(participant.id, company_id: participant.company_id)
 
       assert fetched_participant.email == participant.email
       assert fetched_participant.phone == participant.phone
@@ -76,14 +75,13 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "delete_participant/1 deletes the participant" do
-      company = insert!(:company)
-      participant = insert!(:participant, company: company)
+      participant = insert!(:participant)
 
       assert {:ok, %Participant{}} =
-               Participants.delete_participant(participant, skip_company_id: true)
+               Participants.delete_participant(participant)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Participants.get_participant!(participant.id, skip_company_id: true)
+        Participants.get_participant!(participant.id, company_id: participant.company_id)
       end
     end
 
