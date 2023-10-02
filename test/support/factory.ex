@@ -140,8 +140,8 @@ defmodule ActivityPlanner.Factory do
 
     %ActivityPlanner.Notifications.SentNotification{
       sent_at: Timex.now(),
-      status: "sent",
-      medium: "sms",
+      status: :sent,
+      medium: :sms,
       receiver: "receiver",
       actual_content: "content",
       actual_title: "title"
