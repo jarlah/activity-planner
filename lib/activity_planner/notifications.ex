@@ -73,16 +73,44 @@ defmodule ActivityPlanner.Notifications do
     |> Repo.insert(opts)
   end
 
-  def update_notification_template(%NotificationTemplate{} = participant, attrs) do
-    participant
+  @doc """
+  Updates a notification template.
+
+  ## Examples
+
+      iex> template = insert!(:notification_template)
+      iex> {:ok, _} = update_notification_template(template, %{ template_content: "Hello" })
+      iex> {:error, _} = update_notification_template(template, %{ template_content: nil })
+
+  """
+  def update_notification_template(%NotificationTemplate{} = template, attrs) do
+    template
     |> NotificationTemplate.changeset(attrs)
     |> Repo.update()
   end
 
+  @doc """
+  Deletes a notification template.
+
+  ## Examples
+
+      iex> template = insert!(:notification_template)
+      iex> {:ok, _} = delete_notification_template(template)
+
+  """
   def delete_notification_template(%NotificationTemplate{} = participant) do
     Repo.delete(participant)
   end
 
+  @doc """
+  Changes a notification template.
+
+  ## Examples
+
+      iex> template = insert!(:notification_template)
+      iex> %Ecto.Changeset{} = change_notification_template(template, %{ template_content: "Hello" })
+
+  """
   def change_notification_template(%NotificationTemplate{} = participant, attrs \\ %{}) do
     NotificationTemplate.changeset(participant, attrs)
   end
@@ -313,10 +341,29 @@ defmodule ActivityPlanner.Notifications do
     end
   end
 
+  @doc """
+  Changes a notification schedule.
+
+  ## Examples
+
+      iex> schedule = insert!(:notification_schedule)
+      iex> %Ecto.Changeset{} = change_notification_schedule(schedule, %{ enabled: false })
+
+  """
   def change_notification_schedule(%NotificationSchedule{} = notification_schedule, attrs \\ %{}) do
     NotificationSchedule.changeset(notification_schedule, attrs)
   end
 
+  @doc """
+  Gets a notification schedule.
+
+  ## Examples
+
+      iex> schedule = insert!(:notification_schedule)
+      iex> %NotificationSchedule{} = get_notification_schedule!(schedule.id, company_id: schedule.company_id)
+      iex> %NotificationSchedule{} = get_notification_schedule!(schedule.id, skip_company_id: true)
+
+  """
   def get_notification_schedule!(id, opts \\ []) do
     Repo.get!(NotificationSchedule, id, opts)
   end
