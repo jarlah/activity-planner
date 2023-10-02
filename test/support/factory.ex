@@ -41,15 +41,38 @@ defmodule ActivityPlanner.Factory do
   end
 
   defp build(attributes, :activity) do
+    now = DateTime.truncate(Timex.now(), :second)
+
     %ActivityPlanner.Activities.Activity{
       title: "Title",
       description: "Description",
-      start_time: Timex.now(),
-      end_time: Timex.shift(Timex.now(), days: 2)
+      start_time: now,
+      end_time: Timex.shift(now, days: 2)
     }
     |> ActivityPlanner.Activities.Activity.changeset(attributes,
       company_id: attributes.company_id
     )
+  end
+
+  defp build(attributes, :activity_with_dependencies) do
+    company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
+
+    activity_group =
+      attributes
+      |> Map.get_lazy(:activity_group, fn ->
+        insert!(:activity_group, company_id: company.company_id)
+      end)
+
+    responsible_participant =
+      attributes
+      |> Map.get_lazy(:responsible_participant, fn ->
+        insert!(:participant, company_id: company.company_id)
+      end)
+
+    build(attributes |> Map.put(:company_id, company.company_id), :activity)
+    |> Ecto.Changeset.put_assoc(:company, company)
+    |> Ecto.Changeset.put_assoc(:activity_group, activity_group)
+    |> Ecto.Changeset.put_assoc(:responsible_participant, responsible_participant)
   end
 
   defp build(attributes, :notification_template) do

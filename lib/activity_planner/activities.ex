@@ -15,9 +15,11 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> activity_fixture = %Activity{company_id: company_id} = activity_fixture()
-      iex> assert [activity_fixture] == list_activities(company_id: company_id)
-      iex> assert [activity_fixture] == list_activities(skip_company_id: true)
+      iex> activity = insert!(:activity_with_dependencies)
+      iex> [listed_activity] = list_activities(company_id: activity.company_id)
+      iex> assert listed_activity.id == activity.id
+      iex> [listed_activity] = list_activities(skip_company_id: true)
+      iex> assert listed_activity.id == activity.id
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activities(company_id: non_existent_company_id)
       []
