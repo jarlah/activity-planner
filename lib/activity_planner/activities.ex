@@ -32,9 +32,8 @@ defmodule ActivityPlanner.Activities do
 
   ## Examples
 
-      iex> company = insert!(:company)
-      iex> insert!(:activity_group, company: company)
-      iex> [%ActivityGroup{}] = list_activity_groups(company_id: company.company_id)
+      iex> activity_group = insert!(:activity_group)
+      iex> [%ActivityGroup{}] = list_activity_groups(company_id: activity_group.company_id)
       iex> [%ActivityGroup{}] = list_activity_groups(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activity_groups(company_id: non_existent_company_id)
@@ -62,9 +61,8 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
-      iex> get_activity_group!(activity_group.id, company_id: company.company_id)
+      iex> activity_group = insert!(:activity_group)
+      iex> get_activity_group!(activity_group.id, company_id: activity_group.company_id)
 
   Raises `Ecto.NoResultsError` if the Activity does not exist.
   """
@@ -144,8 +142,7 @@ defmodule ActivityPlanner.Activities do
 
       ## Examples
 
-      iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> activity_group = insert!(:activity_group)
       iex> {:ok, %ActivityGroup{ name: "another name"}} = update_activity_group(activity_group, %{ name: "another name" })
   """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
@@ -172,9 +169,8 @@ defmodule ActivityPlanner.Activities do
 
   ## Example
 
-      iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
-      iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: company.company_id)
+      iex> activity_group = insert!(:activity_group)
+      iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: activity_group.company_id)
 
   """
   def delete_activity_group(%ActivityGroup{} = activity, options \\ []) do
