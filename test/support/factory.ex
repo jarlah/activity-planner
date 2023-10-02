@@ -1,6 +1,7 @@
 defmodule ActivityPlanner.Factory do
   alias ActivityPlanner.Repo
-  import Ecto.Changeset, only: [apply_changes: 1]
+
+  import Ecto.Changeset, only: [apply_changes: 1, put_assoc: 3]
 
   defp build(attributes, :company) do
     %ActivityPlanner.Companies.Company{
@@ -19,7 +20,7 @@ defmodule ActivityPlanner.Factory do
       description: "Default Description"
     }
     |> ActivityPlanner.Activities.ActivityGroup.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
+    |> put_assoc(:company, company)
   end
 
   defp build(attributes, :participant) do
@@ -32,7 +33,7 @@ defmodule ActivityPlanner.Factory do
       phone: "12345678"
     }
     |> ActivityPlanner.Participants.Participant.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
+    |> put_assoc(:company, company)
   end
 
   defp build(attributes, :activity_participant) do
@@ -40,7 +41,7 @@ defmodule ActivityPlanner.Factory do
 
     activity =
       attributes
-      |> Map.get_lazy(:activity_group, fn ->
+      |> Map.get_lazy(:activity, fn ->
         insert!(:activity, company: company)
       end)
 
@@ -52,9 +53,9 @@ defmodule ActivityPlanner.Factory do
 
     %ActivityPlanner.Activities.ActivityParticipant{}
     |> ActivityPlanner.Activities.ActivityParticipant.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
-    |> Ecto.Changeset.put_assoc(:activity, activity)
-    |> Ecto.Changeset.put_assoc(:participant, participant)
+    |> put_assoc(:company, company)
+    |> put_assoc(:activity, activity)
+    |> put_assoc(:participant, participant)
   end
 
   defp build(attributes, :activity) do
@@ -81,9 +82,9 @@ defmodule ActivityPlanner.Factory do
       end_time: Timex.shift(now, days: 2)
     }
     |> ActivityPlanner.Activities.Activity.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
-    |> Ecto.Changeset.put_assoc(:activity_group, activity_group)
-    |> Ecto.Changeset.put_assoc(:responsible_participant, responsible_participant)
+    |> put_assoc(:company, company)
+    |> put_assoc(:activity_group, activity_group)
+    |> put_assoc(:responsible_participant, responsible_participant)
   end
 
   defp build(attributes, :notification_template) do
@@ -94,7 +95,7 @@ defmodule ActivityPlanner.Factory do
       template_content: "Content"
     }
     |> ActivityPlanner.Notifications.NotificationTemplate.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
+    |> put_assoc(:company, company)
   end
 
   defp build(attributes, :notification_schedule) do
@@ -121,9 +122,9 @@ defmodule ActivityPlanner.Factory do
       enabled: true
     }
     |> ActivityPlanner.Notifications.NotificationSchedule.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
-    |> Ecto.Changeset.put_assoc(:activity_group, activity_group)
-    |> Ecto.Changeset.put_assoc(:template, notification_template)
+    |> put_assoc(:company, company)
+    |> put_assoc(:activity_group, activity_group)
+    |> put_assoc(:template, notification_template)
   end
 
   defp build(attributes, :sent_notification) do
@@ -144,8 +145,8 @@ defmodule ActivityPlanner.Factory do
       actual_title: "title"
     }
     |> ActivityPlanner.Notifications.SentNotification.changeset(attributes)
-    |> Ecto.Changeset.put_assoc(:company, company)
-    |> Ecto.Changeset.put_assoc(:activity, activity)
+    |> put_assoc(:company, company)
+    |> put_assoc(:activity, activity)
   end
 
   def insert!(factory_name, attributes \\ []) do

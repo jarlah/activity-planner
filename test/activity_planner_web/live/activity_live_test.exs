@@ -4,10 +4,8 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   alias ActivityPlanner.Accounts
 
   import Phoenix.LiveViewTest
-  import ActivityPlanner.ActivityFixtures
-  import ActivityPlanner.ActivityGroupFixtures
-  import ActivityPlanner.CompanyFixtures
-  import ActivityPlanner.ParticipantFixtures
+
+  import ActivityPlanner.Factory
 
   @create_attrs %{
     description: "some description",
@@ -22,7 +20,7 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   @invalid_attrs %{description: nil, start_time: nil, end_time: nil}
 
   setup do
-    {:ok, company: company_fixture()}
+    {:ok, company: insert!(:company)}
   end
 
   setup %{company: company} do
@@ -40,15 +38,15 @@ defmodule ActivityPlannerWeb.ActivityLiveTest do
   end
 
   defp create_activity(%{company: company}) do
-    activity_group = activity_group_fixture(%{}, company_id: company.company_id)
-    responsible_participant = participant_fixture(%{}, company_id: company.company_id)
+    activity_group = insert!(:activity_group, company: company)
+    responsible_participant = insert!(:participant, company: company)
 
     activity =
-      activity_fixture(%{
-        responsible_participant_id: responsible_participant.id,
-        activity_group_id: activity_group.id,
-        company_id: company.company_id
-      })
+      insert!(:activity,
+        responsible_participant: responsible_participant,
+        activity_group: activity_group,
+        company: company
+      )
 
     %{
       activity: activity,

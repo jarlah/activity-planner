@@ -6,12 +6,11 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
   alias ActivityPlanner.Activities.Activity
 
   import Phoenix.LiveViewTest
-  import ActivityPlanner.CompanyFixtures
-  import ActivityPlanner.ActivityFixtures
-  import ActivityPlanner.ParticipantFixtures
+
+  import ActivityPlanner.Factory
 
   setup do
-    {:ok, company: company_fixture()}
+    {:ok, company: insert!(:company)}
   end
 
   setup %{company: company} do
@@ -31,18 +30,21 @@ defmodule ActivityPlannerWeb.ActivityParticipantLiveTest do
   defp create_activity_participant(%{company: company}) do
     activity =
       %Activity{} =
-      activity_fixture(%{company_id: company.company_id})
+      insert!(:activity, company: company)
       |> Repo.preload([:activity_group, :responsible_participant], company_id: company.company_id)
 
-    other_participant = participant_fixture(%{}, company_id: company.company_id)
-    other_participant2 = participant_fixture(%{}, company_id: company.company_id)
+    other_participant =
+      insert!(:participant, phone: "987654321", email: "other@email.com", company: company)
+
+    other_participant2 =
+      insert!(:participant, phone: "98765432", email: "other2@email.com", company: company)
 
     activity_participant =
-      activity_participant_fixture(%{
-        company_id: company.company_id,
-        activity_id: activity.id,
-        participant_id: other_participant.id
-      })
+      insert!(:activity_participant,
+        company: company,
+        activity: activity,
+        participant: other_participant
+      )
 
     %{
       activity: activity,
