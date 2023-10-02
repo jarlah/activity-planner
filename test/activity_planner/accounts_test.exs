@@ -16,7 +16,7 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "returns the user if the email exists" do
       company = insert!(:company)
-      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      %{id: id} = user = user_fixture(company_id: company.company_id)
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email, skip_company_id: true)
     end
   end
@@ -28,13 +28,13 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "does not return the user if the password is not valid" do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
     test "returns the user if the email and password are valid" do
       company = insert!(:company)
-      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      %{id: id} = user = user_fixture(company_id: company.company_id)
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
@@ -50,7 +50,7 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "returns the user with the given id" do
       company = insert!(:company)
-      %{id: id} = user = user_fixture(%{company_id: company.company_id})
+      %{id: id} = user = user_fixture(company_id: company.company_id)
       assert %User{id: ^id} = Accounts.get_user!(user.id, skip_company_id: true)
     end
   end
@@ -83,7 +83,7 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "validates email uniqueness" do
       company = insert!(:company)
-      %{email: email} = user_fixture(%{company_id: company.company_id})
+      %{email: email} = user_fixture(company_id: company.company_id)
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
@@ -141,7 +141,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "apply_user_email/3" do
     setup do
       company = insert!(:company)
-      %{user: user_fixture(%{company_id: company.company_id}), company: company}
+      %{user: user_fixture(company_id: company.company_id), company: company}
     end
 
     test "requires email to change", %{user: user} do
@@ -167,7 +167,7 @@ defmodule ActivityPlanner.AccountsTest do
 
     test "validates email uniqueness", %{user: user} do
       company = insert!(:company)
-      %{email: email} = user_fixture(%{company_id: company.company_id})
+      %{email: email} = user_fixture(company_id: company.company_id)
       password = valid_user_password()
 
       {:error, changeset} = Accounts.apply_user_email(user, password, %{email: email})
@@ -193,7 +193,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "deliver_user_update_email_instructions/3" do
     setup do
       company = insert!(:company)
-      %{user: user_fixture(%{company_id: company.company_id}), company: company}
+      %{user: user_fixture(company_id: company.company_id), company: company}
     end
 
     test "sends token through notification", %{user: user} do
@@ -218,7 +218,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "update_user_email/2" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       email = unique_user_email()
 
       token =
@@ -284,7 +284,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "update_user_password/3" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       %{user: user}
     end
 
@@ -342,7 +342,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "generate_user_session_token/1" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       %{user: user, company: company}
     end
 
@@ -355,7 +355,7 @@ defmodule ActivityPlanner.AccountsTest do
       assert_raise Ecto.ConstraintError, fn ->
         Repo.insert!(%UserToken{
           token: user_token.token,
-          user_id: user_fixture(%{company_id: company.company_id}).id,
+          user_id: user_fixture(company_id: company.company_id).id,
           context: "session",
           company_id: company.company_id
         })
@@ -366,7 +366,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "get_user_by_session_token/1" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       token = Accounts.generate_user_session_token(user)
       %{user: user, token: token}
     end
@@ -393,7 +393,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "delete_user_session_token/1" do
     test "deletes the token" do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_user_session_token(token) == :ok
       refute Accounts.get_user_by_session_token(token)
@@ -403,7 +403,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "deliver_user_confirmation_instructions/2" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       %{user: user, company: company}
     end
 
@@ -429,7 +429,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "confirm_user/1" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
 
       token =
         extract_user_token(fn url ->
@@ -468,7 +468,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "deliver_user_reset_password_instructions/2" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       %{user: user}
     end
 
@@ -494,7 +494,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "get_user_by_reset_password_token/1" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
 
       token =
         extract_user_token(fn url ->
@@ -530,7 +530,7 @@ defmodule ActivityPlanner.AccountsTest do
   describe "reset_user_password/2" do
     setup do
       company = insert!(:company)
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       %{user: user}
     end
 

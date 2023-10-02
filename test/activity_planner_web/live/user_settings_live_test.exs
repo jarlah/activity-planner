@@ -13,7 +13,7 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
     end
 
     setup %{company: company} do
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
 
       {:ok, _} =
         %{user_id: user.id, company_id: user.company_id, role: "admin"}
@@ -201,7 +201,7 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
     end
 
     setup %{conn: conn, company: company} do
-      user = user_fixture(%{company_id: company.company_id})
+      user = user_fixture(company_id: company.company_id)
       email = unique_user_email()
 
       token =

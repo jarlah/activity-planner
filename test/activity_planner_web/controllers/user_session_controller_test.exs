@@ -9,7 +9,7 @@ defmodule ActivityPlannerWeb.UserSessionControllerTest do
   end
 
   setup %{company: company} do
-    %{user: user_fixture(%{company_id: company.company_id})}
+    %{user: user_fixture(company_id: company.company_id)}
   end
 
   describe "POST /users/log_in" do

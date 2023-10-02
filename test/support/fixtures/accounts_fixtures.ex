@@ -14,9 +14,10 @@ defmodule ActivityPlanner.AccountsFixtures do
     })
   end
 
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture(attrs \\ []) do
     {:ok, user} =
       attrs
+      |> Enum.into(%{})
       |> valid_user_attributes()
       |> ActivityPlanner.Accounts.register_user(skip_company_id: true)
 
