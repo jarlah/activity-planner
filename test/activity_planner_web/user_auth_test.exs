@@ -6,12 +6,12 @@ defmodule ActivityPlannerWeb.UserAuthTest do
   alias ActivityPlanner.Repo
   alias ActivityPlannerWeb.UserAuth
   import ActivityPlanner.AccountsFixtures
-  import ActivityPlanner.CompanyFixtures
+  import ActivityPlanner.Factory
 
   @remember_me_cookie "_activity_planner_web_user_remember_me"
 
   setup do
-    {:ok, company: company_fixture()}
+    {:ok, company: insert!(:company)}
   end
 
   setup %{conn: conn, company: company} do

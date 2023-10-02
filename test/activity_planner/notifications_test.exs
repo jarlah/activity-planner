@@ -5,9 +5,8 @@ defmodule ActivityPlanner.NotificationsTest do
   alias ActivityPlanner.Notifications.NotificationTemplate
 
   import ActivityPlanner.Notifications
-  import ActivityPlanner.NotificationScheduleFixtures
-  import ActivityPlanner.NotificationTemplateFixtures
-  import ActivityPlanner.CompanyFixtures
+
+  import ActivityPlanner.Factory
 
   doctest ActivityPlanner.Notifications
 end

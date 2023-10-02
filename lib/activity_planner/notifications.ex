@@ -15,9 +15,9 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> schedule = %NotificationSchedule{company_id: company_id} = notification_schedule_fixture()
-      iex> assert [schedule] == list_notification_schedules(company_id: company_id)
-      iex> assert [schedule] == list_notification_schedules(skip_company_id: true)
+      iex> %NotificationSchedule{company_id: company_id} = insert!(:notification_schedule)
+      iex> [%NotificationSchedule{}] = list_notification_schedules(company_id: company_id)
+      iex> [%NotificationSchedule{}] = list_notification_schedules(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_notification_schedules(company_id: non_existent_company_id)
       []
@@ -32,9 +32,9 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> template = %NotificationTemplate{company_id: company_id} = notification_template_fixture()
-      iex> assert [template] == list_notification_templates(company_id: company_id)
-      iex> assert [template] == list_notification_templates(skip_company_id: true)
+      iex> %NotificationTemplate{company_id: company_id} = insert!(:notification_template)
+      iex> [%NotificationTemplate{}] = list_notification_templates(company_id: company_id)
+      iex> [%NotificationTemplate{}] = list_notification_templates(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_notification_templates(company_id: non_existent_company_id)
       []
@@ -49,8 +49,8 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> template = %NotificationTemplate{id: id, company_id: company_id} = notification_template_fixture()
-      iex> assert template == get_notification_template!(id, company_id: company_id)
+      iex> %NotificationTemplate{id: id, company_id: company_id} = insert!(:notification_template)
+      iex> get_notification_template!(id, company_id: company_id)
 
   """
   def get_notification_template!(id, opts \\ []) do
@@ -62,7 +62,7 @@ defmodule ActivityPlanner.Notifications do
 
   ## Examples
 
-      iex> company = company_fixture()
+      iex> company = insert!(:company)
       iex> {:ok, %NotificationTemplate{}} = create_notification_template(%{ title: "test template", template_content: "test content"}, company_id: company.company_id)
 
   """

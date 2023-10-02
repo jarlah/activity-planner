@@ -5,11 +5,11 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
   alias ActivityPlanner.Accounts
   import Phoenix.LiveViewTest
   import ActivityPlanner.AccountsFixtures
-  import ActivityPlanner.CompanyFixtures
+  import ActivityPlanner.Factory
 
   describe "Settings page" do
     setup do
-      {:ok, company: company_fixture()}
+      {:ok, company: insert!(:company)}
     end
 
     setup %{company: company} do
@@ -44,7 +44,7 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
 
   describe "update email form" do
     setup do
-      {:ok, company: company_fixture()}
+      {:ok, company: insert!(:company)}
     end
 
     setup %{conn: conn, company: company} do
@@ -111,7 +111,7 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
 
   describe "update password form" do
     setup do
-      {:ok, company: company_fixture()}
+      {:ok, company: insert!(:company)}
     end
 
     setup %{conn: conn, company: company} do
@@ -197,7 +197,7 @@ defmodule ActivityPlannerWeb.UserSettingsLiveTest do
 
   describe "confirm email" do
     setup do
-      {:ok, company: company_fixture()}
+      {:ok, company: insert!(:company)}
     end
 
     setup %{conn: conn, company: company} do

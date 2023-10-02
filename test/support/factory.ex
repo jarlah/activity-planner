@@ -113,10 +113,12 @@ defmodule ActivityPlanner.Factory do
         insert!(:notification_template, company_id: company.company_id)
       end)
 
+    {:ok, cron_expression} = Crontab.CronExpression.Ecto.Type.cast("* * * * *")
+
     %ActivityPlanner.Notifications.NotificationSchedule{
       name: "Name",
-      cron_expression: "* * * * *",
-      medium: "sms",
+      cron_expression: cron_expression,
+      medium: :sms,
       hours_window_offset: 0,
       hours_window_length: 24,
       enabled: true

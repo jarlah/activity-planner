@@ -2,29 +2,27 @@ defmodule ActivityPlanner.ParticipantsTest do
   use ActivityPlanner.DataCase
 
   alias ActivityPlanner.Participants
+  alias ActivityPlanner.Participants.Participant
 
   describe "participants" do
-    alias ActivityPlanner.Participants.Participant
-
-    import ActivityPlanner.CompanyFixtures
-    import ActivityPlanner.ParticipantFixtures
+    import ActivityPlanner.Factory
 
     @invalid_attrs %{email: nil, name: nil, phone: nil}
 
     test "list_participants/0 returns all participants" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
-      assert Participants.list_participants(skip_company_id: true) == [participant]
+      company = insert!(:company)
+      insert!(:participant, company: company)
+      [%Participant{}] = Participants.list_participants(skip_company_id: true)
     end
 
     test "get_participant!/1 returns the participant with given id" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
-      assert Participants.get_participant!(participant.id, skip_company_id: true) == participant
+      company = insert!(:company)
+      participant = insert!(:participant, company: company)
+      %Participant{} = Participants.get_participant!(participant.id, skip_company_id: true)
     end
 
     test "create_participant/1 with valid data creates a participant" do
-      company = company_fixture()
+      company = insert!(:company)
 
       valid_attrs = %{
         email: "some@email",
@@ -46,8 +44,8 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "update_participant/2 with valid data updates the participant" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
+      company = insert!(:company)
+      participant = insert!(:participant, company: company)
 
       update_attrs = %{
         email: "some.updated@email",
@@ -64,18 +62,22 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "update_participant/2 with invalid data returns error changeset" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
+      company = insert!(:company)
+      participant = insert!(:participant, company: company)
 
       assert {:error, %Ecto.Changeset{}} =
                Participants.update_participant(participant, @invalid_attrs, skip_company_id: true)
 
-      assert participant == Participants.get_participant!(participant.id, skip_company_id: true)
+      fetched_participant = Participants.get_participant!(participant.id, skip_company_id: true)
+
+      assert fetched_participant.email == participant.email
+      assert fetched_participant.phone == participant.phone
+      assert fetched_participant.name == participant.name
     end
 
     test "delete_participant/1 deletes the participant" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
+      company = insert!(:company)
+      participant = insert!(:participant, company: company)
 
       assert {:ok, %Participant{}} =
                Participants.delete_participant(participant, skip_company_id: true)
@@ -86,8 +88,8 @@ defmodule ActivityPlanner.ParticipantsTest do
     end
 
     test "change_participant/1 returns a participant changeset" do
-      company = company_fixture()
-      participant = participant_fixture(%{}, company_id: company.company_id)
+      company = insert!(:company)
+      participant = insert!(:participant, company: company)
       assert %Ecto.Changeset{} = Participants.change_participant(participant)
     end
   end

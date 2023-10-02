@@ -2,10 +2,10 @@ defmodule ActivityPlannerWeb.UserSessionControllerTest do
   use ActivityPlannerWeb.ConnCase, async: true
 
   import ActivityPlanner.AccountsFixtures
-  import ActivityPlanner.CompanyFixtures
+  import ActivityPlanner.Factory
 
   setup do
-    {:ok, company: company_fixture()}
+    {:ok, company: insert!(:company)}
   end
 
   setup %{company: company} do
