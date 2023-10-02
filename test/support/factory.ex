@@ -16,7 +16,7 @@ defmodule ActivityPlanner.Factory do
     company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
 
     %ActivityPlanner.Activities.ActivityGroup{
-      name: "Default Company Name",
+      name: "Default Activity Group Name",
       description: "Default Description"
     }
     |> ActivityPlanner.Activities.ActivityGroup.changeset(attributes)
@@ -76,8 +76,8 @@ defmodule ActivityPlanner.Factory do
       end)
 
     %ActivityPlanner.Activities.Activity{
-      title: "Title",
-      description: "Description",
+      title: "Default Activity Title",
+      description: "Default Activity Description",
       start_time: now,
       end_time: Timex.shift(now, days: 2)
     }
@@ -91,8 +91,8 @@ defmodule ActivityPlanner.Factory do
     company = attributes |> Map.get_lazy(:company, fn -> insert!(:company) end)
 
     %ActivityPlanner.Notifications.NotificationTemplate{
-      title: "Title",
-      template_content: "Content"
+      title: "Default Notification Template Title",
+      template_content: "Default Notification Template Content"
     }
     |> ActivityPlanner.Notifications.NotificationTemplate.changeset(attributes)
     |> put_assoc(:company, company)
