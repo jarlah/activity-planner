@@ -33,7 +33,7 @@ defmodule ActivityPlanner.Activities do
   ## Examples
 
       iex> company = insert!(:company)
-      iex> insert!(:activity_group, company: company)
+      iex> insert!(:activity_group, company_id: company.company_id)
       iex> [%ActivityGroup{}] = list_activity_groups(company_id: company.company_id)
       iex> [%ActivityGroup{}] = list_activity_groups(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
@@ -64,7 +64,7 @@ defmodule ActivityPlanner.Activities do
   ## Example
 
       iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> activity_group = insert!(:activity_group, company_id: company.company_id)
       iex> get_activity_group!(activity_group.id, company_id: company.company_id)
 
   Raises `Ecto.NoResultsError` if the Activity does not exist.
@@ -77,8 +77,8 @@ defmodule ActivityPlanner.Activities do
     ## Example
 
       iex> company = insert!(:company)
-      iex> participant = insert!(:participant, company: company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> participant = insert!(:participant, company_id: company.company_id)
+      iex> activity_group = insert!(:activity_group, company_id: company.company_id)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
@@ -97,8 +97,8 @@ defmodule ActivityPlanner.Activities do
     ## Example
 
       iex> company = insert!(:company)
-      iex> participant = insert!(:participant, company: company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> participant = insert!(:participant, company_id: company.company_id)
+      iex> activity_group = insert!(:activity_group, company_id: company.company_id)
       iex> start_time = Timex.now()
       iex> end_time = Timex.shift(start_time, hours: 24)
       iex> attrs = %{ responsible_participant_id: participant.id, activity_group_id: activity_group.id, start_time: start_time, end_time: end_time }
@@ -145,7 +145,7 @@ defmodule ActivityPlanner.Activities do
       ## Examples
 
       iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> activity_group = insert!(:activity_group, company_id: company.company_id)
       iex> {:ok, %ActivityGroup{ name: "another name"}} = update_activity_group(activity_group, %{ name: "another name" })
   """
   def update_activity_group(%ActivityGroup{} = activity_group, attrs) do
@@ -173,7 +173,7 @@ defmodule ActivityPlanner.Activities do
   ## Example
 
       iex> company = insert!(:company)
-      iex> activity_group = insert!(:activity_group, company: company)
+      iex> activity_group = insert!(:activity_group, company_id: company.company_id)
       iex> {:ok, %ActivityGroup{}} = delete_activity_group(activity_group, company_id: company.company_id)
 
   """
