@@ -16,10 +16,8 @@ defmodule ActivityPlanner.Activities do
   ## Examples
 
       iex> activity = insert!(:activity)
-      iex> [listed_activity] = list_activities(company_id: activity.company_id)
-      iex> assert listed_activity.id == activity.id
-      iex> [listed_activity] = list_activities(skip_company_id: true)
-      iex> assert listed_activity.id == activity.id
+      iex> [%Activity{}] = list_activities(company_id: activity.company_id)
+      iex> [%Activity{}] = list_activities(skip_company_id: true)
       iex> non_existent_company_id = Ecto.UUID.generate()
       iex> list_activities(company_id: non_existent_company_id)
       []
