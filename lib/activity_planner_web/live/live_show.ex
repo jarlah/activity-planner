@@ -44,7 +44,7 @@ defmodule ActivityPlannerWeb.LiveShow do
         {:noreply,
          socket
          |> assign(:page_title, page_title(socket.assigns.live_action))
-         |> assign(unquote(key), apply(unquote(context), unquote(get_function), [id]))}
+         |> assign(unquote(key), Kernel.apply(unquote(context), unquote(get_function), [id]))}
       end
 
       defp page_title(:show), do: "Show #{unquote(title)}"

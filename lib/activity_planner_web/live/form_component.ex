@@ -65,7 +65,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :edit, entity, params) do
-        case apply(unquote(context), unquote(update_function), [entity, params]) do
+        case Kernel.apply(unquote(context), unquote(update_function), [entity, params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 
@@ -80,7 +80,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :new, _nil, params) do
-        case apply(unquote(context), unquote(create_function), [params]) do
+        case Kernel.apply(unquote(context), unquote(create_function), [params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 

@@ -47,7 +47,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       @impl true
       def mount(_params, _session, socket) do
         socket
-        |> stream(unquote(stream_key), apply(unquote(context), unquote(list_function), []))
+        |> stream(unquote(stream_key), Kernel.apply(unquote(context), unquote(list_function), []))
         |> unquote(splicing_expr(assign_exprs))
         |> Kernel.then(&{:ok, &1})
       end
@@ -60,7 +60,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       defp apply_action(socket, :edit, %{"id" => id}) do
         socket
         |> assign(:page_title, "Edit #{unquote(title)}")
-        |> assign(unquote(key), apply(unquote(context), unquote(get_function), [id]))
+        |> assign(unquote(key), Kernel.apply(unquote(context), unquote(get_function), [id]))
       end
 
       defp apply_action(socket, :new, _params) do
@@ -82,8 +82,8 @@ defmodule ActivityPlannerWeb.LiveIndex do
 
       @impl true
       def handle_event("delete", %{"id" => id}, socket) do
-        obj = apply(unquote(context), unquote(get_function), [id])
-        {:ok, _} = apply(unquote(context), unquote(delete_function), [obj])
+        obj = Kernel.apply(unquote(context), unquote(get_function), [id])
+        {:ok, _} = Kernel.apply(unquote(context), unquote(delete_function), [obj])
 
         {:noreply,
          stream_delete(socket, unquote(stream_key), obj)
