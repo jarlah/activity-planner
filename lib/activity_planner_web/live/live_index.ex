@@ -1,4 +1,7 @@
 defmodule ActivityPlannerWeb.LiveIndex do
+  require ActivityPlanner.Macros
+  import ActivityPlanner.Macros, only: [call_dynamic: 3]
+
   defmacro __using__(options) do
     key = options[:key]
     env = __CALLER__
@@ -21,7 +24,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
     assign_exprs =
       Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
         quote do
-          assign(unquote(name), unquote(mod).unquote(fun)())
+          assign(unquote(name), call_dynamic(unquote(mod), unquote(fun), []))
         end
       end)
 
@@ -31,7 +34,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       @impl true
       def mount(_params, _session, socket) do
         socket
-        |> stream(unquote(stream_key), unquote(context).unquote(list_function)())
+        |> stream(unquote(stream_key), call_dynamic(unquote(context), unquote(list_function), []))
         |> unquote(splicing_expr(assign_exprs))
         |> Kernel.then(&{:ok, &1})
       end
@@ -44,7 +47,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       defp apply_action(socket, :edit, %{"id" => id}) do
         socket
         |> assign(:page_title, "Edit #{unquote(title)}")
-        |> assign(unquote(key), unquote(context).unquote(get_function)(id))
+        |> assign(unquote(key), call_dynamic(unquote(context), unquote(get_function), id))
       end
 
       defp apply_action(socket, :new, _params) do
@@ -66,8 +69,8 @@ defmodule ActivityPlannerWeb.LiveIndex do
 
       @impl true
       def handle_event("delete", %{"id" => id}, socket) do
-        obj = unquote(context).unquote(get_function)(id)
-        {:ok, _} = unquote(context).unquote(delete_function)(obj)
+        obj = call_dynamic(unquote(context), unquote(get_function), id)
+        {:ok, _} = call_dynamic(unquote(context), unquote(delete_function), obj)
 
         {:noreply,
          stream_delete(socket, unquote(stream_key), obj)

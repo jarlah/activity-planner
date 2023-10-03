@@ -1,4 +1,7 @@
 defmodule ActivityPlannerWeb.FormComponent do
+  require ActivityPlanner.Macros
+  import ActivityPlanner.Macros
+
   defmacro __using__(options) do
     key = options[:key]
     env = __CALLER__
@@ -21,7 +24,7 @@ defmodule ActivityPlannerWeb.FormComponent do
 
       @impl true
       def update(%{unquote(key) => obj} = assigns, socket) do
-        changeset = unquote(context).unquote(change_function)(obj)
+        changeset = call_dynamic(unquote(context), unquote(change_function), obj)
 
         {:ok,
          socket
@@ -35,7 +38,15 @@ defmodule ActivityPlannerWeb.FormComponent do
 
         changeset =
           entity
-          |> unquote(context).unquote(change_function)(params)
+          # we cannot chain as we usually do with the pipe operator
+          # because call_dynamic is an overloaded macro method
+          # normally we would do something like
+          # |> SomeContext.do_stuff(params)
+          # and entity would be stitched in a the front
+          # so we need to use the Kernel.then helper method
+          |> Kernel.then(fn entity ->
+            call_dynamic(unquote(context), unquote(change_function), entity, params)
+          end)
           |> Map.put(:action, :validate)
 
         {:noreply, assign_form(socket, changeset)}
@@ -49,7 +60,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :edit, entity, params) do
-        case unquote(context).unquote(update_function)(entity, params) do
+        case call_dynamic(unquote(context), unquote(update_function), entity, params) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 
@@ -64,7 +75,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :new, _nil, params) do
-        case unquote(context).unquote(create_function)(params) do
+        case call_dynamic(unquote(context), unquote(create_function), params) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 

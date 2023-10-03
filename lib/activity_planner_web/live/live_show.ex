@@ -15,12 +15,14 @@ defmodule ActivityPlannerWeb.LiveShow do
     assign_exprs =
       Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
         quote do
-          assign(unquote(name), unquote(mod).unquote(fun)())
+          assign(unquote(name), call_dynamic(unquote(mod), unquote(fun), []))
         end
       end)
 
     quote do
       use ActivityPlannerWeb, :live_view
+      require ActivityPlanner.Macros
+      import ActivityPlanner.Macros, only: [call_dynamic: 3]
 
       @impl true
       def mount(_params, _session, socket) do
@@ -34,7 +36,7 @@ defmodule ActivityPlannerWeb.LiveShow do
         {:noreply,
          socket
          |> assign(:page_title, page_title(socket.assigns.live_action))
-         |> assign(unquote(key), unquote(context).unquote(get_function)(id))}
+         |> assign(unquote(key), call_dynamic(unquote(context), unquote(get_function), id))}
       end
 
       defp page_title(:show), do: "Show #{unquote(title)}"
