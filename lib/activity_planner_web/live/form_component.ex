@@ -10,22 +10,6 @@ defmodule ActivityPlannerWeb.FormComponent do
     change_function = :"change_#{key}"
     update_function = :"update_#{key}"
 
-    case Code.ensure_compiled(context) do
-      {:module, _} ->
-        for {function, arity} <- [
-              {create_function, 1},
-              {change_function, 1},
-              {update_function, 2}
-            ] do
-          unless function_exported?(context, function, arity) do
-            raise "The function #{function}/#{arity} is required but not defined in #{context}"
-          end
-        end
-
-      _ ->
-        raise "Unable to compile #{context}"
-    end
-
     title =
       key
       |> to_string()
@@ -65,7 +49,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :edit, entity, params) do
-        case Kernel.apply(unquote(context), unquote(update_function), [entity, params]) do
+        case unquote(context).unquote(update_function)(entity, params) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 
@@ -80,7 +64,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :new, _nil, params) do
-        case Kernel.apply(unquote(context), unquote(create_function), [params]) do
+        case unquote(context).unquote(create_function)(params) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 

@@ -7,16 +7,6 @@ defmodule ActivityPlannerWeb.LiveShow do
 
     get_function = :"get_#{key}!"
 
-    case Code.ensure_compiled(context) do
-      {:module, _} ->
-        unless function_exported?(context, get_function, 1) do
-          raise "The function #{get_function}/1 is required but not defined in #{context}"
-        end
-
-      _ ->
-        raise "Unable to compile #{context}"
-    end
-
     title =
       key
       |> to_string()
@@ -44,7 +34,7 @@ defmodule ActivityPlannerWeb.LiveShow do
         {:noreply,
          socket
          |> assign(:page_title, page_title(socket.assigns.live_action))
-         |> assign(unquote(key), Kernel.apply(unquote(context), unquote(get_function), [id]))}
+         |> assign(unquote(key), unquote(context).unquote(get_function)(id))}
       end
 
       defp page_title(:show), do: "Show #{unquote(title)}"
