@@ -4,14 +4,13 @@ defmodule ActivityPlannerWeb.FormComponent do
 
   defmacro __using__(options) do
     key = options[:key]
-    env = __CALLER__
-    context = Macro.expand(options[:context], env)
+    context = options[:context]
 
-    key_string = Atom.to_string(key)
+    key_string = "#{key}"
 
-    create_function = :"create_#{key}"
-    change_function = :"change_#{key}"
-    update_function = :"update_#{key}"
+    create_function = :"create_#{key_string}"
+    change_function = :"change_#{key_string}"
+    update_function = :"update_#{key_string}"
 
     title =
       key

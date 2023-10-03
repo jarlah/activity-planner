@@ -1,11 +1,11 @@
 defmodule ActivityPlannerWeb.LiveIndex do
   require ActivityPlanner.Macros
-  import ActivityPlanner.Macros, only: [call_dynamic: 3]
+  import ActivityPlanner.Macros
 
   defmacro __using__(options) do
     key = options[:key]
-    env = __CALLER__
-    context = Macro.expand(options[:context], env)
+    context = options[:context]
+
     schema = options[:schema]
     assigns = options[:assigns] || []
     form = options[:form]
@@ -21,13 +21,6 @@ defmodule ActivityPlannerWeb.LiveIndex do
       |> to_string()
       |> String.replace("_", " ")
 
-    assign_exprs =
-      Enum.map(assigns, fn {name, mod: mod, fun: fun} ->
-        quote do
-          assign(unquote(name), call_dynamic(unquote(mod), unquote(fun), []))
-        end
-      end)
-
     quote do
       use ActivityPlannerWeb, :live_view
 
@@ -35,7 +28,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       def mount(_params, _session, socket) do
         socket
         |> stream(unquote(stream_key), call_dynamic(unquote(context), unquote(list_function), []))
-        |> unquote(splicing_expr(assign_exprs))
+        |> apply_assigns(unquote(assigns))
         |> Kernel.then(&{:ok, &1})
       end
 
@@ -76,26 +69,6 @@ defmodule ActivityPlannerWeb.LiveIndex do
          stream_delete(socket, unquote(stream_key), obj)
          |> put_flash(:info, (unquote(title) |> String.capitalize()) <> " deleted successfully")}
       end
-    end
-  end
-
-  defp splicing_expr(exprs) do
-    case exprs do
-      [] ->
-        quote do
-        end
-
-      _ ->
-        Enum.reduce(
-          exprs,
-          quote do
-          end,
-          fn expr, acc ->
-            quote do
-              unquote(acc) |> unquote(expr)
-            end
-          end
-        )
     end
   end
 end
