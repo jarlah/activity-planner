@@ -1,4 +1,7 @@
 defmodule ActivityPlannerWeb.LiveShow do
+  require ActivityPlanner.Macros
+  import ActivityPlanner.Macros, only: [call_dynamic: 3]
+
   defmacro __using__(options) do
     key = options[:key]
     env = __CALLER__
@@ -21,8 +24,6 @@ defmodule ActivityPlannerWeb.LiveShow do
 
     quote do
       use ActivityPlannerWeb, :live_view
-      require ActivityPlanner.Macros
-      import ActivityPlanner.Macros, only: [call_dynamic: 3]
 
       @impl true
       def mount(_params, _session, socket) do
