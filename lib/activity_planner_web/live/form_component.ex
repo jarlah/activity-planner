@@ -38,7 +38,7 @@ defmodule ActivityPlannerWeb.FormComponent do
         changeset =
           entity
           # we cannot chain as we usually do with the pipe operator
-          # because call_dynamic is an overloaded macro method
+          # because call_dynamic is a macro that takes the method params as a list.
           # normally we would do something like
           # |> SomeContext.do_stuff(params)
           # and entity would be stitched in a the front
