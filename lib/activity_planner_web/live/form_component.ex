@@ -23,7 +23,7 @@ defmodule ActivityPlannerWeb.FormComponent do
 
       @impl true
       def update(%{unquote(key) => obj} = assigns, socket) do
-        changeset = call_dynamic(unquote(context), unquote(change_function), obj)
+        changeset = call_dynamic(unquote(context), unquote(change_function), [obj])
 
         {:ok,
          socket
@@ -44,7 +44,7 @@ defmodule ActivityPlannerWeb.FormComponent do
           # and entity would be stitched in a the front
           # so we need to use the Kernel.then helper method
           |> Kernel.then(fn entity ->
-            call_dynamic(unquote(context), unquote(change_function), entity, params)
+            call_dynamic(unquote(context), unquote(change_function), [entity, params])
           end)
           |> Map.put(:action, :validate)
 
@@ -59,7 +59,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :edit, entity, params) do
-        case call_dynamic(unquote(context), unquote(update_function), entity, params) do
+        case call_dynamic(unquote(context), unquote(update_function), [entity, params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 
@@ -74,7 +74,7 @@ defmodule ActivityPlannerWeb.FormComponent do
       end
 
       defp save_entity(socket, :new, _nil, params) do
-        case call_dynamic(unquote(context), unquote(create_function), params) do
+        case call_dynamic(unquote(context), unquote(create_function), [params]) do
           {:ok, entity} ->
             notify_parent({:saved, entity})
 

@@ -40,7 +40,7 @@ defmodule ActivityPlannerWeb.LiveIndex do
       defp apply_action(socket, :edit, %{"id" => id}) do
         socket
         |> assign(:page_title, "Edit #{unquote(title)}")
-        |> assign(unquote(key), call_dynamic(unquote(context), unquote(get_function), id))
+        |> assign(unquote(key), call_dynamic(unquote(context), unquote(get_function), [id]))
       end
 
       defp apply_action(socket, :new, _params) do
@@ -62,8 +62,8 @@ defmodule ActivityPlannerWeb.LiveIndex do
 
       @impl true
       def handle_event("delete", %{"id" => id}, socket) do
-        obj = call_dynamic(unquote(context), unquote(get_function), id)
-        {:ok, _} = call_dynamic(unquote(context), unquote(delete_function), obj)
+        obj = call_dynamic(unquote(context), unquote(get_function), [id])
+        {:ok, _} = call_dynamic(unquote(context), unquote(delete_function), [obj])
 
         {:noreply,
          stream_delete(socket, unquote(stream_key), obj)

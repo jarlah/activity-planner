@@ -1,18 +1,22 @@
 defmodule ActivityPlanner.Macros do
-  @spec call_dynamic(module, atom, any, any, any) :: any
-  defmacro call_dynamic(context, function_name, arg1, arg2, arg3) do
-    quote do
-      unquote(context).unquote(function_name)(unquote(arg1), unquote(arg2), unquote(arg3))
-    end
-  end
 
-  @spec call_dynamic(module, atom, any, any) :: any
-  defmacro call_dynamic(context, function_name, arg1, arg2) do
-    quote do
-      unquote(context).unquote(function_name)(unquote(arg1), unquote(arg2))
-    end
-  end
+  @doc """
+  Inline a call to a method on a context at compile time.
 
+  Example:
+
+  call_dynamic(ActivityPlanner.Activities, :list_activities, [])
+
+  call_dynamic(ActivityPlanner.Activities, :get_activity!, [id])
+
+  This will expand to
+
+  ActivityPlanner.Activities.list_activities()
+
+  ActivityPlanner.Activities.get_activity!(id)
+
+  Which will fail to compile if those methods and arities doesnt exist.
+  """
   @spec call_dynamic(module, atom, list) :: any
   defmacro call_dynamic(context, function_name, args) when is_list(args) do
     quote do
@@ -20,13 +24,24 @@ defmodule ActivityPlanner.Macros do
     end
   end
 
-  @spec call_dynamic(module, atom, any) :: any
-  defmacro call_dynamic(context, function_name, args) do
-    quote do
-      unquote(context).unquote(function_name)(unquote(args))
-    end
-  end
+  @doc """
+  Apply multiple assigns to a socket dynamically.
 
+  Example:
+
+  socket
+  |> apply_assigns([
+    {:activity_groups, mod: ActivityPlanner.Activities, fun: :list_activity_groups},
+    {:participants, mod: ActivityPlanner.Participants, fun: :list_participants}
+  ])
+
+  This will expand to
+
+  socket
+  |> assign(:activity_groups, ActivityPlanner.Activities.list_activity_groups())
+  |> assign(:participants, ActivityPlanner.Participants.list_participants())
+
+  """
   @spec apply_assigns(term, list) :: any
   defmacro apply_assigns(socket, assigns) do
     assign_exprs =
