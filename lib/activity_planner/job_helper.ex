@@ -2,7 +2,7 @@ defmodule ActivityPlanner.JobHelper do
   alias ActivityPlanner.Notifications.NotificationSchedule
 
   @spec add_quantum_job(%NotificationSchedule{}) :: :ok
-  def add_quantum_job(schedule) do
+  def add_quantum_job(%NotificationSchedule{} = schedule) do
     ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
     |> Quantum.Job.set_overlap(false)
     |> Quantum.Job.set_name(job_name(schedule))
@@ -14,12 +14,12 @@ defmodule ActivityPlanner.JobHelper do
   end
 
   @spec delete_quantum_job(%NotificationSchedule{}) :: :ok
-  def delete_quantum_job(schedule) do
+  def delete_quantum_job(%NotificationSchedule{} = schedule) do
     ActivityPlanner.Scheduler.delete_job(job_name(schedule))
   end
 
   @spec job_name(%NotificationSchedule{}) :: atom
-  defp job_name(schedule) do
+  defp job_name(%NotificationSchedule{} = schedule) do
     schedule.id |> String.to_atom()
   end
 end
