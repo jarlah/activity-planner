@@ -58,18 +58,8 @@ defmodule ActivityPlanner.JobManager do
       # Without it `[debug] Scheduling job for execution` is spammed the number of times any job has been added with add_job
       # see https://github.com/quantum-elixir/quantum-core/discussions/580
       # and https://elixirforum.com/t/programmatic-scheduling-of-quantum-jobs-leakage/58609
-      :ok = ActivityPlanner.Scheduler.delete_job(job_name(schedule))
-
-      :ok =
-        ActivityPlanner.Scheduler.new_job(run_strategy: Quantum.RunStrategy.Local)
-        |> Quantum.Job.set_overlap(false)
-        |> Quantum.Job.set_name(job_name(schedule))
-        |> Quantum.Job.set_schedule(schedule.cron_expression)
-        |> Quantum.Job.set_task(
-          {ActivityPlanner.Notifications, :send_notifications_for_schedule, [schedule.id]}
-        )
-        |> ActivityPlanner.Scheduler.add_job()
-
+      :ok = ActivityPlanner.JobHelper.delete_quantum_job(schedule)
+      :ok = ActivityPlanner.JobHelper.add_quantum_job(schedule)
       {:ok, "Quantum job added successfully"}
     rescue
       exception ->
@@ -79,15 +69,11 @@ defmodule ActivityPlanner.JobManager do
 
   defp delete_job_from_quantum(schedule) do
     try do
-      :ok = ActivityPlanner.Scheduler.delete_job(job_name(schedule))
+      :ok = ActivityPlanner.JobHelper.delete_quantum_job(schedule)
       {:ok, "Quantum job deleted successfully"}
     rescue
       exception ->
         {:error, Exception.message(exception)}
     end
-  end
-
-  defp job_name(schedule) do
-    :"#{schedule.id}"
   end
 end

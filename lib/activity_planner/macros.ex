@@ -1,5 +1,4 @@
 defmodule ActivityPlanner.Macros do
-
   @doc """
   Inline a call to a method on a context at compile time.
 
