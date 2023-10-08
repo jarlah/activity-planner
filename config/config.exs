@@ -10,6 +10,16 @@ import Config
 config :activity_planner,
   ecto_repos: [ActivityPlanner.Repo]
 
+config :activity_planner,
+  ash_apis: [
+    ActivityPlanner.Activities,
+    ActivityPlanner.Accounts,
+    ActivityPlanner.Companies
+  ]
+
+config :ash,
+  :use_all_identities_in_manage_relationship?, false
+
 # Configures the endpoint
 config :activity_planner, ActivityPlannerWeb.Endpoint,
   url: [host: "localhost"],

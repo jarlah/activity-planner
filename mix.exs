@@ -9,10 +9,7 @@ defmodule ActivityPlanner.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps(),
-      elixirc_options: [
-        warnings_as_errors: true
-      ]
+      deps: deps()
     ]
   end
 
@@ -61,7 +58,13 @@ defmodule ActivityPlanner.MixProject do
       {:timex, "~> 3.7"},
       {:httpoison, "~> 1.8"},
       {:mustache, "~> 0.5.0"},
-      {:inflex, "~> 2.0"}
+      {:inflex, "~> 2.0"},
+      # ash
+      {:ash, "~> 2.14"},
+      {:ash_postgres, "~> 1.3"},
+      {:ash_phoenix, "~> 1.2"},
+      {:ash_authentication, "~> 3.11.15"},
+      {:ash_authentication_phoenix, "~> 1.8.4"}
     ]
   end
 

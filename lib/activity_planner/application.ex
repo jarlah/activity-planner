@@ -23,18 +23,16 @@ defmodule ActivityPlanner.Application do
       # Start a worker by calling: ActivityPlanner.Worker.start_link(arg)
       # {ActivityPlanner.Worker, arg}
       {Cluster.Supervisor, [topologies, [name: ActivityPlanner.ClusterSupervisor]]},
+      {AshAuthentication.Supervisor, otp_app: :activity_planner},
       # TODO what happens if the node dies, will the jobs continue ob the next
-      {Highlander, ActivityPlanner.Scheduler},
-      {Highlander, {ActivityPlanner.JobManager, :ok}}
+      #{Highlander, ActivityPlanner.Scheduler},
+      #{Highlander, {ActivityPlanner.JobManager, :ok}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ActivityPlanner.Supervisor]
     result = Supervisor.start_link(children, opts)
-
-    # no-op if admin account already exists
-    ActivityPlanner.Accounts.create_admin_account("admin@example.com")
 
     result
   end

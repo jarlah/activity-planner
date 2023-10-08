@@ -16,88 +16,19 @@
       <%= if @current_user do %>
         <li>
           <.link
-            href={~p"/activities"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Activities
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/activity_groups"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Activity groups
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/activity_participants"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Activity participants
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/participants"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Participants
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/notification_templates"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Notification templates
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/notification_schedules"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Notification schedules
-          </.link>
-        </li>
-        <li>|</li>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          <%= @current_user.email %>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Settings
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_out"}
-            method="delete"
+            href={~p"/sign-out"}
             class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
           >
             Log out
           </.link>
         </li>
       <% else %>
-        <%!--         <li>
-          <.link
-            href={~p"/users/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Register
-          </.link>
-        </li> --%>
         <li>
           <.link
-            href={~p"/users/log_in"}
+            href={~p"/sign-in"}
             class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
           >
-            Log in
+            Sign in
           </.link>
         </li>
       <% end %>
