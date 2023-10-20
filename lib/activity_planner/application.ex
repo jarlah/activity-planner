@@ -5,8 +5,15 @@ defmodule ActivityPlanner.Application do
 
   use Application
 
+  import Testcontainers.Ecto
+
   @impl true
   def start(_type, _args) do
+    postgres_container(
+      app: :activity_planner,
+      database: "activity_planner_test#{System.get_env("MIX_TEST_PARTITION")}"
+    )
+
     topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
