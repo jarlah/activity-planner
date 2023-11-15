@@ -41,7 +41,7 @@ defmodule ActivityPlanner.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:testcontainers, "~> 1.1.1", only: [:dev, :test]},
+      {:testcontainers, "~> 1.4.0", only: [:dev, :test]},
       {:phoenix_live_view, "~> 0.19.0"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.0"},
