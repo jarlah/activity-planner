@@ -11,7 +11,7 @@ defmodule ActivityPlanner.Application do
       {:ok, _container} =
         Testcontainers.Ecto.postgres_container(
           app: :activity_planner,
-          persistent_volume_name: "activity_planner_data"
+          persistent_volume_name: if(Mix.env() == :dev, do: "activity_planner_data", else: nil)
         )
     end
 
