@@ -47,3 +47,5 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: mix test
+    - name: Try to build releaae
+      run: MIX_ENV=prod mix release

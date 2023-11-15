@@ -7,11 +7,13 @@ defmodule ActivityPlanner.Application do
 
   @impl true
   def start(_type, _args) do
-    {:ok, _container} =
-      Testcontainers.Ecto.postgres_container(
-        app: :activity_planner,
-        persistent_volume_name: "activity_planner_data"
-      )
+    if Mix.env() in [:dev, :test] do
+      {:ok, _container} =
+        Testcontainers.Ecto.postgres_container(
+          app: :activity_planner,
+          persistent_volume_name: "activity_planner_data"
+        )
+    end
 
     topologies = Application.get_env(:libcluster, :topologies) || []
 
