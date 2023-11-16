@@ -1,5 +1,7 @@
 import Config
 
+config :testcontainers, enabled: true
+
 # Only in tests, remove the complexity from the password hashing algorithm
 config :pbkdf2_elixir, :rounds, 1
 

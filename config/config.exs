@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :testcontainers, enabled: false
+
 config :activity_planner,
   ecto_repos: [ActivityPlanner.Repo]
 

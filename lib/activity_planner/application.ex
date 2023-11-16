@@ -7,7 +7,7 @@ defmodule ActivityPlanner.Application do
 
   @impl true
   def start(_type, _args) do
-    if Mix.env() in [:dev, :test] do
+    if Application.get_env(:testcontainers, :enabled, false) do
       {:ok, _container} =
         Testcontainers.Ecto.postgres_container(
           app: :activity_planner,
